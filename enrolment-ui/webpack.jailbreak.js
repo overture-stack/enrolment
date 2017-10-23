@@ -1,12 +1,12 @@
 // Using jailbreak-react-scripts merge to add support for things like SCSS
 
-const merge = require("webpack-merge");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const merge = require('webpack-merge');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = function jailbreakWebpackConfig(config) {
   const extractSass = new ExtractTextPlugin({
-    filename: "[name].[contenthash].css",
-    disable: process.env.NODE_ENV === "development"
+    filename: '[name].[contenthash].css',
+    disable: process.env.NODE_ENV === 'development'
   });
 
   const scssLoaderConfig = {
@@ -14,28 +14,28 @@ module.exports = function jailbreakWebpackConfig(config) {
     use: extractSass.extract({
       use: [
         {
-          loader: "style-loader"
+          loader: 'style-loader'
         },
         {
-          loader: "css-loader",
+          loader: 'css-loader',
           options: {
             sourceMap: true
           }
         },
         {
-          loader: "sass-loader",
+          loader: 'sass-loader',
           options: {
             sourceMap: true
           }
         }
       ],
       // use style-loader in development
-      fallback: "style-loader"
+      fallback: 'style-loader'
     })
   };
 
   let newConfig = merge.smart(config, {
-    devtool: "source-map",
+    devtool: 'source-map',
     plugins: [extractSass]
   });
 
