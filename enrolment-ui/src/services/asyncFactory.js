@@ -41,10 +41,13 @@ function addData(config, data) {
  * uses standard promises
  * @param {string} method - http verb (GET, POST, PUT, etc)
  * @param {string} url - endpoint url
- * @param {boolean} csrf - attaches "X-CSRFToken" to request headers
- * @param {Object} withData - return function has data param if true
+ * @param {Object} config - currently has two options, "csrf" and "withData",
+ * which toggles the inclussion of a CSRF token in the request and toggles the
+ * returned function to accept a data param that is sent wih the request respectively
  */
-export function asyncServiceCreator(method, url, csrf = false, withData = false) {
+export function asyncServiceCreator(method, url, config = {csrf: false, withData: false}) {
+
+  const { csrf, withData } = config;
   const baseConfig = createBaseConfig(method, url);
 
   if (csrf && withData) return data => axios(addCSRF(addData(baseConfig, data)));
