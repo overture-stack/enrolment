@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { renderRoutes } from 'react-router-config';
 
-import '../../assets/style/style.scss';
+import './app.scss';
 
 class App extends Component {
   static displayName = 'App';
@@ -9,7 +9,7 @@ class App extends Component {
   render() {
     const { route } = this.props;
 
-    return <div className="app">{renderRoutes(route.routes)}</div>;
+    return renderRoutes(route.routes);
   }
 }
 
