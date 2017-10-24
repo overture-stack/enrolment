@@ -1,7 +1,7 @@
 // Utility Functions for Services
-import Cookies from "js-cookie";
+import Cookies from 'js-cookie';
 
-const CSRF_TOKEN = "csrftoken";
+const CSRF_TOKEN = 'csrftoken';
 
 export function getCSRFToken() {
   return Cookies.get(CSRF_TOKEN);
