@@ -1,3 +1,3 @@
-import reducer from './redux';
+import { reducer } from './redux';
 
 export { reducer };
