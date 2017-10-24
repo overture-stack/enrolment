@@ -1,10 +1,15 @@
 import React from 'react';
 
+import './login.scss';
+import logo from '../../assets/img/logo.svg';
+
 const Login = () => {
   return (
-    <main className="container-login">
-      <div>LOGIN CONTAINER</div>
-    </main>
+    <div className="login">
+      <div className="login-logo-container">
+        <img src={logo} className="login-logo" alt="logo" />
+      </div>
+    </div>
   );
 };
 
