@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { object } from 'prop-types';
 import { withRouter } from 'react-router-dom';
-import { matchRoutes, renderRoutes } from 'react-router-config';
+import { renderRoutes } from 'react-router-config';
 
 import routes from './routes';
 
