@@ -16,10 +16,25 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from core.login.google_login import GoogleLogin
+from core import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^admin/', admin.site.urls),
     url(r'^api/auth/', include('rest_auth.urls')),
     url(r'^api/auth/google/$', GoogleLogin.as_view(), name='google_login'),
+    url(r'^api/auth/social/$', views.SocialViewSet),
+
+    # Projects
+    url(r'^api/projects/$', views.ProjectsViewSet.as_view()),
+    url(r'^api/projects/(?P<id>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
+        views.ProjectsByIdViewSet),
+
+    # Applications
+    url(r'^api/applications/$', views.ApplicationsViewSet.as_view()),
+    url(r'^api/applications/(?P<id>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
+        views.ApplicationsByIdViewSet),
+
+    # Users
+    url(r'^api/projects/users/$', views.ProjectUsersViewSet.as_view()),
 ]
