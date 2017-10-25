@@ -7,26 +7,32 @@ const routes = [
       {
         path: '/',
         component: Login,
+        exact: true,
       },
       {
         path: '/login',
         component: Login,
+        exact: true,
       },
       {
         path: '/dashboard',
         component: Login,
+        exact: true,
       },
       {
         path: '/register/project',
         component: Login,
+        exact: true,
       },
       {
         path: '/register/user',
         component: Login,
+        exact: true,
       },
       {
         path: '/projects',
         component: Login,
+        exact: true,
       },
       {
         component: NotFound,
