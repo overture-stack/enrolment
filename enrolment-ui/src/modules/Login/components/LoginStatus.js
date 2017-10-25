@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import spinner from '../../../assets/img/spinner.svg';
 
 const LoginStatus = props => {
-  const { isFetching, error } = props.auth;
+  const { isFetching, error } = props.error;
   return (
     <div className={`login-extra-info ${isFetching || error ? 'show' : 'hide'} `}>
       {isFetching && <img src={spinner} alt="loading graphic" />}
@@ -22,7 +22,7 @@ LoginStatus.displayName = 'LoginStatus';
 
 const mapStateToProps = state => {
   return {
-    auth: state.auth,
+    error: state.auth.error,
   };
 };
 
