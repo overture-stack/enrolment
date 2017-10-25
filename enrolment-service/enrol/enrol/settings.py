@@ -153,3 +153,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 SITE_ID = 1
+
+
+# DACO
+ICGC_BASE_URL = ''
+ICGC_CLIENT_KEY = ''
+ICGC_CLIENT_SECRET = ''
+ICGC_TOKEN = ''
+ICGC_TOKEN_SECRET = ''
+
+# SMTP
+SMTP_URL = ''

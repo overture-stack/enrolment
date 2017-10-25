@@ -19,6 +19,8 @@ from core.login.google_login import GoogleLogin
 from core import views
 
 urlpatterns = [
+    url(r'^$', views.schema_view),
+
     url(r'^admin/', admin.site.urls),
     url(r'^admin/', admin.site.urls),
     url(r'^api/auth/', include('rest_auth.urls')),
@@ -34,7 +36,13 @@ urlpatterns = [
     url(r'^api/applications/$', views.ApplicationsViewSet.as_view()),
     url(r'^api/applications/(?P<id>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
         views.ApplicationsByIdViewSet),
+    url(r'^api/projects/users/application/(?P<id>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$', views.ProjectsUsersByIdViewSet),
 
     # Users
+    url(r'^api/request/user/$', views.UserRequestViewSet),
+    url(r'^api/request/user/check/(?P<id>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
+        views.UserRequestConfirmation),
     url(r'^api/projects/users/$', views.ProjectUsersViewSet.as_view()),
+    url(r'^api/projects/users/(?P<project>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
+        views.ProjectsUsersByProjectViewSet),
 ]
