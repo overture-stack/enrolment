@@ -1,4 +1,4 @@
-import { App, Login, NotFound } from './modules';
+import { App, Login, Main, NotFound } from './modules';
 
 const routes = [
   {
@@ -7,26 +7,37 @@ const routes = [
       {
         path: '/',
         component: Login,
+        exact: true,
       },
       {
         path: '/login',
         component: Login,
+        exact: true,
       },
       {
-        path: '/dashboard',
-        component: Login,
-      },
-      {
-        path: '/register/project',
-        component: Login,
-      },
-      {
-        path: '/register/user',
-        component: Login,
-      },
-      {
-        path: '/projects',
-        component: Login,
+        component: Main,
+        routes: [
+          {
+            path: '/dashboard',
+            component: Login,
+            exact: true,
+          },
+          {
+            path: '/register/project',
+            component: Login,
+            exact: true,
+          },
+          {
+            path: '/register/user',
+            component: Login,
+            exact: true,
+          },
+          {
+            path: '/projects',
+            component: Login,
+            exact: true,
+          },
+        ],
       },
       {
         component: NotFound,
