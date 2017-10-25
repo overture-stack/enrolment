@@ -1,17 +1,35 @@
 import React from 'react';
+import { Field, reduxForm } from 'redux-form';
 
+import { RFPlainInput } from '../../ReduxForm';
 import ChangeLogin from './ChangeLogin';
 
+const LoginForm = props => {
+  const { handleSubmit, pristine, submitting } = props;
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <Field type="text" placeholder="Username" name="username" component={RFPlainInput} />
+      <Field type="email" placeholder="Email" name="email" component={RFPlainInput} />
+      <Field type="password" placeholder="Password" name="password" component={RFPlainInput} />
+      <button type="submit" className="submit action-button" disabled={submitting || pristine}>
+        Submit
+      </button>
+    </form>
+  );
+};
+
+const AdminLoginForm = reduxForm({ form: 'adminLoginForm' })(LoginForm);
+
 const InternalLoginForm = props => {
+  const handleSubmit = data => {
+    console.log(data);
+  };
+
   return (
     <div className="login-container">
       <div className="login-container">
-        <form>
-          <input type="text" placeholder="Username" className="form-control" name="username" />
-          <input type="email" placeholder="Email" className="form-control" name="email" />
-          <input type="password" placeholder="Password" className="form-control" name="password" />
-          <input type="submit" name="Submit" className="submit action-button" value="Submit" />
-        </form>
+        <AdminLoginForm onSubmit={handleSubmit} />
       </div>
       <ChangeLogin />
     </div>

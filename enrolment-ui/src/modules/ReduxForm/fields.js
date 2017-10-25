@@ -4,6 +4,10 @@
 
 import React from 'react';
 
+export const RFPlainInput = ({ name, input, label, type, placeholder }) => (
+  <input name={name} className="form-control" {...input} placeholder={placeholder} type={type} />
+);
+
 export const RFInput = ({
   name,
   input,
