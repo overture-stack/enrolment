@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import spinner from '../../../assets/img/spinner.svg';
 
 const LoginStatus = props => {
-  const { isFetching, error } = props.error;
+  const { loading, error } = props.error;
   return (
-    <div className={`login-extra-info ${isFetching || error ? 'show' : 'hide'} `}>
-      {isFetching && <img src={spinner} alt="loading graphic" />}
+    <div className={`login-extra-info ${loading || error ? 'show' : 'hide'} `}>
+      {loading && <img src={spinner} alt="loading graphic" />}
       {error && (
         <div
           className="alert alert-danger"

@@ -7,10 +7,12 @@ import asyncServices from '../../services';
 const LOGIN_REQUEST = 'auth/LOGIN_REQUEST';
 const LOGIN_SUCCESS = 'auth/LOGIN_SUCCESS';
 const LOGIN_FAILURE = 'auth/LOGIN_FAILURE';
+const LOGOUT = 'auth/LOGOUT';
 
 const loginStart = emptyActionGenerator(LOGIN_REQUEST);
 const loginSuccess = emptyActionGenerator(LOGIN_SUCCESS);
 const loginError = payloadActionGenerator(LOGIN_FAILURE);
+const logoutAction = emptyActionGenerator(LOGOUT);
 
 /*
 * Private Composite Functions
@@ -19,6 +21,15 @@ const onLoginSuccess = (dispatch, data) => {
   // TODO Get profile and dispatch via profile reducer
   dispatch(loginSuccess());
 };
+
+/*
+* Public Composite Functions
+*/
+
+export function logout(dispatch) {
+  dispatch(logoutAction());
+  // TODO - All logout related stuff here
+}
 
 /*
 * Public async thunk actions (mapped to component props)
@@ -53,7 +64,7 @@ export function createGoogleLoginFunctions(dispatch) {
 * Reducer
 */
 const _defaultState = {
-  isFetching: false,
+  loading: false,
   isLoggedIn: false,
   error: null,
 };
@@ -78,6 +89,10 @@ export const reducer = (state = _defaultState, action) => {
         loading: false,
         isLoggedIn: false,
         error: action.payload,
+      };
+    case LOGOUT:
+      return {
+        ..._defaultState,
       };
     default:
       return state;

@@ -10,18 +10,18 @@ import ChangeLogin from './ChangeLogin';
 const GoogleLoginForm = props => {
   const { clientId } = getOneConfig('clientId');
 
-  const { auth: { isFetching }, googleLoginFunctions: { onRequest, onSuccess, onFailure } } = props;
+  const { auth: { loading }, googleLoginFunctions: { onRequest, onSuccess, onFailure } } = props;
 
   return (
     <div className="login-container">
       <GoogleLogin
-        className={`login-google ${isFetching ? 'disabled' : ''}`}
+        className={`login-google ${loading ? 'disabled' : ''}`}
         buttonText=""
         clientId={clientId}
         onRequest={onRequest}
         onSuccess={onSuccess}
         onFailure={onFailure}
-        disabled={isFetching}
+        disabled={loading}
       />
       <ChangeLogin />
     </div>
