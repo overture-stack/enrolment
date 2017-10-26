@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import Requests from './components/Requests';
 import { UserEnrolmentModal } from '../Users';
 
+import './dashboard.scss';
+
 const Dashboard = props => {
   const { applications, profile } = props;
 
@@ -32,7 +34,7 @@ Dashboard.displayName = 'Dashboard';
 
 const mapStateToProps = state => {
   return {
-    applications: state.application,
+    applications: state.applications,
     profile: state.profile,
   };
 };

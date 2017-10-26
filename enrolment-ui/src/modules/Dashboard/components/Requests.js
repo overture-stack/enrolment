@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import StaffActions from './StaffActions';
-import ApplicationRequests from './ApplicationRequests';
-import UserRequests from './UserRequests';
+import { ApplicationRequests } from '../../Applications';
+import { UserRequests } from '../../Users';
 
 const Requests = props => {
   const { profile } = props;

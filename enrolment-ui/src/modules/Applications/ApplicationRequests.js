@@ -59,7 +59,7 @@ ApplicationRequests.displayName = 'ApplicationRequests';
 
 const mapStateToProps = state => {
   return {
-    applications: state.application,
+    applications: state.applications,
     profile: state.profile,
     projects: state.projects,
   };
