@@ -25,7 +25,7 @@ const Dashboard = props => {
         ) : null}
         {applications.hasApplications ? <Requests /> : null}
       </div>
-      <UserEnrolmentModal showModal={false} onHideModal={() => console.log('hide modal')} />
+      <UserEnrolmentModal showModal={false} handleClose={() => console.log('handleClose()')} />
     </div>
   );
 };

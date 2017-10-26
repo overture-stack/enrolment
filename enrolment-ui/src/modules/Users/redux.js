@@ -16,7 +16,6 @@ const fetchRequestsError = payloadActionGenerator(FETCH_REQUESTS_FAILURE);
 * Public async thunk actions (mapped to component props)
 */
 
-// Login function used by InternalLoginForm submit
 export function fetchRequests(dispatch) {
   dispatch(fetchRequestsStart());
 
