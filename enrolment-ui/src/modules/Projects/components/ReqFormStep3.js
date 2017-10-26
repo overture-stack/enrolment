@@ -1,9 +1,9 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { RFConsent } from '../../ReduxForm';
+import { RFConsent, rules } from '../../ReduxForm';
 
 const ReqFormStep3 = props => {
-  const { handleSubmit, previousPage } = props;
+  const { handleSubmit, previousPage, submitting, pristine, invalid } = props;
   return (
     <form onSubmit={handleSubmit} className="agreement">
       <div className="row">
@@ -25,14 +25,23 @@ const ReqFormStep3 = props => {
         </div>
       </div>
       <div className="row">
-        <Field name="agreementCheck" label="I agree" component={RFConsent} />
+        <Field
+          name="agreementCheck"
+          label="I agree"
+          component={RFConsent}
+          validate={rules.required}
+        />
       </div>
       <div className="row">
         <div className="col-md-12">
           <button onClick={previousPage} className="previous action-button">
             Previous
           </button>
-          <button type="submit" className="submit action-button">
+          <button
+            type="submit"
+            className="submit action-button"
+            disabled={submitting || pristine || invalid}
+          >
             Submit
           </button>
         </div>

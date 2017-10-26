@@ -1,9 +1,9 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { RFInput, RFTextArea } from '../../ReduxForm';
+import { RFInput, RFTextArea, rules } from '../../ReduxForm';
 
 const ReqFormStep2 = props => {
-  const { handleSubmit, previousPage } = props;
+  const { handleSubmit, previousPage, pristine, invalid } = props;
   return (
     <form onSubmit={handleSubmit}>
       <div className="row">
@@ -16,13 +16,20 @@ const ReqFormStep2 = props => {
         </div>
       </div>
       <div className="row">
-        <Field type="text" name="project_name" placeholder="Project Name" component={RFInput} />
+        <Field
+          type="text"
+          name="project_name"
+          placeholder="Project Name"
+          component={RFInput}
+          validate={rules.required}
+        />
       </div>
       <div className="row">
         <Field
           name="project_description"
           placeholder="Project Description"
           component={RFTextArea}
+          validate={rules.required}
         />
       </div>
       <div className="row">
@@ -30,7 +37,7 @@ const ReqFormStep2 = props => {
           <button onClick={previousPage} className="previous action-button">
             Previous
           </button>
-          <button type="submit" className="next action-button">
+          <button type="submit" className="next action-button" disabled={pristine || invalid}>
             Next
           </button>
         </div>
