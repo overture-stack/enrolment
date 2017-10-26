@@ -31,11 +31,9 @@ export function createAsyncs(isDevelopment = false) {
       approve: asyncServiceCreator('PUT', `${apiBase}/projects/`, withDataAndCSRF),
       deny: asyncServiceCreator('PUT', `${apiBase}/projects/`, withDataAndCSRF),
     },
-    userRequest: {
+    user: {
       dacoAccess: email => asyncServiceCreator('GET', `${apiBase}/daco/${email}`)(),
       userRequest: asyncServiceCreator('POST', `${apiBase}/request/user/`, withDataAndCSRF),
-    },
-    user: {
       fetchUserRequests: asyncServiceCreator('GET', `${apiBase}/projects/users/`),
       approveUserRequests: asyncServiceCreator(
         'PUT',

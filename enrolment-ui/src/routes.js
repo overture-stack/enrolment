@@ -1,4 +1,4 @@
-import { App, Login, Main, NotFound } from './modules';
+import { App, Login, Main, Dashboard, NotFound } from './modules';
 
 const routes = [
   {
@@ -19,7 +19,7 @@ const routes = [
         routes: [
           {
             path: '/dashboard',
-            component: Login,
+            component: Dashboard,
             exact: true,
           },
           {

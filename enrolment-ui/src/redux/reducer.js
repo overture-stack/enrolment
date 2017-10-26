@@ -6,6 +6,7 @@ import { reducer as auth } from '../modules/Auth';
 import { reducer as application } from '../modules/Application';
 import { reducer as profile } from '../modules/Profile';
 import { reducer as projects } from '../modules/Projects';
+import { reducer as users } from '../modules/Users';
 
 const reducer = combineReducers({
   login,
@@ -13,6 +14,7 @@ const reducer = combineReducers({
   application,
   profile,
   projects,
+  users,
   form: formReducer,
 });
 
