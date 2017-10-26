@@ -1,6 +1,6 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { RFPlainInput } from '../../ReduxForm';
+import { RFInput, RFTextArea } from '../../ReduxForm';
 
 const ReqFormStep2 = props => {
   const { handleSubmit, previousPage } = props;
@@ -16,19 +16,14 @@ const ReqFormStep2 = props => {
         </div>
       </div>
       <div className="row">
-        <div className="col-md-12">
-          <Field
-            type="text"
-            name="project_name"
-            placeholder="Project Name"
-            component={RFPlainInput}
-          />
-        </div>
+        <Field type="text" name="project_name" placeholder="Project Name" component={RFInput} />
       </div>
       <div className="row">
-        <div className="col-md-12">
-          <textarea name="project_description" placeholder="Project Description" />
-        </div>
+        <Field
+          name="project_description"
+          placeholder="Project Description"
+          component={RFTextArea}
+        />
       </div>
       <div className="row">
         <div className="col-md-12">

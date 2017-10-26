@@ -1,6 +1,6 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { RFPlainInput } from '../../ReduxForm';
+import { RFConsent } from '../../ReduxForm';
 
 const ReqFormStep3 = props => {
   const { handleSubmit, previousPage } = props;
@@ -22,16 +22,10 @@ const ReqFormStep3 = props => {
             subscribed to Collaboratory announcement mailing-list and will receive collaboratory
             notification emails.
           </p>
-          <label className="form-check-label col-md-12">
-            <Field
-              type="checkbox"
-              className="form-check-input"
-              name="agreementCheck"
-              component={RFPlainInput}
-            />
-            <span>I agree</span>
-          </label>
         </div>
+      </div>
+      <div className="row">
+        <Field name="agreementCheck" label="I agree" component={RFConsent} />
       </div>
       <div className="row">
         <div className="col-md-12">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { RFPlainInput } from '../../ReduxForm';
+import { RFInput } from '../../ReduxForm';
 
 const ReqFormStep1 = props => {
   const { handleSubmit } = props;
@@ -13,50 +13,53 @@ const ReqFormStep1 = props => {
         </div>
       </div>
       <div className="row">
-        <div className="col-md-6">
-          <Field name="firstname" type="text" placeholder="First Name" component={RFPlainInput} />
-        </div>
-        <div className="col-md-6">
-          <Field name="lastname" type="text" placeholder="Last Name" component={RFPlainInput} />
-        </div>
+        <Field
+          name="firstname"
+          type="text"
+          placeholder="First Name"
+          component={RFInput}
+          bootstrapClass="col-md-6"
+        />
+        <Field
+          name="lastname"
+          type="text"
+          placeholder="Last Name"
+          component={RFInput}
+          bootstrapClass="col-md-6"
+        />
       </div>
       <div className="row">
-        <div className="col-md-12">
-          <Field name="position" type="text" placeholder="Position" component={RFPlainInput} />
-        </div>
+        <Field name="position" type="text" placeholder="Position" component={RFInput} />
       </div>
       <div className="row">
-        <div className="col-md-12">
-          <Field
-            type="text"
-            name="institution_name"
-            placeholder="Institution Name"
-            component={RFPlainInput}
-          />
-        </div>
+        <Field
+          type="text"
+          name="institution_name"
+          placeholder="Institution Name"
+          component={RFInput}
+        />
       </div>
       <div className="row">
-        <div className="col-md-12">
-          <Field type="text" name="address" placeholder="Address" component={RFPlainInput} />
-        </div>
+        <Field type="text" name="address" placeholder="Address" component={RFInput} />
       </div>
       <div className="row">
-        <div className="col-md-6">
-          <Field
-            type="email"
-            name="institution_email"
-            placeholder="Institution Email"
-            component={RFPlainInput}
-          />
-        </div>
-        <div className="col-md-6">
-          <Field type="tel" name="phone" placeholder="Phone" component={RFPlainInput} />
-        </div>
+        <Field
+          type="email"
+          name="institution_email"
+          placeholder="Institution Email"
+          component={RFInput}
+          bootstrapClass="col-md-6"
+        />
+        <Field
+          type="tel"
+          name="phone"
+          placeholder="Phone"
+          component={RFInput}
+          bootstrapClass="col-md-6"
+        />
       </div>
       <div className="row">
-        <div className="col-md-12">
-          <Field type="email" name="daco_email" placeholder="Daco Email" component={RFPlainInput} />
-        </div>
+        <Field type="email" name="daco_email" placeholder="Daco Email" component={RFInput} />
       </div>
       <div className="row">
         <div className="col-md-12">

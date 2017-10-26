@@ -11,60 +11,52 @@ export const RFPlainInput = ({ name, input, label, type, placeholder }) => (
 export const RFInput = ({
   name,
   input,
-  label,
   type,
   placeholder,
+  bootstrapClass = 'col-md-12',
   meta: { touched, error, warning },
 }) => (
-  <div className="form-group">
-    <label htmlFor={name}>{label}</label>
-    <div>
-      <input
-        name={name}
-        className="form-control"
-        {...input}
-        placeholder={placeholder}
-        type={type}
-      />
-      {touched &&
-        ((error && <span className="error">{error}</span>) ||
-          (warning && <span className="warning">{warning}</span>))}
-    </div>
+  <div className={bootstrapClass}>
+    <input name={name} className="form-control" {...input} placeholder={placeholder} type={type} />
+    {touched &&
+      ((error && <span className="error">{error}</span>) ||
+        (warning && <span className="warning">{warning}</span>))}
   </div>
 );
 
-// export const RFTextArea = ({
-//   name,
-//   input,
-//   label,
-//   placeholder,
-//   meta: { touched, error, warning },
-// }) => (
-//   <div className="form-group">
-//     <label htmlFor={name}>{label}</label>
-//     <div>
-//       <textarea name={name} className="form-control" {...input} placeholder={placeholder} />
-//       {touched &&
-//         ((error && <span className="error">{error}</span>) ||
-//           (warning && <span className="warning">{warning}</span>))}
-//     </div>
-//   </div>
-// );
+export const RFTextArea = ({
+  name,
+  input,
+  placeholder,
+  bootstrapClass = 'col-md-12',
+  meta: { touched, error, warning },
+}) => (
+  <div className={bootstrapClass}>
+    <textarea name={name} className="form-control" {...input} placeholder={placeholder} />
+    {touched &&
+      ((error && <span className="error">{error}</span>) ||
+        (warning && <span className="warning">{warning}</span>))}
+  </div>
+);
 
-// export const RFSelect = ({ name, input, label, options, meta: { touched, error, warning } }) => (
-//   <div className="form-group">
-//     <label htmlFor={name}>{label}</label>
-//     <div>
-//       <select className="form-control" id={name} {...input}>
-//         {options.map((option, idx) => (
-//           <option key={idx} value={option.value}>
-//             {option.text}
-//           </option>
-//         ))}
-//       </select>
-//       {touched &&
-//         ((error && <span className="error">{error}</span>) ||
-//           (warning && <span className="warning">{warning}</span>))}
-//     </div>
-//   </div>
-// );
+export const RFConsent = ({
+  name,
+  label,
+  input,
+  placeholder,
+  meta: { touched, error, warning },
+}) => (
+  <label className="form-check-label col-md-12">
+    <input
+      name={name}
+      className="form-check-input"
+      {...input}
+      placeholder={placeholder}
+      type="checkbox"
+    />
+    <span>{label}</span>
+    {touched &&
+      ((error && <span className="error">{error}</span>) ||
+        (warning && <span className="warning">{warning}</span>))}
+  </label>
+);

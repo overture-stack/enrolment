@@ -1,4 +1,4 @@
-import { RFPlainInput, RFInput } from './fields';
+import { RFPlainInput, RFInput, RFTextArea, RFConsent } from './fields';
 import { rules } from './validation';
 
-export { RFPlainInput, RFInput, rules };
+export { RFPlainInput, RFInput, RFTextArea, RFConsent, rules };
