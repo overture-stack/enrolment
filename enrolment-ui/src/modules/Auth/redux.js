@@ -1,6 +1,6 @@
 import { emptyActionGenerator, payloadActionGenerator } from '../../redux/helpers';
 import asyncServices from '../../services';
-import { fetchProfile } from '../Profile/redux';
+import { fetchProfile, clearProfile } from '../Profile/redux';
 
 /*
 * Actions
@@ -41,8 +41,9 @@ const onGoogleLoginSuccess = (dispatch, data) => {
 */
 
 export function logout(dispatch) {
+  dispatch(clearProfile());
   dispatch(logoutAction());
-  // TODO - All logout related stuff here
+  // TODO - clear google login cookies here?
 }
 
 /*
@@ -50,11 +51,11 @@ export function logout(dispatch) {
 */
 
 // Login function used by InternalLoginForm submit
-export function adminLogin(dispatch) {
+export function adminLogin(dispatch, data) {
   dispatch(loginStart());
 
   return asyncServices.auth
-    .adminLogin()
+    .adminLogin(data)
     .then(response => {
       onLoginSuccess(dispatch, response);
     })

@@ -20,13 +20,21 @@ export function createAsyncs(isDevelopment = false) {
           if (error.response.status === 403)
             return Promise.reject(
               new Error(`You need a DACO account to be able to use this Application. <br/>
-  For more information, Please go to <a href="https://icgc.org/daco" target="_blank">https://icgc.org/daco</a>`),
+                          For more information, Please go to <a href="https://icgc.org/daco" target="_blank">https://icgc.org/daco</a>`),
             );
 
           return Promise.reject(error);
         }),
       googleSuccess: asyncServiceCreator('POST', `${apiBase}/auth/google/`, withDataAndCSRF),
-      adminLogin: asyncServiceCreator('POST', `${apiBase}/auth/login/`, withData),
+      adminLogin: data =>
+        asyncServiceCreator('POST', `${apiBase}/auth/login/`, withDataAndCSRF)(
+          data,
+        ).catch(error => {
+          if (error.response.data && error.response.data.non_field_errors)
+            return Promise.reject('The Credentials Provided were not correct');
+
+          return Promise.reject('Something went wrong. Please Try again.');
+        }),
       logout: asyncServiceCreator('POST', `${apiBase}/auth/logout/`, withDataAndCSRF),
     },
     profile: {

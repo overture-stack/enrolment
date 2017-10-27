@@ -7,6 +7,7 @@ import asyncServices from '../../services';
 const FETCH_PROFILE_REQUEST = 'profile/FETCH_PROFILE_REQUEST';
 const FETCH_PROFILE_SUCCESS = 'profile/FETCH_PROFILE_SUCCESS';
 const FETCH_PROFILE_FAILURE = 'profile/FETCH_PROFILE_FAILURE';
+const CLEAR_PROFILE = 'profile/CLEAR_PROFILE';
 
 const fetchProfileStart = emptyActionGenerator(FETCH_PROFILE_REQUEST);
 const fetchProfileSuccess = payloadActionGenerator(FETCH_PROFILE_SUCCESS);
@@ -16,7 +17,23 @@ const fetchProfileError = payloadActionGenerator(FETCH_PROFILE_FAILURE);
 * Private internal functions
 */
 const getAdminProfile = () => {
-  return asyncServices.profile.getUser;
+  return new Promise((resolve, reject) => {
+    asyncServices.profile
+      .getUser()
+      .then(response => {
+        resolve({
+          ...response,
+          data: {
+            ...response.data,
+            social: {
+              name: 'Admin',
+              picture: 'http://www.iconninja.com/files/538/231/811/admin-icon.png',
+            },
+          },
+        });
+      })
+      .catch(error => reject(error));
+  });
 };
 
 const getUserProfile = () => {
@@ -36,6 +53,11 @@ const getUserProfile = () => {
       .catch(error => reject(error));
   });
 };
+
+/*
+* Public Functions
+*/
+export const clearProfile = emptyActionGenerator(CLEAR_PROFILE);
 
 /*
 * Public async thunk actions (mapped to component props)
@@ -93,6 +115,8 @@ export const reducer = (state = _defaultState, action) => {
         data: null,
         error: action.payload,
       };
+    case CLEAR_PROFILE:
+      return _defaultState;
     default:
       return state;
   }
