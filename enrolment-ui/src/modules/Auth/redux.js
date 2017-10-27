@@ -79,7 +79,7 @@ export function createGoogleLoginFunctions(dispatch) {
 */
 const _defaultState = {
   loading: false,
-  isLoggedIn: true,
+  isLoggedIn: false,
   error: null,
 };
 
