@@ -25,7 +25,11 @@ SECRET_KEY = '9bqg!2qdxnpy#@&i7m5p3@3002drp-v^gbled@8oz%nc7jxb(^'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'local.enrol.cancercollaboratory.org',
+    'localhost',
+    '127.0.0.1',
+]
 
 
 # Application definition
