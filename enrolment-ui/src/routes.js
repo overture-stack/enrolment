@@ -1,4 +1,13 @@
-import { App, Login, Main, NotFound } from './modules';
+import {
+  App,
+  Login,
+  Main,
+  Dashboard,
+  Projects,
+  RegisterProject,
+  RegisterUser,
+  NotFound,
+} from './modules';
 
 const routes = [
   {
@@ -19,22 +28,22 @@ const routes = [
         routes: [
           {
             path: '/dashboard',
-            component: Login,
+            component: Dashboard,
             exact: true,
           },
           {
             path: '/register/project',
-            component: Login,
+            component: RegisterProject,
             exact: true,
           },
           {
             path: '/register/user',
-            component: Login,
+            component: RegisterUser,
             exact: true,
           },
           {
             path: '/projects',
-            component: Login,
+            component: Projects,
             exact: true,
           },
         ],

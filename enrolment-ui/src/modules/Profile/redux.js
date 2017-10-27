@@ -16,7 +16,6 @@ const fetchProfileError = payloadActionGenerator(FETCH_PROFILE_FAILURE);
 * Public async thunk actions (mapped to component props)
 */
 
-// Login function used by InternalLoginForm submit
 export function fetchProfile(dispatch) {
   dispatch(fetchProfileStart());
 
