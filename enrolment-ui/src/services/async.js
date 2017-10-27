@@ -5,7 +5,6 @@ export function createAsyncs(isDevelopment = false) {
   const apiBase = `/api`;
 
   // Various configs used for API calls
-  const withData = { csrf: false, withData: true };
   const withDataAndCSRF = { csrf: true, withData: true };
 
   const asyncs = {
