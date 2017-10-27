@@ -1,5 +1,6 @@
 import { emptyActionGenerator, payloadActionGenerator } from '../../redux/helpers';
 import asyncServices from '../../services';
+import { fetchProfile } from '../Profile/redux';
 
 /*
 * Actions
@@ -18,8 +19,21 @@ const logoutAction = emptyActionGenerator(LOGOUT);
 * Private Composite Functions
 */
 const onLoginSuccess = (dispatch, data) => {
-  // TODO Get profile and dispatch via profile reducer
+  fetchProfile(dispatch, true);
   dispatch(loginSuccess());
+};
+
+const onGoogleLoginSuccess = (dispatch, data) => {
+  asyncServices.auth
+    .googleSuccess({ access_token: data.accessToken })
+    .then(() => asyncServices.auth.daco(data.profileObj))
+    .then(response => {
+      fetchProfile(dispatch, false);
+      dispatch(loginSuccess());
+    })
+    .catch(error => {
+      dispatch(loginError(error));
+    });
 };
 
 /*
@@ -54,7 +68,7 @@ export function createGoogleLoginFunctions(dispatch) {
   return {
     onRequest: () => dispatch(loginStart()),
     onSuccess: response => {
-      onLoginSuccess(dispatch, response);
+      onGoogleLoginSuccess(dispatch, response);
     },
     onFailure: error => dispatch(loginError(error)),
   };
@@ -65,7 +79,7 @@ export function createGoogleLoginFunctions(dispatch) {
 */
 const _defaultState = {
   loading: false,
-  isLoggedIn: false,
+  isLoggedIn: true,
   error: null,
 };
 

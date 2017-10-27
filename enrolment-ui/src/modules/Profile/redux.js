@@ -13,14 +13,45 @@ const fetchProfileSuccess = payloadActionGenerator(FETCH_PROFILE_SUCCESS);
 const fetchProfileError = payloadActionGenerator(FETCH_PROFILE_FAILURE);
 
 /*
+* Private internal functions
+*/
+const getAdminProfile = () => {
+  return asyncServices.profile.getUser;
+};
+
+const getUserProfile = () => {
+  const { getUser, getSocial } = asyncServices.profile;
+
+  return new Promise((resolve, reject) => {
+    Promise.all([getUser(), getSocial()])
+      .then(response =>
+        resolve({
+          ...response[0],
+          data: {
+            ...response[0].data,
+            social: response[1].data,
+          },
+        }),
+      )
+      .catch(error => reject(error));
+  });
+};
+
+/*
 * Public async thunk actions (mapped to component props)
 */
 
-export function fetchProfile(dispatch) {
+/**
+ * Populates profile in state
+ * @param {Function} dispatch - standard dispatch passthrough
+ * @param {boolean} isAdmin - admin login vs google login
+ */
+export function fetchProfile(dispatch, isAdmin) {
   dispatch(fetchProfileStart());
 
-  return asyncServices.profile
-    .getUser()
+  const getProfile = isAdmin ? getAdminProfile : getUserProfile;
+
+  return getProfile()
     .then(response => {
       dispatch(fetchProfileSuccess(response.data));
     })
