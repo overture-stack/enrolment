@@ -8,12 +8,18 @@ import { fetchProfile, clearProfile } from '../Profile/redux';
 const LOGIN_REQUEST = 'auth/LOGIN_REQUEST';
 const LOGIN_SUCCESS = 'auth/LOGIN_SUCCESS';
 const LOGIN_FAILURE = 'auth/LOGIN_FAILURE';
-const LOGOUT = 'auth/LOGOUT';
+
+const LOGOUT_REQUEST = 'auth/LOGOUT_REQUEST';
+const LOGOUT_SUCCESS = 'auth/LOGOUT_SUCCESS';
+const LOGOUT_FAILURE = 'auth/LOGOUT_FAILURE';
 
 const loginStart = emptyActionGenerator(LOGIN_REQUEST);
 const loginSuccess = emptyActionGenerator(LOGIN_SUCCESS);
 const loginError = payloadActionGenerator(LOGIN_FAILURE);
-const logoutAction = emptyActionGenerator(LOGOUT);
+
+const logoutStart = emptyActionGenerator(LOGOUT_REQUEST);
+const logoutSuccess = emptyActionGenerator(LOGOUT_SUCCESS);
+const logoutError = payloadActionGenerator(LOGOUT_FAILURE);
 
 /*
 * Private Composite Functions
@@ -41,9 +47,16 @@ const onGoogleLoginSuccess = (dispatch, data) => {
 */
 
 export function logout(dispatch) {
-  dispatch(clearProfile());
-  dispatch(logoutAction());
-  // TODO - clear google login cookies here?
+  dispatch(logoutStart());
+  return asyncServices.auth
+    .logout()
+    .then(() => {
+      dispatch(clearProfile());
+      dispatch(logoutSuccess());
+    })
+    .catch(error => {
+      dispatch(logoutError(error));
+    });
 }
 
 /*
@@ -87,6 +100,7 @@ const _defaultState = {
 export const reducer = (state = _defaultState, action) => {
   switch (action.type) {
     case LOGIN_REQUEST:
+    case LOGOUT_REQUEST:
       return {
         ...state,
         loading: true,
@@ -105,9 +119,15 @@ export const reducer = (state = _defaultState, action) => {
         isLoggedIn: false,
         error: action.payload,
       };
-    case LOGOUT:
+    case LOGOUT_SUCCESS:
       return {
         ..._defaultState,
+      };
+    case LOGOUT_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
       };
     default:
       return state;

@@ -6,6 +6,7 @@ export function createAsyncs(isDevelopment = false) {
 
   // Various configs used for API calls
   const withDataAndCSRF = { csrf: true, withData: true };
+  const withCSRF = { csrf: true, withData: false };
 
   const asyncs = {
     application: {
@@ -34,7 +35,7 @@ export function createAsyncs(isDevelopment = false) {
 
           return Promise.reject('Something went wrong. Please Try again.');
         }),
-      logout: asyncServiceCreator('POST', `${apiBase}/auth/logout/`, withDataAndCSRF),
+      logout: asyncServiceCreator('POST', `${apiBase}/auth/logout/`, withCSRF),
     },
     profile: {
       getUser: asyncServiceCreator('GET', `${apiBase}/auth/user`),
