@@ -12,6 +12,7 @@ export function createAsyncs(isDevelopment = false) {
     application: {
       fetchApplications: asyncServiceCreator('GET', `${apiBase}/applications/`),
       fetchApplication: id => asyncServiceCreator('GET', `${apiBase}/applications/${id}`)(),
+      submit: asyncServiceCreator('POST', `${apiBase}/applications/`, withDataAndCSRF),
     },
     auth: {
       daco: () =>
@@ -46,6 +47,7 @@ export function createAsyncs(isDevelopment = false) {
       fetchProjects: asyncServiceCreator('GET', `${apiBase}/projects/`),
       fetchProject: id => asyncServiceCreator('GET', `${apiBase}/projects/${id}`)(),
       fetchProjectUsers: id => asyncServiceCreator('GET', `${apiBase}/projects/users/${id}`)(),
+      submit: asyncServiceCreator('POST', `${apiBase}/projects/`, withDataAndCSRF),
       approve: asyncServiceCreator('PUT', `${apiBase}/projects/`, withDataAndCSRF),
       deny: asyncServiceCreator('PUT', `${apiBase}/projects/`, withDataAndCSRF),
     },
