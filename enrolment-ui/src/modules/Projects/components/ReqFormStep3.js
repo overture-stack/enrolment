@@ -52,6 +52,6 @@ const ReqFormStep3 = props => {
 
 export default reduxForm({
   form: 'projectRequestForm', // <------ same form name
-  destroyOnUnmount: false, // <------ preserve form data
+  destroyOnUnmount: true, // <------ clear form data
   forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
 })(ReqFormStep3);

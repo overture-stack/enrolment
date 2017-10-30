@@ -20,6 +20,7 @@ const SUBMIT_PROJECT_FAILURE = 'project/SUBMIT_PROJECT_FAILURE';
 
 const NEXT_STEP = 'projectRequestForm/NEXT_STEP';
 const PREVIOUS_STEP = 'projectRequestForm/PREVIOUS_STEP';
+const RESET_FORM_STEP = 'projectRequestForm/RESET_FORM_STEP';
 const TOGGLE_MODAL = 'projectRequestForm/TOGGLE_MODAL';
 
 const fetchProjectsStart = emptyActionGenerator(FETCH_PROJECTS_REQUEST);
@@ -40,6 +41,7 @@ const submitProjectError = payloadActionGenerator(SUBMIT_PROJECT_FAILURE);
 
 export const formNextStep = emptyActionGenerator(NEXT_STEP);
 export const formPrevStep = emptyActionGenerator(PREVIOUS_STEP);
+export const formResetStep = emptyActionGenerator(RESET_FORM_STEP);
 export const toggleFormModal = emptyActionGenerator(TOGGLE_MODAL);
 
 /*
@@ -181,11 +183,10 @@ export const requestFormReducer = (state = _defaultRequestFormState, action) => 
       return { ...state, step: state.step + 1 };
     case PREVIOUS_STEP:
       return { ...state, step: state.step - 1 };
+    case RESET_FORM_STEP:
+      return { ...state, step: 1 };
     case TOGGLE_MODAL:
-      return {
-        ...state,
-        showModal: !state.showModal,
-      };
+      return { ...state, showModal: !state.showModal };
     default:
       return state;
   }
