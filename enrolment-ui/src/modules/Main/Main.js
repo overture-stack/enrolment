@@ -1,14 +1,12 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { renderRoutes } from 'react-router-config';
 import Header from './components/Header';
 
 const Main = props => {
-  const { route } = props;
   return (
     <div>
       <Header />
-      <div className="container">{renderRoutes(route.routes)}</div>
+      <div className="container">{props.children}</div>
     </div>
   );
 };

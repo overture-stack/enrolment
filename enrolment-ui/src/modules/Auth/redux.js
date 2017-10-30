@@ -1,5 +1,6 @@
 import { emptyActionGenerator, payloadActionGenerator } from '../../redux/helpers';
 import asyncServices from '../../services';
+import { fetchProfile, clearProfile } from '../Profile/redux';
 
 /*
 * Actions
@@ -7,19 +8,38 @@ import asyncServices from '../../services';
 const LOGIN_REQUEST = 'auth/LOGIN_REQUEST';
 const LOGIN_SUCCESS = 'auth/LOGIN_SUCCESS';
 const LOGIN_FAILURE = 'auth/LOGIN_FAILURE';
-const LOGOUT = 'auth/LOGOUT';
+
+const LOGOUT_REQUEST = 'auth/LOGOUT_REQUEST';
+const LOGOUT_SUCCESS = 'auth/LOGOUT_SUCCESS';
+const LOGOUT_FAILURE = 'auth/LOGOUT_FAILURE';
 
 const loginStart = emptyActionGenerator(LOGIN_REQUEST);
 const loginSuccess = emptyActionGenerator(LOGIN_SUCCESS);
 const loginError = payloadActionGenerator(LOGIN_FAILURE);
-const logoutAction = emptyActionGenerator(LOGOUT);
+
+const logoutStart = emptyActionGenerator(LOGOUT_REQUEST);
+const logoutSuccess = emptyActionGenerator(LOGOUT_SUCCESS);
+const logoutError = payloadActionGenerator(LOGOUT_FAILURE);
 
 /*
 * Private Composite Functions
 */
 const onLoginSuccess = (dispatch, data) => {
-  // TODO Get profile and dispatch via profile reducer
+  fetchProfile(dispatch, true);
   dispatch(loginSuccess());
+};
+
+const onGoogleLoginSuccess = (dispatch, data) => {
+  asyncServices.auth
+    .googleSuccess({ access_token: data.accessToken })
+    .then(() => asyncServices.auth.daco(data.profileObj))
+    .then(response => {
+      fetchProfile(dispatch, false);
+      dispatch(loginSuccess());
+    })
+    .catch(error => {
+      dispatch(loginError(error));
+    });
 };
 
 /*
@@ -27,8 +47,16 @@ const onLoginSuccess = (dispatch, data) => {
 */
 
 export function logout(dispatch) {
-  dispatch(logoutAction());
-  // TODO - All logout related stuff here
+  dispatch(logoutStart());
+  return asyncServices.auth
+    .logout()
+    .then(() => {
+      dispatch(clearProfile());
+      dispatch(logoutSuccess());
+    })
+    .catch(error => {
+      dispatch(logoutError(error));
+    });
 }
 
 /*
@@ -36,11 +64,11 @@ export function logout(dispatch) {
 */
 
 // Login function used by InternalLoginForm submit
-export function adminLogin(dispatch) {
+export function adminLogin(dispatch, data) {
   dispatch(loginStart());
 
   return asyncServices.auth
-    .adminLogin()
+    .adminLogin(data)
     .then(response => {
       onLoginSuccess(dispatch, response);
     })
@@ -54,7 +82,7 @@ export function createGoogleLoginFunctions(dispatch) {
   return {
     onRequest: () => dispatch(loginStart()),
     onSuccess: response => {
-      onLoginSuccess(dispatch, response);
+      onGoogleLoginSuccess(dispatch, response);
     },
     onFailure: error => dispatch(loginError(error)),
   };
@@ -72,6 +100,7 @@ const _defaultState = {
 export const reducer = (state = _defaultState, action) => {
   switch (action.type) {
     case LOGIN_REQUEST:
+    case LOGOUT_REQUEST:
       return {
         ...state,
         loading: true,
@@ -90,9 +119,15 @@ export const reducer = (state = _defaultState, action) => {
         isLoggedIn: false,
         error: action.payload,
       };
-    case LOGOUT:
+    case LOGOUT_SUCCESS:
       return {
         ..._defaultState,
+      };
+    case LOGOUT_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
       };
     default:
       return state;

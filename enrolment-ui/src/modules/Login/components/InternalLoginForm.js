@@ -1,7 +1,11 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
+import { connect } from 'react-redux';
 
 import { RFPlainInput } from '../../ReduxForm';
+
+import { adminLogin } from '../../Auth/redux';
+
 import ChangeLogin from './ChangeLogin';
 
 const LoginForm = props => {
@@ -22,14 +26,12 @@ const LoginForm = props => {
 const AdminLoginForm = reduxForm({ form: 'adminLoginForm' })(LoginForm);
 
 const InternalLoginForm = props => {
-  const handleSubmit = data => {
-    console.log(data);
-  };
+  const { adminLogin } = props;
 
   return (
     <div className="login-container">
       <div className="login-container">
-        <AdminLoginForm onSubmit={handleSubmit} />
+        <AdminLoginForm onSubmit={adminLogin} />
       </div>
       <ChangeLogin />
     </div>
@@ -38,4 +40,10 @@ const InternalLoginForm = props => {
 
 InternalLoginForm.displayName = 'InternalLoginForm';
 
-export default InternalLoginForm;
+const mapDispatchToProps = dispatch => {
+  return {
+    adminLogin: data => adminLogin(dispatch, data),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(InternalLoginForm);

@@ -17,8 +17,10 @@
     "react-scripts": "1.0.14",
     "redux": "^3.7.2",
     "redux-form": "^7.1.1",
+    "redux-sessionstorage": "^0.4.0",
     "redux-thunk": "^2.2.0"
   },
+  "proxy": "http://localhost:8000/",
   "scripts": {
     "start": "HOST=local.enrol.cancercollaboratory.org jailbreak-react-scripts start",
     "build": "jailbreak-react-scripts build",
