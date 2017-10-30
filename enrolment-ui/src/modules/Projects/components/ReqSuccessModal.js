@@ -5,7 +5,7 @@ const ReqSuccessModal = props => {
   const { showModal, handleClose } = props;
 
   return (
-    <Modal show={showModal} onHide={handleClose} closeButton>
+    <Modal show={showModal} onHide={handleClose}>
       <Modal.Header>
         <Modal.Title>Application</Modal.Title>
       </Modal.Header>

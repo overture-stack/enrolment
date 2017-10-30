@@ -8,21 +8,34 @@ import ReqFormStep3 from './ReqFormStep3';
 
 import { formNextStep, formPrevStep, submitProjectApplication } from '../redux';
 
+const makeOnSubmit = (userId, submit) => {
+  return data => {
+    const submission = {
+      ...data,
+      user: userId,
+    };
+
+    submit(submission);
+  };
+};
+
 const ReqForm = props => {
   const {
     projectRequestForm: { step },
     formNextStep,
     formPrevStep,
     submitProjectApplication,
+    profile: { data: { pk } },
   } = props;
+
+  const onSubmit = makeOnSubmit(pk, submitProjectApplication);
+
   return (
     <div className="project">
       <ProgressBar />
       {step === 1 ? <ReqFormStep1 onSubmit={formNextStep} /> : null}
       {step === 2 ? <ReqFormStep2 onSubmit={formNextStep} previousPage={formPrevStep} /> : null}
-      {step === 3 ? (
-        <ReqFormStep3 onSubmit={submitProjectApplication} previousPage={formPrevStep} />
-      ) : null}
+      {step === 3 ? <ReqFormStep3 onSubmit={onSubmit} previousPage={formPrevStep} /> : null}
     </div>
   );
 };
@@ -30,6 +43,7 @@ const ReqForm = props => {
 const mapStateToProps = state => {
   return {
     projectRequestForm: state.projectRequestForm,
+    profile: state.profile,
   };
 };
 
