@@ -1,4 +1,4 @@
 import ApplicationRequests from './ApplicationRequests';
-import { reducer } from './redux';
+import { reducer, applicationReducer } from './redux';
 
-export { reducer, ApplicationRequests };
+export { reducer, applicationReducer, ApplicationRequests };
