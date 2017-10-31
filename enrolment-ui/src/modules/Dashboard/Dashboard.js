@@ -17,8 +17,13 @@ class Dashboard extends Component {
     super(props);
 
     // Get initial data
-    props.fetchProjects();
-    props.fetchApplications();
+    this.fetchNewData = this.fetchNewData.bind(this);
+    this.fetchNewData();
+  }
+
+  fetchNewData() {
+    this.props.fetchProjects();
+    this.props.fetchApplications();
   }
 
   render() {

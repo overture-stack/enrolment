@@ -3,8 +3,24 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
+import { fetchProjects, approveProject, denyProject } from '../Projects/redux';
+import { fetchApplications } from '../Applications/redux';
+
 const ApplicationRequests = props => {
-  const { applications, profile, projects } = props;
+  const {
+    applications,
+    profile,
+    projects,
+    fetchApplications,
+    fetchProjects,
+    approveProject,
+    denyProject,
+  } = props;
+
+  const fetchNewData = () => {
+    fetchApplications();
+    fetchProjects();
+  };
 
   return (
     <div className="col-md-12">
@@ -27,7 +43,12 @@ const ApplicationRequests = props => {
             return (
               <tr key={application.id}>
                 <td>
-                  <Link to={{ pathname: '/register/project', search: `id=${application.id}` }}>
+                  <Link
+                    to={{
+                      pathname: '/register/project',
+                      search: `id=${application.id}`,
+                    }}
+                  >
                     {_.truncate(application.id, { length: 10, omission: '...' })}
                   </Link>
                 </td>
@@ -39,8 +60,8 @@ const ApplicationRequests = props => {
                   <td>
                     {project.status === 'Pending' && (
                       <div className="admin-actions">
-                        <a onClick={() => console.log('Approve project!')}>Approve</a>
-                        <a onClick={() => console.log('Deny project!')}>Deny</a>
+                        <a onClick={() => approveProject(project.id, fetchNewData)}>Approve</a>
+                        <a onClick={() => denyProject(project.id, fetchNewData)}>Deny</a>
                       </div>
                     )}
                     {project.status !== 'Pending' && <span>No Action Needed</span>}
@@ -66,7 +87,12 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {};
+  return {
+    fetchApplications: () => fetchApplications(dispatch),
+    fetchProjects: () => fetchProjects(dispatch),
+    approveProject: (id, next) => approveProject(dispatch, id, next),
+    denyProject: (id, next) => denyProject(dispatch, id, next),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ApplicationRequests);

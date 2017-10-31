@@ -18,6 +18,10 @@ const SUBMIT_PROJECT_REQUEST = 'project/SUBMIT_PROJECT_REQUEST';
 const SUBMIT_PROJECT_SUCCESS = 'project/SUBMIT_PROJECT_SUCCESS';
 const SUBMIT_PROJECT_FAILURE = 'project/SUBMIT_PROJECT_FAILURE';
 
+const UPDATE_PROJECT_REQUEST = 'project/UPDATE_PROJECT_REQUEST';
+const UPDATE_PROJECT_SUCCESS = 'project/UPDATE_PROJECT_SUCCESS';
+const UPDATE_PROJECT_FAILURE = 'project/UPDATE_PROJECT_FAILURE';
+
 const NEXT_STEP = 'projectRequestForm/NEXT_STEP';
 const PREVIOUS_STEP = 'projectRequestForm/PREVIOUS_STEP';
 const RESET_FORM_STEP = 'projectRequestForm/RESET_FORM_STEP';
@@ -34,6 +38,10 @@ const fetchProjectsError = payloadActionGenerator(FETCH_PROJECTS_FAILURE);
 const submitProjectStart = emptyActionGenerator(SUBMIT_PROJECT_REQUEST);
 const submitProjectSuccess = payloadActionGenerator(SUBMIT_PROJECT_SUCCESS);
 const submitProjectError = payloadActionGenerator(SUBMIT_PROJECT_FAILURE);
+
+const updateProjectStart = payloadActionGenerator(UPDATE_PROJECT_REQUEST);
+const updateProjectSuccess = payloadActionGenerator(UPDATE_PROJECT_SUCCESS);
+const updateProjectError = payloadActionGenerator(UPDATE_PROJECT_FAILURE);
 
 /*
 * Public actions for dispatch
@@ -95,6 +103,34 @@ export function submitProjectApplication(dispatch, data) {
     })
     .catch(error => {
       dispatch(submitProjectError(error));
+    });
+}
+
+export function approveProject(dispatch, id, next = () => null) {
+  dispatch(updateProjectStart('Approve Project Request'));
+
+  return asyncServices.project
+    .update({ id, status: 1 })
+    .then(response => {
+      dispatch(updateProjectSuccess('Project Approved'));
+      next();
+    })
+    .catch(error => {
+      dispatch(updateProjectError(error));
+    });
+}
+
+export function denyProject(dispatch, id, next = () => null) {
+  dispatch(updateProjectStart('Deny Project Request'));
+
+  return asyncServices.project
+    .update({ id, status: 2 })
+    .then(response => {
+      dispatch(updateProjectSuccess('Project Denied'));
+      next();
+    })
+    .catch(error => {
+      dispatch(updateProjectError(error));
     });
 }
 
