@@ -22,7 +22,6 @@ urlpatterns = [
     url(r'^$', views.schema_view),
 
     url(r'^admin/', admin.site.urls),
-    url(r'^admin/', admin.site.urls),
     url(r'^api/auth/', include('rest_auth.urls')),
     url(r'^api/auth/google/$', GoogleLogin.as_view(), name='google_login'),
     url(r'^api/auth/social/$', views.SocialViewSet),
@@ -36,7 +35,8 @@ urlpatterns = [
     url(r'^api/applications/$', views.ApplicationsViewSet.as_view()),
     url(r'^api/applications/(?P<id>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
         views.ApplicationsByIdViewSet),
-    url(r'^api/projects/users/application/(?P<id>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$', views.ProjectsUsersByIdViewSet),
+    url(r'^api/projects/users/application/(?P<id>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
+        views.ProjectsUsersByIdViewSet),
 
     # Users
     url(r'^api/request/user/$', views.UserRequestViewSet),
