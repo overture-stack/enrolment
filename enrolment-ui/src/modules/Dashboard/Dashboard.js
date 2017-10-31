@@ -39,7 +39,7 @@ class Dashboard extends Component {
           ) : null}
           {applications.hasApplications ? <Requests /> : null}
         </div>
-        <UserEnrolmentModal showModal={false} handleClose={() => console.log('handleClose()')} />
+        <UserEnrolmentModal />
       </div>
     );
   }

@@ -3,8 +3,10 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 
+import { toggleModal } from '../../Users/redux';
+
 const StaffActions = props => {
-  const { profile } = props;
+  const { profile, toggleModal } = props;
 
   // TEMP
   const state = { approved: true, showModal: false };
@@ -16,7 +18,7 @@ const StaffActions = props => {
       </Link>
       {state.approved
         ? !profile.is_staff && (
-            <Button href="#" onClick={() => console.log('show modal!')}>
+            <Button href="#" onClick={toggleModal}>
               Enroll Users
             </Button>
           )
@@ -34,7 +36,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return {};
+  return {
+    toggleModal: () => dispatch(toggleModal()),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(StaffActions);

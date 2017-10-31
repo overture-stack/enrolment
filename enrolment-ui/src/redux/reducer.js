@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { reducer as formReducer } from 'redux-form';
+import { reducer as form } from 'redux-form';
 
 import { reducer as login } from '../modules/Login';
 import { reducer as auth } from '../modules/Auth';
@@ -13,7 +13,10 @@ import {
   projectReducer as project,
   requestFormReducer as projectRequestForm,
 } from '../modules/Projects';
-import { reducer as users } from '../modules/Users';
+import {
+  reducer as users,
+  userEnrolmentModalReducer as userEnrolmentModal,
+} from '../modules/Users';
 
 const reducer = combineReducers({
   login,
@@ -25,7 +28,8 @@ const reducer = combineReducers({
   project,
   projectRequestForm,
   users,
-  form: formReducer,
+  userEnrolmentModal,
+  form,
 });
 
 export default reducer;
