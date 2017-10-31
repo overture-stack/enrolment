@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { Modal } from 'react-bootstrap';
-import { RFInput, rules } from '../../ReduxForm';
+import { RFInput, RFSelect, rules } from '../../ReduxForm';
 
 import { toggleModal } from '../redux';
 
@@ -35,6 +35,14 @@ const ReqForm = props => {
     projects,
     profile,
   } = props;
+
+  const projectOptions = projects.filter(project => project.status === 'Approved').map(project => {
+    return {
+      text: project.project_name,
+      value: project.id,
+    };
+  });
+
   return (
     <form onSubmit={handleSubmit}>
       <Modal.Body>
@@ -43,16 +51,14 @@ const ReqForm = props => {
           <div className="col-md-4">
             <label htmlFor="projectSelector">Project</label>
           </div>
-          <div className="col-md-6">
-            <select className="form-control" id="projectSelector" name="project">
-              <option selected={true}>Select a Project</option>
-              {projects.filter(project => project.status === 'Approved').map(project => (
-                <option value={project.id} key={project.id}>
-                  {project.project_name}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Field
+            name="project"
+            component={RFSelect}
+            bootstrapClass="col-md-6"
+            options={projectOptions}
+            defaultOption="Select a Project"
+            validate={rules.required}
+          />
         </div>
         <div className="form-group row">
           <div className="col-md-4">

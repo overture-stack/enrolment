@@ -8,11 +8,19 @@ const FETCH_REQUESTS_REQUEST = 'user/FETCH_REQUESTS_REQUEST';
 const FETCH_REQUESTS_SUCCESS = 'user/FETCH_REQUESTS_SUCCESS';
 const FETCH_REQUESTS_FAILURE = 'user/FETCH_REQUESTS_FAILURE';
 
+const ENROLL_USERS_REQUEST = 'user/ENROLL_USERS_REQUEST';
+const ENROLL_USERS_SUCCESS = 'user/ENROLL_USERS_SUCCESS';
+const ENROLL_USERS_FAILURE = 'user/ENROLL_USERS_FAILURE';
+
 const TOGGLE_MODAL = 'user/TOGGLE_MODAL';
 
 const fetchRequestsStart = emptyActionGenerator(FETCH_REQUESTS_REQUEST);
 const fetchRequestsSuccess = payloadActionGenerator(FETCH_REQUESTS_SUCCESS);
 const fetchRequestsError = payloadActionGenerator(FETCH_REQUESTS_FAILURE);
+
+const enrollUsersStart = emptyActionGenerator(ENROLL_USERS_REQUEST);
+const enrollUsersSuccess = payloadActionGenerator(ENROLL_USERS_SUCCESS);
+const enrollUsersError = payloadActionGenerator(ENROLL_USERS_FAILURE);
 
 /*
 * Public actions
@@ -34,6 +42,19 @@ export function fetchRequests(dispatch) {
     })
     .catch(error => {
       dispatch(fetchRequestsError(error));
+    });
+}
+
+export function enrollUsers(dispatch, data) {
+  dispatch(enrollUsersStart());
+
+  return asyncServices.user
+    .userRequest(data)
+    .then(response => {
+      dispatch(enrollUsersSuccess(response.data));
+    })
+    .catch(error => {
+      dispatch(enrollUsersError(error));
     });
 }
 
@@ -82,6 +103,7 @@ const _defaultUserEnrolmentModalState = {
   show: false,
   submitSuccess: false,
   error: null,
+  users: [],
 };
 
 export const userEnrolmentModalReducer = (state = _defaultUserEnrolmentModalState, action) => {
@@ -90,6 +112,10 @@ export const userEnrolmentModalReducer = (state = _defaultUserEnrolmentModalStat
       return {
         ...state,
         show: !state.show,
+      };
+    case ENROLL_USERS_SUCCESS:
+      return {
+        ..._defaultUserEnrolmentModalState,
       };
     default:
       return state;
