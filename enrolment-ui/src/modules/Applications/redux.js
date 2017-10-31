@@ -78,15 +78,14 @@ export function submitApplication(dispatch, data, next = () => null) {
 // Applications
 const _defaultState = {
   loading: false,
-  application: null,
-  applications: [],
+  hasApplications: false,
+  data: [],
   error: null,
 };
 
 export const reducer = (state = _defaultState, action) => {
   switch (action.type) {
     case FETCH_APPLICATIONS_REQUEST:
-    case FETCH_ONE_APPLICATION_REQUEST:
       return {
         ...state,
         loading: true,
@@ -95,16 +94,10 @@ export const reducer = (state = _defaultState, action) => {
       return {
         ...state,
         loading: false,
-        applications: action.payload,
-      };
-    case FETCH_ONE_APPLICATION_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        application: action.payload,
+        hasApplications: true,
+        data: action.payload,
       };
     case FETCH_APPLICATIONS_FAILURE:
-    case FETCH_ONE_APPLICATION_FAILURE:
       return {
         ...state,
         loading: false,
@@ -125,11 +118,13 @@ const _defaultApplicationState = {
 export const applicationReducer = (state = _defaultApplicationState, action) => {
   switch (action.type) {
     case SUBMIT_APPLICATION_REQUEST:
+    case FETCH_ONE_APPLICATION_REQUEST:
       return {
         ...state,
         loading: true,
       };
     case SUBMIT_APPLICATION_SUCCESS:
+    case FETCH_ONE_APPLICATION_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -137,6 +132,7 @@ export const applicationReducer = (state = _defaultApplicationState, action) => 
         error: null,
       };
     case SUBMIT_APPLICATION_FAILURE:
+    case FETCH_ONE_APPLICATION_FAILURE:
       return {
         ...state,
         loading: false,
