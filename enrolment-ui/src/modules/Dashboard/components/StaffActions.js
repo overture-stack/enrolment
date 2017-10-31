@@ -2,27 +2,25 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
+import _ from 'lodash';
 
 import { toggleModal } from '../../Users/redux';
 
 const StaffActions = props => {
-  const { profile, toggleModal } = props;
+  const { profile, projects, toggleModal } = props;
 
-  // TEMP
-  const state = { approved: true, showModal: false };
+  const hasApprovedProjects = !!_.find(projects, project => _.includes(project.status, 'Approved'));
 
   return (
     <div className="requests-actions">
       <Link to="register/project" className="btn btn-default">
         Register Project
       </Link>
-      {state.approved
-        ? !profile.is_staff && (
-            <Button href="#" onClick={toggleModal}>
-              Enroll Users
-            </Button>
-          )
-        : null}
+      {hasApprovedProjects && !profile.is_staff ? (
+        <Button href="#" onClick={toggleModal}>
+          Enroll Users
+        </Button>
+      ) : null}
     </div>
   );
 };
@@ -31,7 +29,8 @@ StaffActions.displayName = 'StaffActions';
 
 const mapStateToProps = state => {
   return {
-    profile: state.profile,
+    profile: state.profile.data,
+    projects: state.projects.data,
   };
 };
 

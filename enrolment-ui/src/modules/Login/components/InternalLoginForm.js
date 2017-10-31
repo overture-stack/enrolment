@@ -14,7 +14,6 @@ const LoginForm = props => {
   return (
     <form onSubmit={handleSubmit}>
       <Field type="text" placeholder="Username" name="username" component={RFPlainInput} />
-      <Field type="email" placeholder="Email" name="email" component={RFPlainInput} />
       <Field type="password" placeholder="Password" name="password" component={RFPlainInput} />
       <button type="submit" className="submit action-button" disabled={submitting || pristine}>
         Submit

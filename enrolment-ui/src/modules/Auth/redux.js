@@ -25,8 +25,8 @@ const logoutError = payloadActionGenerator(LOGOUT_FAILURE);
 * Private Composite Functions
 */
 const onLoginSuccess = (dispatch, data) => {
-  fetchProfile(dispatch, true);
-  dispatch(loginSuccess());
+  const next = () => dispatch(loginSuccess());
+  fetchProfile(dispatch, true, next);
 };
 
 const onGoogleLoginSuccess = (dispatch, data) => {
@@ -34,8 +34,8 @@ const onGoogleLoginSuccess = (dispatch, data) => {
     .googleSuccess({ access_token: data.accessToken })
     .then(() => asyncServices.auth.daco(data.profileObj))
     .then(response => {
-      fetchProfile(dispatch, false);
-      dispatch(loginSuccess());
+      const next = () => dispatch(loginSuccess());
+      fetchProfile(dispatch, false, next);
     })
     .catch(error => {
       dispatch(loginError(error));
@@ -51,8 +51,9 @@ export function logout(dispatch) {
   return asyncServices.auth
     .logout()
     .then(() => {
-      dispatch(clearProfile());
       dispatch(logoutSuccess());
+      dispatch(clearProfile());
+      window.sessionStorage.clear();
     })
     .catch(error => {
       dispatch(logoutError(error));

@@ -60,3 +60,26 @@ export const RFConsent = ({
         (warning && <span className="warning">{warning}</span>))}
   </label>
 );
+
+export const RFSelect = ({
+  name,
+  input,
+  bootstrapClass = 'col-md-12',
+  defaultOption,
+  options,
+  meta: { touched, error, warning },
+}) => (
+  <div className={bootstrapClass}>
+    <select className="form-control" id={name} {...input}>
+      <option value="">{defaultOption}</option>
+      {options.map((option, idx) => (
+        <option key={idx} value={option.value}>
+          {option.text}
+        </option>
+      ))}
+    </select>
+    {touched &&
+      ((error && <span className="error">{error}</span>) ||
+        (warning && <span className="warning">{warning}</span>))}
+  </div>
+);

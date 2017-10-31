@@ -17,8 +17,13 @@ class Dashboard extends Component {
     super(props);
 
     // Get initial data
-    props.fetchProjects();
-    props.fetchApplications();
+    this.fetchNewData = this.fetchNewData.bind(this);
+    this.fetchNewData();
+  }
+
+  fetchNewData() {
+    this.props.fetchProjects();
+    this.props.fetchApplications();
   }
 
   render() {
@@ -48,7 +53,7 @@ class Dashboard extends Component {
 const mapStateToProps = state => {
   return {
     applications: state.applications,
-    profile: state.profile,
+    profile: state.profile.data,
   };
 };
 
