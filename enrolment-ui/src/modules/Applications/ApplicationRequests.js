@@ -17,17 +17,17 @@ const ApplicationRequests = props => {
             <th>Created Date</th>
             <th>Updated Date</th>
             <th>Status</th>
-            {profile.is_staff && <th>Action</th>}
+            {profile.is_staff ? <th>Action</th> : null}
           </tr>
         </thead>
         <tbody>
-          {applications.data.map(application => {
-            const project = _.find(projects.data, { id: application.project });
+          {applications.map(application => {
+            const project = _.find(projects, { id: application.project });
 
             return (
               <tr key={application.id}>
                 <td>
-                  <Link to={{ pathname: '/register/project', query: { id: application.id } }}>
+                  <Link to={{ pathname: '/register/project', search: `id=${application.id}` }}>
                     {_.truncate(application.id, { length: 10, omission: '...' })}
                   </Link>
                 </td>
@@ -35,7 +35,7 @@ const ApplicationRequests = props => {
                 <td>{project.createdDate}</td>
                 <td>{project.updatedDate}</td>
                 <td>{project.status}</td>
-                {props.profile.is_staff && (
+                {profile.is_staff ? (
                   <td>
                     {project.status === 'Pending' && (
                       <div className="admin-actions">
@@ -45,7 +45,7 @@ const ApplicationRequests = props => {
                     )}
                     {project.status !== 'Pending' && <span>No Action Needed</span>}
                   </td>
-                )}
+                ) : null}
               </tr>
             );
           })}
@@ -59,9 +59,9 @@ ApplicationRequests.displayName = 'ApplicationRequests';
 
 const mapStateToProps = state => {
   return {
-    applications: state.applications,
-    profile: state.profile,
-    projects: state.projects,
+    applications: state.applications.data,
+    profile: state.profile.data,
+    projects: state.projects.data,
   };
 };
 
