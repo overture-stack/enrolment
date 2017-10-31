@@ -80,6 +80,8 @@ export const reducer = (state = _defaultState, action) => {
 // Enrolment Modal Reducer
 const _defaultUserEnrolmentModalState = {
   show: false,
+  submitSuccess: false,
+  error: null,
 };
 
 export const userEnrolmentModalReducer = (state = _defaultUserEnrolmentModalState, action) => {

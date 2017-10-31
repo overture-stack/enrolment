@@ -101,6 +101,7 @@ export const reducer = (state = _defaultState, action) => {
       return {
         ...state,
         loading: false,
+        hasApplications: false,
         error: action.payload,
       };
     default:

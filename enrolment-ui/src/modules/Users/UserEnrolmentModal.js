@@ -3,13 +3,17 @@ import { connect } from 'react-redux';
 import { Modal } from 'react-bootstrap';
 
 import { toggleModal } from './redux';
+import ReqForm from './components/ReqForm';
 
 const UserEnrolmentModal = props => {
   const { userEnrolmentModal: { show }, toggleModal } = props;
 
   return (
     <Modal show={show} onHide={toggleModal}>
-      <div>User Enrolment Modal!</div>
+      <Modal.Header>
+        <Modal.Title>User enrollment form</Modal.Title>
+      </Modal.Header>
+      <ReqForm />
     </Modal>
   );
 };
