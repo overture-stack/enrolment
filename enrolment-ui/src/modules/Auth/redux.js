@@ -53,6 +53,7 @@ export function logout(dispatch) {
     .then(() => {
       dispatch(logoutSuccess());
       dispatch(clearProfile());
+      window.sessionStorage.clear();
     })
     .catch(error => {
       dispatch(logoutError(error));
