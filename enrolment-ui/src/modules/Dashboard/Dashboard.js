@@ -48,7 +48,7 @@ class Dashboard extends Component {
 const mapStateToProps = state => {
   return {
     applications: state.applications,
-    profile: state.profile,
+    profile: state.profile.data,
   };
 };
 

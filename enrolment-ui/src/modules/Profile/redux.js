@@ -68,7 +68,7 @@ export const clearProfile = emptyActionGenerator(CLEAR_PROFILE);
  * @param {Function} dispatch - standard dispatch passthrough
  * @param {boolean} isAdmin - admin login vs google login
  */
-export function fetchProfile(dispatch, isAdmin) {
+export function fetchProfile(dispatch, isAdmin, next = () => null) {
   dispatch(fetchProfileStart());
 
   const getProfile = isAdmin ? getAdminProfile : getUserProfile;
@@ -76,6 +76,7 @@ export function fetchProfile(dispatch, isAdmin) {
   return getProfile()
     .then(response => {
       dispatch(fetchProfileSuccess(response.data));
+      next();
     })
     .catch(error => {
       dispatch(fetchProfileError(error));
