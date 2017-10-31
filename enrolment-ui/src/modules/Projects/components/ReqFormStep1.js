@@ -64,7 +64,7 @@ const ReqFormStep1 = props => {
           placeholder="Institution Email"
           component={RFInput}
           bootstrapClass="col-md-6"
-          validate={rules.required}
+          validate={[rules.required, rules.email]}
         />
         <Field
           type="tel"
@@ -81,7 +81,7 @@ const ReqFormStep1 = props => {
           name="daco_email"
           placeholder="Daco Email"
           component={RFInput}
-          validate={rules.required}
+          validate={[rules.required, rules.email]}
         />
       </div>
       <div className="row">

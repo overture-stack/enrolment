@@ -12,6 +12,10 @@ const FETCH_ONE_APPLICATION_REQUEST = 'application/FETCH_ONE_APPLICATION_REQUEST
 const FETCH_ONE_APPLICATION_SUCCESS = 'application/FETCH_ONE_APPLICATION_SUCCESS';
 const FETCH_ONE_APPLICATION_FAILURE = 'application/FETCH_ONE_APPLICATION_FAILURE';
 
+const SUBMIT_APPLICATION_REQUEST = 'application/SUBMIT_APPLICATION_REQUEST';
+const SUBMIT_APPLICATION_SUCCESS = 'application/SUBMIT_APPLICATION_SUCCESS';
+const SUBMIT_APPLICATION_FAILURE = 'application/SUBMIT_APPLICATION_FAILURE';
+
 const fetchApplicationsStart = emptyActionGenerator(FETCH_APPLICATIONS_REQUEST);
 const fetchApplicationsSuccess = payloadActionGenerator(FETCH_APPLICATIONS_SUCCESS);
 const fetchApplicationsError = payloadActionGenerator(FETCH_APPLICATIONS_FAILURE);
@@ -19,6 +23,10 @@ const fetchApplicationsError = payloadActionGenerator(FETCH_APPLICATIONS_FAILURE
 const fetchOneApplicationStart = emptyActionGenerator(FETCH_ONE_APPLICATION_REQUEST);
 const fetchOneApplicationSuccess = payloadActionGenerator(FETCH_ONE_APPLICATION_SUCCESS);
 const fetchOneApplicationError = payloadActionGenerator(FETCH_ONE_APPLICATION_FAILURE);
+
+const submitApplicationStart = emptyActionGenerator(SUBMIT_APPLICATION_REQUEST);
+const submitApplicationSuccess = payloadActionGenerator(SUBMIT_APPLICATION_SUCCESS);
+const submitApplicationError = payloadActionGenerator(SUBMIT_APPLICATION_FAILURE);
 
 /*
 * Public async thunk actions (mapped to component props)
@@ -49,20 +57,35 @@ export function fetchOneApplication(dispatch, id) {
     });
 }
 
+export function submitApplication(dispatch, data, next = () => null) {
+  dispatch(submitApplicationStart());
+
+  return asyncServices.application
+    .submit(data)
+    .then(response => {
+      dispatch(submitApplicationSuccess(response.data));
+      next();
+    })
+    .catch(error => {
+      dispatch(submitApplicationError(error));
+    });
+}
+
 /*
 * Reducer
 */
+
+// Applications
 const _defaultState = {
   loading: false,
-  application: null,
-  applications: [],
+  hasApplications: false,
+  data: [],
   error: null,
 };
 
 export const reducer = (state = _defaultState, action) => {
   switch (action.type) {
     case FETCH_APPLICATIONS_REQUEST:
-    case FETCH_ONE_APPLICATION_REQUEST:
       return {
         ...state,
         loading: true,
@@ -71,19 +94,49 @@ export const reducer = (state = _defaultState, action) => {
       return {
         ...state,
         loading: false,
-        applications: action.payload,
+        hasApplications: true,
+        data: action.payload,
       };
+    case FETCH_APPLICATIONS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
+// Single Application
+const _defaultApplicationState = {
+  loading: false,
+  data: null,
+  error: null,
+};
+
+export const applicationReducer = (state = _defaultApplicationState, action) => {
+  switch (action.type) {
+    case SUBMIT_APPLICATION_REQUEST:
+    case FETCH_ONE_APPLICATION_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case SUBMIT_APPLICATION_SUCCESS:
     case FETCH_ONE_APPLICATION_SUCCESS:
       return {
         ...state,
         loading: false,
-        application: action.payload,
+        data: action.payload,
+        error: null,
       };
-    case FETCH_APPLICATIONS_FAILURE:
+    case SUBMIT_APPLICATION_FAILURE:
     case FETCH_ONE_APPLICATION_FAILURE:
       return {
         ...state,
         loading: false,
+        data: null,
         error: action.payload,
       };
     default:
