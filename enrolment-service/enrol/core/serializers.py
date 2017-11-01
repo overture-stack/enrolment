@@ -10,8 +10,10 @@ class UserDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserModel
-        fields = ('pk', 'username', 'email', 'first_name', 'last_name', 'is_staff')
+        fields = ('pk', 'username', 'email',
+                  'first_name', 'last_name', 'is_staff')
         read_only_fields = ('email', 'is_staff', 'username')
+
 
 class ChoicesField(serializers.Field):
     def __init__(self, choices, **kwargs):
@@ -37,13 +39,23 @@ class ProjectUsersSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectUsers
-        fields = ('id', 'project', 'user', 'firstname', 'lastname', 'agreementDate', 'agreementCheck', 'position', 'institution_name', 'institution_email', 'daco_email', 'status', 'createdDate', 'updatedDate')
+        fields = ('id', 'project', 'user', 'firstname', 'lastname', 'agreementDate', 'agreementCheck', 'position',
+                  'institution_name', 'institution_email', 'daco_email', 'status', 'createdDate', 'updatedDate')
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Applications
-        fields = ('id', 'project', 'user', 'firstname', 'lastname', 'agreementDate', 'agreementCheck', 'position', 'institution_name', 'address', 'institution_email', 'daco_email')
+        fields = ('id', 'project', 'user', 'firstname', 'lastname', 'agreementDate', 'agreementCheck',
+                  'position', 'institution_name', 'address', 'institution_email', 'daco_email')
+
+
+class ProjectsSerializer(serializers.ModelSerializer):
+    status = ChoicesField(choices=STATUS_CHOICES)
+
+    class Meta:
+        model = Projects
+        fields = ('id', 'project_name', 'status', 'createdDate', 'updatedDate')
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -67,6 +79,5 @@ class UserSerializer(serializers.Serializer):
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'projects', 'applications', 'projectUsers')
-
-
+        fields = ('email', 'username', 'projects',
+                  'applications', 'projectUsers')

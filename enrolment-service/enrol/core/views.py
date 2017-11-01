@@ -13,7 +13,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from email.mime.text import MIMEText
-from core.serializers import ProjectSerializer, ApplicationSerializer, ProjectUsersSerializer, UserRequestSerializer, UserDetailsSerializer
+from core.serializers import ProjectsSerializer, ProjectSerializer, ApplicationSerializer, ProjectUsersSerializer, UserRequestSerializer, UserDetailsSerializer
 from core.client.daco import DacoClient
 import smtplib
 
@@ -45,14 +45,15 @@ def daco(request):
 def dacoAccess(request, email):
     if request.user.is_authenticated():
         dacoClient = DacoClient(base_url=settings.ICGC_BASE_URL,
-                          client_key=settings.ICGC_CLIENT_KEY,
-                          client_secret=settings.ICGC_CLIENT_SECRET,
-                          token=settings.ICGC_TOKEN,
-                          token_secret=settings.ICGC_TOKEN_SECRET)
+                                client_key=settings.ICGC_CLIENT_KEY,
+                                client_secret=settings.ICGC_CLIENT_SECRET,
+                                token=settings.ICGC_TOKEN,
+                                token_secret=settings.ICGC_TOKEN_SECRET)
         response = dacoClient.get_daco_status(email)
         return Response(response, status=status.HTTP_200_OK)
     else:
         return HttpResponseForbidden()
+
 
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, ))
@@ -66,7 +67,7 @@ def SocialViewSet(request):
 class ProjectsViewSet(APIView):
     """
     Handles the Projects entity for the API
-    get - Get list of users based on current users permissions
+    get - Get list of projects based on current users permissions
     post - save new project
     put - update project
     """
@@ -75,11 +76,12 @@ class ProjectsViewSet(APIView):
 
     def get(self, request):
         if request.user.is_superuser:
-            serializer = ProjectSerializer(Projects.objects.all(), many=True)
+            serializer = ProjectsSerializer(Projects.objects.all(), many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             user = request.user
-            serializer = ProjectSerializer(Projects.objects.filter(user=user), many=True)
+            serializer = ProjectsSerializer(
+                Projects.objects.filter(user=user), many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
@@ -92,7 +94,8 @@ class ProjectsViewSet(APIView):
     def put(self, request, pk=None):
         if request.user.is_superuser:
             project = Projects.objects.get(pk=request.data.get('id'))
-            serializer = ProjectSerializer(project, data=request.data, partial=True)
+            serializer = ProjectSerializer(
+                project, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 response = {"id": serializer.data.get('id')}
@@ -127,11 +130,13 @@ class ApplicationsViewSet(APIView):
 
     def get(self, request):
         if request.user.is_superuser:
-            serializer = ApplicationSerializer(Applications.objects.all(), many=True)
+            serializer = ApplicationSerializer(
+                Applications.objects.all(), many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             user = request.user
-            serializer = ApplicationSerializer(Applications.objects.filter(user=user), many=True)
+            serializer = ApplicationSerializer(
+                Applications.objects.filter(user=user), many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
@@ -157,6 +162,7 @@ def ApplicationsByIdViewSet(request, id):
     except Applications.DoesNotExist:
         raise Http404("No Application matches the given query.")
 
+
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, ))
 @permission_classes((IsAuthenticated, ))
@@ -180,11 +186,13 @@ class ProjectUsersViewSet(APIView):
 
     def get(self, request):
         if request.user.is_superuser:
-            serializer = ProjectUsersSerializer(ProjectUsers.objects.all(), many=True)
+            serializer = ProjectUsersSerializer(
+                ProjectUsers.objects.all(), many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             user = request.user
-            serializer = ProjectUsersSerializer(ProjectUsers.objects.filter(user=user), many=True)
+            serializer = ProjectUsersSerializer(
+                ProjectUsers.objects.filter(user=user), many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
@@ -198,7 +206,8 @@ class ProjectUsersViewSet(APIView):
     def put(self, request):
         if request.user.is_superuser:
             users = ProjectUsers.objects.get(pk=request.data.get('id'))
-            serializer = ProjectUsersSerializer(users, data=request.data, partial=True)
+            serializer = ProjectUsersSerializer(
+                users, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 response = {"id": serializer.data.get('id')}
@@ -213,7 +222,8 @@ class ProjectUsersViewSet(APIView):
 @permission_classes((IsAuthenticated, ))
 def ProjectsUsersByProjectViewSet(request, project):
     try:
-        serializer = ProjectUsersSerializer(ProjectUsers.objects.filter(project=project), many=True)
+        serializer = ProjectUsersSerializer(
+            ProjectUsers.objects.filter(project=project), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     except ProjectUsers.DoesNotExist:
         raise Http404("No Project User matches the given query.")
@@ -226,7 +236,8 @@ def UserRequestConfirmation(request, id):
     user = request.user
     email = request.user.email
     if user.is_authenticated():
-        userRequest = UserRequestSerializer(UserRequest.objects.get(pk=id)).data
+        userRequest = UserRequestSerializer(
+            UserRequest.objects.get(pk=id)).data
 
         if userRequest['email'] == email:
             return Response({
@@ -248,7 +259,8 @@ def UserRequestViewSet(request):
         }
         for data in request.data:
             serializer = UserRequestSerializer(data=data)
-            project = ProjectSerializer(Projects.objects.get(pk=data['project'])).data
+            project = ProjectSerializer(
+                Projects.objects.get(pk=data['project'])).data
             if serializer.is_valid():
                 serializer.save()
                 msg = MIMEText(
@@ -258,7 +270,8 @@ def UserRequestViewSet(request):
                         pi=project['pi']
                     ), "html"
                 )
-                msg['Subject'] = 'Collaboratory - Enrollment to project ' + project['project_name']
+                msg['Subject'] = 'Collaboratory - Enrollment to project ' + \
+                    project['project_name']
                 msg['To'] = data['email']
                 msg['From'] = 'test@cancercollaboratory.org'
                 SMTP_SERVER.send_message(msg)
