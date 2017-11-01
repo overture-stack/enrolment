@@ -8,6 +8,8 @@ import PTUserDetails from './components/PTUserDetails';
 
 import { fetchProjects, uiSelectProject, uiSelectTab } from '../Projects/redux';
 
+import './projects.scss';
+
 class Projects extends Component {
   static displayName = 'Projects';
 
@@ -35,8 +37,14 @@ class Projects extends Component {
     // todo - load project users
   }
 
+  renderNoProjectTab() {
+    return <h2>No Project has been selected.</h2>;
+  }
+
   render() {
     const { projects, projectsUI: { selectedProject, activeTab }, uiSelectTab } = this.props;
+
+    const projectIsSelected = selectedProject.length > 0;
 
     return (
       <div className="wrapper">
@@ -68,28 +76,28 @@ class Projects extends Component {
                 id="projectsNavigation"
                 activeKey={activeTab}
                 onSelect={uiSelectTab}
-                className={`tabs ${selectedProject.length > 0 ? 'selected' : ''}`}
+                className={`tabs ${projectIsSelected ? 'selected' : ''}`}
               >
                 <Tab
                   eventKey={1}
                   title="Project Details"
-                  className={selectedProject.length === 0 ? 'no-project' : ''}
+                  className={!projectIsSelected ? 'no-project' : ''}
                 >
-                  <PTProjectDetails />
+                  {projectIsSelected ? <PTProjectDetails /> : this.renderNoProjectTab()}
                 </Tab>
                 <Tab
                   eventKey={2}
                   title="User Enrolment"
-                  className={selectedProject.length === 0 ? 'no-project' : ''}
+                  className={!projectIsSelected === 0 ? 'no-project' : ''}
                 >
-                  <PTUserEnrolment />
+                  {projectIsSelected ? <PTUserEnrolment /> : this.renderNoProjectTab()}
                 </Tab>
                 <Tab
                   eventKey={3}
                   title="Users Details"
-                  className={selectedProject.length === 0 ? 'no-project' : ''}
+                  className={!projectIsSelected === 0 ? 'no-project' : ''}
                 >
-                  <PTUserDetails />
+                  {projectIsSelected ? <PTUserDetails /> : this.renderNoProjectTab()}
                 </Tab>
               </Tabs>
             </div>

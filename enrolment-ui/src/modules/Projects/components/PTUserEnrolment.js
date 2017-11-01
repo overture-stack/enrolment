@@ -1,7 +1,14 @@
 import React from 'react';
 
 const PTUserEnrolment = props => {
-  return <div>PTUserEnrolment</div>;
+  return (
+    <div className="container">
+      <div className="inner">
+        <h2>User Enrollment</h2>
+        <div className="container" />
+      </div>
+    </div>
+  );
 };
 
 PTUserEnrolment.displayName = 'PTUserEnrolment';
