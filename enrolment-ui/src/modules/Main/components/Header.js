@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { NavLink } from 'react-router-dom';
+import { withRouter, NavLink } from 'react-router-dom';
 import _ from 'lodash';
 
 import TopBar from './TopBar';
@@ -26,19 +26,19 @@ const Header = props => {
           <div className="menu">
             <ul>
               <li>
-                <NavLink to="/dashboard" activeClassName="active">
+                <NavLink exact to="/dashboard" activeClassName="active">
                   Dashboard
                 </NavLink>
               </li>
               {projects.hasProjects &&
-                (_.find(projects.projects, project => _.includes(project.status, 'Approved')) ||
-                  profile.is_staff) && (
-                  <li>
-                    <NavLink to="/projects" activeClassName="active">
-                      Projects
-                    </NavLink>
-                  </li>
-                )}
+              (_.find(projects.data, project => _.includes(project.status, 'Approved')) ||
+                profile.is_staff) ? (
+                <li>
+                  <NavLink exact to="/projects" activeClassName="active">
+                    Projects
+                  </NavLink>
+                </li>
+              ) : null}
             </ul>
           </div>
         </div>
@@ -52,9 +52,9 @@ Header.displayName = 'Header';
 
 const mapStateToProps = state => {
   return {
-    profile: state.profile,
+    profile: state.profile.data,
     projects: state.projects,
   };
 };
 
-export default connect(mapStateToProps, null)(Header);
+export default withRouter(connect(mapStateToProps, null)(Header));
