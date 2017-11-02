@@ -4,11 +4,11 @@ from django.conf import settings
 from django.shortcuts import render
 from jinja2 import Environment
 from django.http.response import Http404, HttpResponseForbidden
+from rest_framework import viewsets, status, mixins
 from rest_framework_swagger.views import get_swagger_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -19,6 +19,20 @@ import smtplib
 
 schema_view = get_swagger_view(title='Enrol API')
 SMTP_SERVER = smtplib.SMTP(settings.SMTP_URL, 25)
+
+
+class CreateListRetrieveUpdateViewSet(mixins.CreateModelMixin,
+                                      mixins.ListModelMixin,
+                                      mixins.RetrieveModelMixin,
+                                      mixins.UpdateModelMixin,
+                                      viewsets.GenericViewSet):
+    """
+    A viewset that provides `retrieve`, `create`, 'update', and `list` actions.
+
+    To use it, override the class and set the `.queryset` and
+    `.serializer_class` attributes.
+    """
+    pass
 
 
 @api_view(['GET'])
@@ -64,60 +78,14 @@ def SocialViewSet(request):
     return Response(response, status=status.HTTP_200_OK)
 
 
-class ProjectsViewSet(APIView):
+class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
     """
     Handles the Projects entity for the API
-    get - Get list of projects based on current users permissions
-    post - save new project
-    put - update project
     """
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        if request.user.is_superuser:
-            serializer = ProjectsSerializer(Projects.objects.all(), many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            user = request.user
-            serializer = ProjectsSerializer(
-                Projects.objects.filter(user=user), many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        serializer = ProjectSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            response = {"id": serializer.data.get('id')}
-            return Response(response, status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request, pk=None):
-        if request.user.is_superuser:
-            project = Projects.objects.get(pk=request.data.get('id'))
-            serializer = ProjectSerializer(
-                project, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                response = {"id": serializer.data.get('id')}
-                return Response(response, status=status.HTTP_200_OK)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return HttpResponseForbidden()
-
-
-@api_view(['GET'])
-@authentication_classes((SessionAuthentication, ))
-@permission_classes((IsAuthenticated, ))
-def ProjectsByIdViewSet(request, id):
-    """
-    Get single project by ID
-    """
-    try:
-        serializer = ProjectSerializer(Projects.objects.get(pk=id))
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    except Projects.DoesNotExist:
-        raise Http404("No Project matches the given query.")
+    serializer_class = ProjectsSerializer
+    queryset = Projects.objects.all()
+    authentication_classes = (SessionAuthentication, )
+    permission_classes = (IsAuthenticated, )
 
 
 class ApplicationsViewSet(APIView):

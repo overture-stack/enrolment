@@ -50,12 +50,24 @@ class ApplicationSerializer(serializers.ModelSerializer):
                   'position', 'institution_name', 'address', 'institution_email', 'daco_email')
 
 
+# class ProjectsSerializer(serializers.ModelSerializer):
+#     status = ChoicesField(choices=STATUS_CHOICES)
+
+#     class Meta:
+#         model = Projects
+#         fields = ('id', 'project_name', 'status', 'createdDate', 'updatedDate')
+
+
 class ProjectsSerializer(serializers.ModelSerializer):
+    applications = ApplicationSerializer(many=True, read_only=True)
+    UserRequests = UserRequestSerializer(many=True, read_only=True)
+    projectUsers = ProjectUsersSerializer(many=True, read_only=True)
     status = ChoicesField(choices=STATUS_CHOICES)
 
     class Meta:
         model = Projects
-        fields = ('id', 'project_name', 'status', 'createdDate', 'updatedDate')
+        fields = ('id', 'user', 'project_name', 'project_description', 'pi', 'status', 'createdDate', 'updatedDate',
+                  'applications', 'UserRequests', 'projectUsers')
 
 
 class ProjectSerializer(serializers.ModelSerializer):

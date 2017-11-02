@@ -15,8 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from rest_framework import routers
 from core.login.google_login import GoogleLogin
 from core import views
+
+router = routers.SimpleRouter()
+router.register(r'api/projects', views.ProjectsViewSet)
 
 urlpatterns = [
     url(r'^$', views.schema_view),
@@ -25,11 +29,6 @@ urlpatterns = [
     url(r'^api/auth/', include('rest_auth.urls')),
     url(r'^api/auth/google/$', GoogleLogin.as_view(), name='google_login'),
     url(r'^api/auth/social/$', views.SocialViewSet),
-
-    # Projects
-    url(r'^api/projects/$', views.ProjectsViewSet.as_view(), name='projects'),
-    url(r'^api/projects/([\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
-        views.ProjectsByIdViewSet),
 
     # Applications
     url(r'^api/applications/$', views.ApplicationsViewSet.as_view()),
@@ -46,3 +45,6 @@ urlpatterns = [
     url(r'^api/projects/users/(?P<project>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
         views.ProjectsUsersByProjectViewSet),
 ]
+
+# Include Router URLs
+urlpatterns += router.urls

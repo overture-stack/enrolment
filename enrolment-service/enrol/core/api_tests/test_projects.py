@@ -9,7 +9,7 @@ from helpers import createUsers
 
 class ProjectsTest(APITestCase):
 
-    url = reverse('projects')
+    url = reverse('projects-list')
 
     def setUp(self):
         createUsers(self)
@@ -94,7 +94,7 @@ class ProjectsTest(APITestCase):
         self.assertEqual(Projects.objects.count(), 2)
 
         # Test Response Format
-        projects_responce_obj = response.data[0]
+        projects_responce_obj = list(response.data.items())[0]
         self.assertEqual(self.list_response_set.issubset(
             projects_responce_obj), True)
 
@@ -120,7 +120,8 @@ class ProjectsTest(APITestCase):
         user = User.objects.get(username='user')
         client = APIClient()
         client.force_authenticate(user=self.user)
-        response = client.get(("{}{}").format(self.url, project.id))
+        response = client.get(
+            reverse('projects-detail', args=[project.id]))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -132,7 +133,8 @@ class ProjectsTest(APITestCase):
         user = User.objects.get(username='user')
         client = APIClient()
         client.force_authenticate(user=self.user)
-        response = client.get(("{}{}").format(self.url, project_2.id))
+        response = client.get(
+            reverse('projects-detail', args=[project_2.id]))
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
