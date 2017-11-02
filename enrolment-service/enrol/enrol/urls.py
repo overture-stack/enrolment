@@ -27,8 +27,8 @@ urlpatterns = [
     url(r'^api/auth/social/$', views.SocialViewSet),
 
     # Projects
-    url(r'^api/projects/$', views.ProjectsViewSet.as_view()),
-    url(r'^api/projects/(?P<id>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
+    url(r'^api/projects/$', views.ProjectsViewSet.as_view(), name='projects'),
+    url(r'^api/projects/([\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
         views.ProjectsByIdViewSet),
 
     # Applications

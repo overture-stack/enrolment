@@ -90,6 +90,7 @@ class ProjectsViewSet(APIView):
             serializer.save()
             response = {"id": serializer.data.get('id')}
             return Response(response, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk=None):
         if request.user.is_superuser:
