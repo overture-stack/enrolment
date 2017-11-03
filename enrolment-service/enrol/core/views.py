@@ -1,7 +1,7 @@
 import os
 from core.models import Applications, Projects, UserRequest, ProjectUsers
 from django.conf import settings
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from jinja2 import Environment
 from django.http.response import Http404, HttpResponseForbidden
 from rest_framework import viewsets, status, mixins, permissions
@@ -114,6 +114,51 @@ class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
         return Applications.objects.filter(user=user)
 
 
+class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
+    """
+    Handles the Projects entity for the API
+    """
+    serializers = {
+        'default': ProjectUsersSerializer,
+    }
+    authentication_classes = (SessionAuthentication, )
+    permission_classes = (IsAuthenticated, IsOwnerOrAdmin)
+
+    def get_queryset(self):
+        """
+        Return all if user is admin, else return only owned
+        """
+        user = self.request.user
+
+        if user.is_superuser:
+            return ProjectUsers.objects.all()
+
+        return ProjectUsers.objects.filter(user=user)
+
+    def list(self, request, project_pk=None):
+        queryset = ProjectUsers.objects.filter(project=project_pk)
+        serializer = ProjectUsersSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None, project_pk=None):
+        queryset = ProjectUsers.objects.filter(pk=pk, project=project_pk)
+        project_user = get_object_or_404(queryset, pk=pk)
+        serializer = ProjectUsersSerializer(project_user)
+        return Response(serializer.data)
+
+
+@api_view(['GET'])
+@authentication_classes((SessionAuthentication, ))
+@permission_classes((IsAuthenticated, ))
+def ProjectsUsersByProjectViewSet(request, project):
+    try:
+        serializer = ProjectUsersSerializer(
+            ProjectUsers.objects.filter(project=project), many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except ProjectUsers.DoesNotExist:
+        raise Http404("No Project User matches the given query.")
+
+
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, ))
 @permission_classes((IsAuthenticated, ))
@@ -156,71 +201,11 @@ def SocialViewSet(request):
     response = user.socialaccount_set.get(provider='google').extra_data
     return Response(response, status=status.HTTP_200_OK)
 
-
-@api_view(['GET'])
-@authentication_classes((SessionAuthentication, ))
-@permission_classes((IsAuthenticated, ))
-def ProjectsUsersByIdViewSet(request, id):
     try:
         serializer = ProjectUsersSerializer(ProjectUsers.objects.get(pk=id))
         return Response(serializer.data, status=status.HTTP_200_OK)
     except ProjectUsers.DoesNotExist:
         raise Http404("No Users matches the given query.")
-
-
-class ProjectUsersViewSet(APIView):
-    """
-    Responsible for handling the creation and retrieval of users in projects
-    get - lists users that the current logged in user can see
-    post - save a new user to a project
-    put - update a user in a project
-    """
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        if request.user.is_superuser:
-            serializer = ProjectUsersSerializer(
-                ProjectUsers.objects.all(), many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            user = request.user
-            serializer = ProjectUsersSerializer(
-                ProjectUsers.objects.filter(user=user), many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        serializer = ProjectUsersSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            response = {"id": serializer.data.get('id')}
-            return Response(response, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request):
-        if request.user.is_superuser:
-            users = ProjectUsers.objects.get(pk=request.data.get('id'))
-            serializer = ProjectUsersSerializer(
-                users, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                response = {"id": serializer.data.get('id')}
-                return Response(response, status=status.HTTP_200_OK)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return HttpResponseForbidden()
-
-
-@api_view(['GET'])
-@authentication_classes((SessionAuthentication, ))
-@permission_classes((IsAuthenticated, ))
-def ProjectsUsersByProjectViewSet(request, project):
-    try:
-        serializer = ProjectUsersSerializer(
-            ProjectUsers.objects.filter(project=project), many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    except ProjectUsers.DoesNotExist:
-        raise Http404("No Project User matches the given query.")
 
 
 @api_view(['GET'])
