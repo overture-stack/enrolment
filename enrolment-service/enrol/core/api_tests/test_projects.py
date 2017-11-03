@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from core.serializers import ProjectsSerializer, ProjectSerializer
 from helpers import createUsers
 
+import json
+
 
 class ProjectsTest(APITestCase):
 
@@ -60,7 +62,6 @@ class ProjectsTest(APITestCase):
                          status.HTTP_403_FORBIDDEN)
         self.assertEqual(post_response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(put_response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(del_response.status_code, status.HTTP_403_FORBIDDEN)
 
         self.assertEqual(Projects.objects.count(), 0)
 
@@ -94,7 +95,7 @@ class ProjectsTest(APITestCase):
         self.assertEqual(Projects.objects.count(), 2)
 
         # Test Response Format
-        projects_responce_obj = list(response.data.items())[0]
+        projects_responce_obj = json.loads(response.content)['results'][0]
         self.assertEqual(self.list_response_set.issubset(
             projects_responce_obj), True)
 
@@ -113,7 +114,7 @@ class ProjectsTest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Projects.objects.count(), 2)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(json.loads(response.content)['results']), 1)
 
     def test_get_project_by_id(self):
         project = self.create_test_project()
@@ -136,30 +137,43 @@ class ProjectsTest(APITestCase):
         response = client.get(
             reverse('projects-detail', args=[project_2.id]))
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_put_only_for_admin(self):
-        # TODO - PUT should be on ID in URL not in data
         '''
         Ensure only a superuser can update a project
         '''
         project = self.create_test_project()
+
+        updated_project = {
+            **self.newProject,
+            'status': 1
+        }
+
         user = User.objects.get(username='user')
         client = APIClient()
         client.force_authenticate(user=self.user)
         response = client.put(
-            self.url, {'id': project.id, 'project_name': 'New Name'})
+            reverse('projects-detail', args=[project.id]), updated_project)
         client.force_authenticate(user=self.admin_user)
-        admin_response = client.put(self.url, {'id': project.id, 'status': 1})
-
+        admin_response = client.put(
+            reverse('projects-detail', args=[project.id]), updated_project)
+        client.force_authenticate(user=self.admin_user)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(admin_response.status_code, status.HTTP_200_OK)
 
     def test_no_delete(self):
-        ''''
+        """
         Ensure that a project cannot be deleted via the API
-        '''
-        pass
+        """
+        project = self.create_test_project()
+        user = User.objects.get(username='user')
+        client = APIClient()
+        client.force_authenticate(user=self.user)
+        response = client.delete(
+            reverse('projects-detail', args=[project.id]))
+        self.assertEqual(response.status_code,
+                         status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_archive_project(self):
         ''''

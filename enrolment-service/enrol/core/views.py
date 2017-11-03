@@ -4,7 +4,7 @@ from django.conf import settings
 from django.shortcuts import render
 from jinja2 import Environment
 from django.http.response import Http404, HttpResponseForbidden
-from rest_framework import viewsets, status, mixins
+from rest_framework import viewsets, status, mixins, permissions
 from rest_framework_swagger.views import get_swagger_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication
@@ -31,8 +31,65 @@ class CreateListRetrieveUpdateViewSet(mixins.CreateModelMixin,
 
     To use it, override the class and set the `.queryset` and
     `.serializer_class` attributes.
+
+    Also allows you to set different serializers for the various methods:
+
+    serializers = {
+        'default': serializers.Default,
+        'list':    serializers.List,
+        'detail':  serializers.Details,
+        # etc.
+    }
     """
-    pass
+    serializers = {
+        'default': None,
+    }
+
+    def get_serializer_class(self):
+        return self.serializers.get(self.action, self.serializers['default'])
+
+
+class IsOwnerOrAdmin(permissions.BasePermission):
+    """
+    Custom permissions that allow admin or owner
+    permission to object on all HTTP verbs except PUT/PATCH
+    which is only for admins
+    """
+
+    def has_object_permission(self, request, view, obj):
+        # If superuser allow
+        if request.user.is_superuser:
+            return True
+
+        # If repuest is PUT/PATCH require admin
+        if request.method in ("PUT", "PATCH") and not request.user.is_superuser:
+            return False
+
+        # Instance must have an attribute named `user`.
+        return obj.user == request.user
+
+
+class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
+    """
+    Handles the Projects entity for the API
+    """
+    serializers = {
+        'default': ProjectSerializer,
+        'list':  ProjectsSerializer,
+    }
+    authentication_classes = (SessionAuthentication, )
+    permission_classes = (IsAuthenticated, IsOwnerOrAdmin)
+
+    def get_queryset(self):
+        """
+        Return all if user is admin, else return only owned
+        """
+        user = self.request.user
+
+        if user.is_superuser:
+            return Projects.objects.all()
+
+        return Projects.objects.filter(user=user)
 
 
 @api_view(['GET'])
@@ -76,16 +133,6 @@ def SocialViewSet(request):
     user = request.user
     response = user.socialaccount_set.get(provider='google').extra_data
     return Response(response, status=status.HTTP_200_OK)
-
-
-class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
-    """
-    Handles the Projects entity for the API
-    """
-    serializer_class = ProjectsSerializer
-    queryset = Projects.objects.all()
-    authentication_classes = (SessionAuthentication, )
-    permission_classes = (IsAuthenticated, )
 
 
 class ApplicationsViewSet(APIView):

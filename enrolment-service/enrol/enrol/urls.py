@@ -20,7 +20,7 @@ from core.login.google_login import GoogleLogin
 from core import views
 
 router = routers.SimpleRouter()
-router.register(r'api/projects', views.ProjectsViewSet)
+router.register(r'api/projects', views.ProjectsViewSet, 'projects')
 
 urlpatterns = [
     url(r'^$', views.schema_view),
