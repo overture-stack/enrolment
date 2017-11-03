@@ -22,6 +22,9 @@ const UPDATE_PROJECT_REQUEST = 'project/UPDATE_PROJECT_REQUEST';
 const UPDATE_PROJECT_SUCCESS = 'project/UPDATE_PROJECT_SUCCESS';
 const UPDATE_PROJECT_FAILURE = 'project/UPDATE_PROJECT_FAILURE';
 
+const UI_SELECT_PROJECT = 'projectUI/SELECT_PROJECT';
+const UI_SELECT_TAB = 'projectUI/SELECT_TAB';
+
 const NEXT_STEP = 'projectRequestForm/NEXT_STEP';
 const PREVIOUS_STEP = 'projectRequestForm/PREVIOUS_STEP';
 const RESET_FORM_STEP = 'projectRequestForm/RESET_FORM_STEP';
@@ -46,6 +49,9 @@ const updateProjectError = payloadActionGenerator(UPDATE_PROJECT_FAILURE);
 /*
 * Public actions for dispatch
 */
+
+export const uiSelectProject = payloadActionGenerator(UI_SELECT_PROJECT);
+export const uiSelectTab = payloadActionGenerator(UI_SELECT_TAB);
 
 export const formNextStep = emptyActionGenerator(NEXT_STEP);
 export const formPrevStep = emptyActionGenerator(PREVIOUS_STEP);
@@ -201,6 +207,29 @@ export const projectReducer = (state = _defaultProjectState, action) => {
         loading: false,
         data: null,
         error: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
+// Projects UI
+const _defaultProjectsUIState = {
+  selectedProject: '',
+  activeTab: 1,
+};
+
+export const projectsUIReducer = (state = _defaultProjectsUIState, action) => {
+  switch (action.type) {
+    case UI_SELECT_PROJECT:
+      return {
+        ...state,
+        selectedProject: action.payload,
+      };
+    case UI_SELECT_TAB:
+      return {
+        ...state,
+        activeTab: action.payload,
       };
     default:
       return state;

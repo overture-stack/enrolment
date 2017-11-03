@@ -11,6 +11,7 @@ import { reducer as profile } from '../modules/Profile';
 import {
   reducer as projects,
   projectReducer as project,
+  projectsUIReducer as projectsUI,
   requestFormReducer as projectRequestForm,
 } from '../modules/Projects';
 import {
@@ -26,6 +27,7 @@ const reducer = combineReducers({
   profile,
   projects,
   project,
+  projectsUI,
   projectRequestForm,
   users,
   userEnrolmentModal,

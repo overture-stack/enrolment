@@ -1,5 +1,12 @@
 import Projects from './Projects';
 import RegisterProject from './RegisterProject';
-import { reducer, projectReducer, requestFormReducer } from './redux';
+import { reducer, projectReducer, projectsUIReducer, requestFormReducer } from './redux';
 
-export { reducer, projectReducer, requestFormReducer, Projects, RegisterProject };
+export {
+  reducer,
+  projectReducer,
+  projectsUIReducer,
+  requestFormReducer,
+  Projects,
+  RegisterProject,
+};
