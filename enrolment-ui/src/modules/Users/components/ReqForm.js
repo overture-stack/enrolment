@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { Modal } from 'react-bootstrap';
-import { RFInput, RFSelect, rules } from '../../ReduxForm';
+import { RFSelect, EmailList, rules } from '../../ReduxForm';
 
 import { toggleModal } from '../redux';
 
@@ -60,30 +60,19 @@ const ReqForm = props => {
             validate={rules.required}
           />
         </div>
-        <div className="form-group row">
-          <div className="col-md-4">
-            <label htmlFor="projectSelector">Users' Daco Email</label>
-          </div>
-          <div className="col-md-6 user-email">
-            <input className="form-control" name="email" type="email" placeholder={profile.email} />
-          </div>
-          <div className="col-md-2">
-            <button
-              className="action-button small"
-              onClick={() => console.log('Add email')}
-              disabled={false}
-            >
-              Add
-            </button>
-          </div>
-        </div>
+        <Field
+          component={EmailList}
+          label="Users' Daco Email"
+          name="email"
+          validate={rules.required}
+        />
         {error ? <errorMessage message={error} /> : null}
       </Modal.Body>
       <Modal.Footer>
         <button className="action-button" onClick={toggleModal}>
           Close
         </button>
-        <button className="action-button" onClick={() => console.log('submit')} disabled={false}>
+        <button type="submit" className="action-button" disabled={pristine || invalid}>
           Submit
         </button>
       </Modal.Footer>

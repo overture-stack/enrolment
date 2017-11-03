@@ -5,6 +5,13 @@ import { Modal } from 'react-bootstrap';
 import { toggleModal } from './redux';
 import ReqForm from './components/ReqForm';
 
+const onSubmit = data => {
+  // Process data for submission
+  const proccessedData = data.email.emails.map(email => ({ project: data.project, email }));
+
+  console.log(proccessedData);
+};
+
 const UserEnrolmentModal = props => {
   const { userEnrolmentModal: { show }, toggleModal } = props;
 
@@ -13,7 +20,7 @@ const UserEnrolmentModal = props => {
       <Modal.Header>
         <Modal.Title>User enrollment form</Modal.Title>
       </Modal.Header>
-      <ReqForm />
+      <ReqForm onSubmit={onSubmit} />
     </Modal>
   );
 };
