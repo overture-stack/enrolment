@@ -92,6 +92,28 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
         return Projects.objects.filter(user=user)
 
 
+class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
+    """
+    Handles the Projects entity for the API
+    """
+    serializers = {
+        'default': ApplicationSerializer,
+    }
+    authentication_classes = (SessionAuthentication, )
+    permission_classes = (IsAuthenticated, IsOwnerOrAdmin)
+
+    def get_queryset(self):
+        """
+        Return all if user is admin, else return only owned
+        """
+        user = self.request.user
+
+        if user.is_superuser:
+            return Applications.objects.all()
+
+        return Applications.objects.filter(user=user)
+
+
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, ))
 @permission_classes((IsAuthenticated, ))
@@ -133,50 +155,6 @@ def SocialViewSet(request):
     user = request.user
     response = user.socialaccount_set.get(provider='google').extra_data
     return Response(response, status=status.HTTP_200_OK)
-
-
-class ApplicationsViewSet(APIView):
-    """
-    Reponsible for handling project applications
-    get - list known applications based on user permissions
-    post - submit a new application
-    """
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        if request.user.is_superuser:
-            serializer = ApplicationSerializer(
-                Applications.objects.all(), many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            user = request.user
-            serializer = ApplicationSerializer(
-                Applications.objects.filter(user=user), many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        serializer = ApplicationSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            response = {"id": serializer.data.get('id')}
-            return Response(response, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET'])
-@authentication_classes((SessionAuthentication, ))
-@permission_classes((IsAuthenticated, ))
-def ApplicationsByIdViewSet(request, id):
-    """
-    Get a single Application by ID
-    """
-    try:
-        serializer = ApplicationSerializer(Applications.objects.get(pk=id))
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    except Applications.DoesNotExist:
-        raise Http404("No Application matches the given query.")
 
 
 @api_view(['GET'])

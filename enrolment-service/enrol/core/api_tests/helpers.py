@@ -27,3 +27,13 @@ def createUsers(self):
     self.user_2.save()
 
     return (self.admin_user, self.user, self.user_2)
+
+
+def createNewObjInstance(self, Model, base={}, overwrite={}, user=None):
+    newInstance = {
+        **base,
+        **overwrite,
+        'user': self.user if user is None else user
+    }
+
+    return Model.objects.create(**newInstance)

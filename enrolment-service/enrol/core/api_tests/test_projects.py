@@ -4,7 +4,7 @@ from rest_framework.test import APITestCase, APIClient
 from core.models import Projects
 from django.contrib.auth.models import User
 from core.serializers import ProjectsSerializer, ProjectSerializer
-from helpers import createUsers
+from helpers import createUsers, createNewObjInstance
 
 import json
 
@@ -43,13 +43,7 @@ class ProjectsTest(APITestCase):
         ])
 
     def create_test_project(self, project={}, user=None):
-        newProject = {
-            **self.newProject,
-            **project,
-            'user': self.user if user is None else user
-        }
-
-        return Projects.objects.create(**newProject)
+        return createNewObjInstance(self, Projects, self.newProject, project, user)
 
     def test_ensure_auth(self):
         """
@@ -130,7 +124,6 @@ class ProjectsTest(APITestCase):
 
         # Test Response Format
         project_responce_obj = response.data  # json.loads(response.data)
-        print(response.data)
         self.assertEqual(self.single_response_set.issubset(
             project_responce_obj), True)
 

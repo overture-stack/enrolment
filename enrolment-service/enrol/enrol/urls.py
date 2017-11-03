@@ -21,6 +21,7 @@ from core import views
 
 router = routers.SimpleRouter()
 router.register(r'projects', views.ProjectsViewSet, 'projects')
+router.register(r'applications', views.ApplicationsViewSet, 'applications')
 
 urlpatterns = [
     url(r'^$', views.schema_view),
@@ -30,10 +31,7 @@ urlpatterns = [
     url(r'^api/v1/auth/google/$', GoogleLogin.as_view(), name='google_login'),
     url(r'^api/v1/auth/social/$', views.SocialViewSet),
 
-    # Applications
-    url(r'^api/v1/applications/$', views.ApplicationsViewSet.as_view()),
-    url(r'^api/v1/applications/(?P<id>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
-        views.ApplicationsByIdViewSet),
+    # Project User Applications
     url(r'^api/v1/projects/users/application/(?P<id>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
         views.ProjectsUsersByIdViewSet),
 
