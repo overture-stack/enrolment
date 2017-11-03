@@ -35,9 +35,11 @@ class ProjectsTest(APITestCase):
         self.single_response_set = set([
             'id',
             'project_name',
+            'project_description',
+            'pi',
             'status',
             'createdDate',
-            'updatedDate'
+            'updatedDate',
         ])
 
     def create_test_project(self, project={}, user=None):
@@ -125,6 +127,12 @@ class ProjectsTest(APITestCase):
             reverse('projects-detail', args=[project.id]))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Test Response Format
+        project_responce_obj = response.data  # json.loads(response.data)
+        print(response.data)
+        self.assertEqual(self.single_response_set.issubset(
+            project_responce_obj), True)
 
     def test_get_project_by_id_only_for_user(self):
         project_1 = self.create_test_project()
