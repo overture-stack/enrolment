@@ -20,7 +20,7 @@ from core.login.google_login import GoogleLogin
 from core import views
 
 router = routers.SimpleRouter()
-router.register(r'api/projects', views.ProjectsViewSet, 'projects')
+router.register(r'projects', views.ProjectsViewSet, 'projects')
 
 urlpatterns = [
     url(r'^$', views.schema_view),
@@ -44,7 +44,7 @@ urlpatterns = [
     url(r'^api/projects/users/$', views.ProjectUsersViewSet.as_view()),
     url(r'^api/projects/users/(?P<project>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
         views.ProjectsUsersByProjectViewSet),
-]
 
-# Include Router URLs
-urlpatterns += router.urls
+    # Django Rest Router
+    url(r'^api/', include(router.urls)),
+]
