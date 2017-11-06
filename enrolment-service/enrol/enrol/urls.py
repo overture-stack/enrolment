@@ -15,34 +15,32 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from rest_framework_nested import routers
 from core.login.google_login import GoogleLogin
 from core import views
 
+router = routers.SimpleRouter()
+router.register(r'projects', views.ProjectsViewSet, 'projects')
+router.register(r'applications', views.ApplicationsViewSet, 'applications')
+
+projects_router = routers.NestedSimpleRouter(
+    router, r'projects', lookup='project')
+projects_router.register(
+    r'users', views.ProjectUsersViewSet, base_name='project-users')
+
 urlpatterns = [
     url(r'^$', views.schema_view),
-
     url(r'^admin/', admin.site.urls),
-    url(r'^api/auth/', include('rest_auth.urls')),
-    url(r'^api/auth/google/$', GoogleLogin.as_view(), name='google_login'),
-    url(r'^api/auth/social/$', views.SocialViewSet),
-
-    # Projects
-    url(r'^api/projects/$', views.ProjectsViewSet.as_view()),
-    url(r'^api/projects/(?P<id>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
-        views.ProjectsByIdViewSet),
-
-    # Applications
-    url(r'^api/applications/$', views.ApplicationsViewSet.as_view()),
-    url(r'^api/applications/(?P<id>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
-        views.ApplicationsByIdViewSet),
-    url(r'^api/projects/users/application/(?P<id>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
-        views.ProjectsUsersByIdViewSet),
+    url(r'^api/v1/auth/', include('rest_auth.urls')),
+    url(r'^api/v1/auth/google/$', GoogleLogin.as_view(), name='google_login'),
+    url(r'^api/v1/auth/social/$', views.SocialViewSet),
 
     # Users
-    url(r'^api/request/user/$', views.UserRequestViewSet),
-    url(r'^api/request/user/check/(?P<id>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
+    url(r'^api/v1/request/user/$', views.UserRequestViewSet),
+    url(r'^api/v1/request/user/check/(?P<id>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
         views.UserRequestConfirmation),
-    url(r'^api/projects/users/$', views.ProjectUsersViewSet.as_view()),
-    url(r'^api/projects/users/(?P<project>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
-        views.ProjectsUsersByProjectViewSet),
+
+    # Django Rest Router + Nested Routers
+    url(r'^api/v1/', include(router.urls)),
+    url(r'^api/v1/', include(projects_router.urls)),
 ]
