@@ -129,20 +129,20 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
         Return all if user is admin, else return only owned
         """
         user = self.request.user
+        project_pk = self.kwargs['project_pk']
 
         if user.is_superuser:
-            return ProjectUsers.objects.all()
+            return ProjectUsers.objects.filter(project=project_pk)
 
-        return ProjectUsers.objects.filter(user=user)
+        return ProjectUsers.objects.filter(user=user, project=project_pk)
 
     def list(self, request, project_pk=None):
-        queryset = ProjectUsers.objects.filter(project=project_pk)
+        queryset = self.get_queryset()
         serializer = ProjectUsersSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None, project_pk=None):
-        queryset = ProjectUsers.objects.filter(pk=pk, project=project_pk)
-        project_user = get_object_or_404(queryset, pk=pk)
+        project_user = self.get_object()
         serializer = ProjectUsersSerializer(project_user)
         return Response(serializer.data)
 

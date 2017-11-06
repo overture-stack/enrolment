@@ -182,9 +182,12 @@ class ProjectUsersTest(APITestCase):
         client = APIClient()
         client.force_authenticate(user=self.user)
         response = client.get(
+            reverse('project-users-detail', args=[self.testProject.id, projectUser_1.id]))
+        response_404 = client.get(
             reverse('project-users-detail', args=[self.testProject.id, projectUser_2.id]))
 
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response_404.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_put_only_for_admin(self):
         '''
