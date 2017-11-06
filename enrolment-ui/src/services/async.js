@@ -2,7 +2,7 @@ import { asyncServiceCreator, asyncDummyCreator } from './asyncFactory';
 
 // Create all required async services here
 export function createAsyncs(isDevelopment = false) {
-  const apiBase = `/api`;
+  const apiBase = `/api/v1`;
 
   // Various configs used for API calls
   const withDataAndCSRF = { csrf: true, withData: true };
@@ -46,20 +46,28 @@ export function createAsyncs(isDevelopment = false) {
     project: {
       fetchProjects: asyncServiceCreator('GET', `${apiBase}/projects/`),
       fetchProject: id => asyncServiceCreator('GET', `${apiBase}/projects/${id}`)(),
-      fetchProjectUsers: id => asyncServiceCreator('GET', `${apiBase}/projects/users/${id}`)(),
+      fetchProjectUsers: (projectId, id) =>
+        asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/${id}`)(),
       submit: asyncServiceCreator('POST', `${apiBase}/projects/`, withDataAndCSRF),
       update: asyncServiceCreator('PUT', `${apiBase}/projects/`, withDataAndCSRF),
     },
     user: {
       dacoAccess: email => asyncServiceCreator('GET', `${apiBase}/daco/${email}`)(),
       userRequest: asyncServiceCreator('POST', `${apiBase}/request/user/`, withDataAndCSRF),
-      fetchUserRequests: asyncServiceCreator('GET', `${apiBase}/projects/users/`),
-      approveUserRequests: asyncServiceCreator(
-        'PUT',
-        `${apiBase}/projects/users/`,
-        withDataAndCSRF,
-      ),
-      denyUserRequests: asyncServiceCreator('PUT', `${apiBase}/projects/users/`, withDataAndCSRF),
+      fetchUserRequests: projectId =>
+        asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/`)(),
+      approveUserRequests: (projectId, id) =>
+        asyncServiceCreator(
+          'PUT',
+          `${apiBase}/projects/${projectId}/users/${id}`,
+          withDataAndCSRF,
+        )(),
+      denyUserRequests: (projectId, id) =>
+        asyncServiceCreator(
+          'PUT',
+          `${apiBase}/projects/${projectId}/users/${id}`,
+          withDataAndCSRF,
+        )(),
     },
   };
 

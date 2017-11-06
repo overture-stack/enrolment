@@ -1,24 +1,162 @@
 import os
 from core.models import Applications, Projects, UserRequest, ProjectUsers
 from django.conf import settings
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from jinja2 import Environment
 from django.http.response import Http404, HttpResponseForbidden
+from rest_framework import viewsets, status, mixins, permissions
 from rest_framework_swagger.views import get_swagger_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from email.mime.text import MIMEText
-from core.serializers import ProjectSerializer, ApplicationSerializer, ProjectUsersSerializer, UserRequestSerializer, UserDetailsSerializer
+from core.serializers import ProjectsSerializer, ProjectSerializer, ApplicationSerializer, ProjectUsersSerializer, UserRequestSerializer, UserDetailsSerializer
 from core.client.daco import DacoClient
 import smtplib
 
 schema_view = get_swagger_view(title='Enrol API')
 SMTP_SERVER = smtplib.SMTP(settings.SMTP_URL, 25)
+
+
+class CreateListRetrieveUpdateViewSet(mixins.CreateModelMixin,
+                                      mixins.ListModelMixin,
+                                      mixins.RetrieveModelMixin,
+                                      mixins.UpdateModelMixin,
+                                      viewsets.GenericViewSet):
+    """
+    A viewset that provides `retrieve`, `create`, 'update', and `list` actions.
+
+    To use it, override the class and set the `.queryset` and
+    `.serializer_class` attributes.
+
+    Also allows you to set different serializers for the various methods:
+
+    serializers = {
+        'default': serializers.Default,
+        'list':    serializers.List,
+        'detail':  serializers.Details,
+        # etc.
+    }
+    """
+    serializers = {
+        'default': None,
+    }
+
+    def get_serializer_class(self):
+        return self.serializers.get(self.action, self.serializers['default'])
+
+
+class IsOwnerOrAdmin(permissions.BasePermission):
+    """
+    Custom permissions that allow admin or owner
+    permission to object on all HTTP verbs except PUT/PATCH
+    which is only for admins
+    """
+
+    def has_object_permission(self, request, view, obj):
+        # If superuser allow
+        if request.user.is_superuser:
+            return True
+
+        # If repuest is PUT/PATCH require admin
+        if request.method in ("PUT", "PATCH") and not request.user.is_superuser:
+            return False
+
+        # Instance must have an attribute named `user`.
+        return obj.user == request.user
+
+
+class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
+    """
+    Handles the Projects entity for the API
+    """
+    serializers = {
+        'default': ProjectSerializer,
+        'list':  ProjectsSerializer,
+    }
+    authentication_classes = (SessionAuthentication, )
+    permission_classes = (IsAuthenticated, IsOwnerOrAdmin)
+
+    def get_queryset(self):
+        """
+        Return all if user is admin, else return only owned
+        """
+        user = self.request.user
+
+        if user.is_superuser:
+            return Projects.objects.all()
+
+        return Projects.objects.filter(user=user)
+
+
+class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
+    """
+    Handles the Projects entity for the API
+    """
+    serializers = {
+        'default': ApplicationSerializer,
+    }
+    authentication_classes = (SessionAuthentication, )
+    permission_classes = (IsAuthenticated, IsOwnerOrAdmin)
+
+    def get_queryset(self):
+        """
+        Return all if user is admin, else return only owned
+        """
+        user = self.request.user
+
+        if user.is_superuser:
+            return Applications.objects.all()
+
+        return Applications.objects.filter(user=user)
+
+
+class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
+    """
+    Handles the Projects entity for the API
+    """
+    serializers = {
+        'default': ProjectUsersSerializer,
+    }
+    authentication_classes = (SessionAuthentication, )
+    permission_classes = (IsAuthenticated, IsOwnerOrAdmin)
+
+    def get_queryset(self):
+        """
+        Return all if user is admin, else return only owned
+        """
+        user = self.request.user
+        project_pk = self.kwargs['project_pk']
+
+        if user.is_superuser:
+            return ProjectUsers.objects.filter(project=project_pk)
+
+        return ProjectUsers.objects.filter(user=user, project=project_pk)
+
+    def list(self, request, project_pk=None):
+        queryset = self.get_queryset()
+        serializer = ProjectUsersSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None, project_pk=None):
+        project_user = self.get_object()
+        serializer = ProjectUsersSerializer(project_user)
+        return Response(serializer.data)
+
+
+@api_view(['GET'])
+@authentication_classes((SessionAuthentication, ))
+@permission_classes((IsAuthenticated, ))
+def ProjectsUsersByProjectViewSet(request, project):
+    try:
+        serializer = ProjectUsersSerializer(
+            ProjectUsers.objects.filter(project=project), many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except ProjectUsers.DoesNotExist:
+        raise Http404("No Project User matches the given query.")
 
 
 @api_view(['GET'])
@@ -45,14 +183,15 @@ def daco(request):
 def dacoAccess(request, email):
     if request.user.is_authenticated():
         dacoClient = DacoClient(base_url=settings.ICGC_BASE_URL,
-                          client_key=settings.ICGC_CLIENT_KEY,
-                          client_secret=settings.ICGC_CLIENT_SECRET,
-                          token=settings.ICGC_TOKEN,
-                          token_secret=settings.ICGC_TOKEN_SECRET)
+                                client_key=settings.ICGC_CLIENT_KEY,
+                                client_secret=settings.ICGC_CLIENT_SECRET,
+                                token=settings.ICGC_TOKEN,
+                                token_secret=settings.ICGC_TOKEN_SECRET)
         response = dacoClient.get_daco_status(email)
         return Response(response, status=status.HTTP_200_OK)
     else:
         return HttpResponseForbidden()
+
 
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, ))
@@ -62,161 +201,11 @@ def SocialViewSet(request):
     response = user.socialaccount_set.get(provider='google').extra_data
     return Response(response, status=status.HTTP_200_OK)
 
-
-class ProjectsViewSet(APIView):
-    """
-    Handles the Projects entity for the API
-    get - Get list of users based on current users permissions
-    post - save new project
-    put - update project
-    """
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        if request.user.is_superuser:
-            serializer = ProjectSerializer(Projects.objects.all(), many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            user = request.user
-            serializer = ProjectSerializer(Projects.objects.filter(user=user), many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        serializer = ProjectSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            response = {"id": serializer.data.get('id')}
-            return Response(response, status=status.HTTP_201_CREATED)
-
-    def put(self, request, pk=None):
-        if request.user.is_superuser:
-            project = Projects.objects.get(pk=request.data.get('id'))
-            serializer = ProjectSerializer(project, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                response = {"id": serializer.data.get('id')}
-                return Response(response, status=status.HTTP_200_OK)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return HttpResponseForbidden()
-
-
-@api_view(['GET'])
-@authentication_classes((SessionAuthentication, ))
-@permission_classes((IsAuthenticated, ))
-def ProjectsByIdViewSet(request, id):
-    """
-    Get single project by ID
-    """
-    try:
-        serializer = ProjectSerializer(Projects.objects.get(pk=id))
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    except Projects.DoesNotExist:
-        raise Http404("No Project matches the given query.")
-
-
-class ApplicationsViewSet(APIView):
-    """
-    Reponsible for handling project applications
-    get - list known applications based on user permissions
-    post - submit a new application
-    """
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        if request.user.is_superuser:
-            serializer = ApplicationSerializer(Applications.objects.all(), many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            user = request.user
-            serializer = ApplicationSerializer(Applications.objects.filter(user=user), many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        serializer = ApplicationSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            response = {"id": serializer.data.get('id')}
-            return Response(response, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET'])
-@authentication_classes((SessionAuthentication, ))
-@permission_classes((IsAuthenticated, ))
-def ApplicationsByIdViewSet(request, id):
-    """
-    Get a single Application by ID
-    """
-    try:
-        serializer = ApplicationSerializer(Applications.objects.get(pk=id))
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    except Applications.DoesNotExist:
-        raise Http404("No Application matches the given query.")
-
-@api_view(['GET'])
-@authentication_classes((SessionAuthentication, ))
-@permission_classes((IsAuthenticated, ))
-def ProjectsUsersByIdViewSet(request, id):
     try:
         serializer = ProjectUsersSerializer(ProjectUsers.objects.get(pk=id))
         return Response(serializer.data, status=status.HTTP_200_OK)
     except ProjectUsers.DoesNotExist:
         raise Http404("No Users matches the given query.")
-
-
-class ProjectUsersViewSet(APIView):
-    """
-    Responsible for handling the creation and retrieval of users in projects
-    get - lists users that the current logged in user can see
-    post - save a new user to a project
-    put - update a user in a project
-    """
-    authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        if request.user.is_superuser:
-            serializer = ProjectUsersSerializer(ProjectUsers.objects.all(), many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            user = request.user
-            serializer = ProjectUsersSerializer(ProjectUsers.objects.filter(user=user), many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        serializer = ProjectUsersSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            response = {"id": serializer.data.get('id')}
-            return Response(response, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request):
-        if request.user.is_superuser:
-            users = ProjectUsers.objects.get(pk=request.data.get('id'))
-            serializer = ProjectUsersSerializer(users, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                response = {"id": serializer.data.get('id')}
-                return Response(response, status=status.HTTP_200_OK)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return HttpResponseForbidden()
-
-
-@api_view(['GET'])
-@authentication_classes((SessionAuthentication, ))
-@permission_classes((IsAuthenticated, ))
-def ProjectsUsersByProjectViewSet(request, project):
-    try:
-        serializer = ProjectUsersSerializer(ProjectUsers.objects.filter(project=project), many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    except ProjectUsers.DoesNotExist:
-        raise Http404("No Project User matches the given query.")
 
 
 @api_view(['GET'])
@@ -226,7 +215,8 @@ def UserRequestConfirmation(request, id):
     user = request.user
     email = request.user.email
     if user.is_authenticated():
-        userRequest = UserRequestSerializer(UserRequest.objects.get(pk=id)).data
+        userRequest = UserRequestSerializer(
+            UserRequest.objects.get(pk=id)).data
 
         if userRequest['email'] == email:
             return Response({
@@ -248,7 +238,8 @@ def UserRequestViewSet(request):
         }
         for data in request.data:
             serializer = UserRequestSerializer(data=data)
-            project = ProjectSerializer(Projects.objects.get(pk=data['project'])).data
+            project = ProjectSerializer(
+                Projects.objects.get(pk=data['project'])).data
             if serializer.is_valid():
                 serializer.save()
                 msg = MIMEText(
@@ -258,7 +249,8 @@ def UserRequestViewSet(request):
                         pi=project['pi']
                     ), "html"
                 )
-                msg['Subject'] = 'Collaboratory - Enrollment to project ' + project['project_name']
+                msg['Subject'] = 'Collaboratory - Enrollment to project ' + \
+                    project['project_name']
                 msg['To'] = data['email']
                 msg['From'] = 'test@cancercollaboratory.org'
                 SMTP_SERVER.send_message(msg)
