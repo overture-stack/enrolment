@@ -37,8 +37,8 @@ const ApplicationRequests = props => {
           </tr>
         </thead>
         <tbody>
-          {applications.map(application => {
-            const project = _.find(projects, { id: application.project });
+          {applications.results.map(application => {
+            const project = _.find(projects.results, { id: application.project });
 
             return (
               <tr key={application.id}>

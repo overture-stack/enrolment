@@ -31,7 +31,7 @@ const Header = props => {
                 </NavLink>
               </li>
               {projects.hasProjects &&
-              (_.find(projects.data, project => _.includes(project.status, 'Approved')) ||
+              (_.find(projects.data.results, project => _.includes(project.status, 'Approved')) ||
                 profile.is_staff) ? (
                 <li>
                   <NavLink exact to="/projects" activeClassName="active">
@@ -52,7 +52,7 @@ Header.displayName = 'Header';
 
 const mapStateToProps = state => {
   return {
-    profile: state.profile.data,
+    profile: state.profile,
     projects: state.projects,
   };
 };

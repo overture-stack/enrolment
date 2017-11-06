@@ -36,12 +36,14 @@ const ReqForm = props => {
     profile,
   } = props;
 
-  const projectOptions = projects.filter(project => project.status === 'Approved').map(project => {
-    return {
-      text: project.project_name,
-      value: project.id,
-    };
-  });
+  const projectOptions = projects.results
+    .filter(project => project.status === 'Approved')
+    .map(project => {
+      return {
+        text: project.project_name,
+        value: project.id,
+      };
+    });
 
   return (
     <form onSubmit={handleSubmit}>

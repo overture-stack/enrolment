@@ -9,7 +9,9 @@ import { toggleModal } from '../../Users/redux';
 const StaffActions = props => {
   const { profile, projects, toggleModal } = props;
 
-  const hasApprovedProjects = !!_.find(projects, project => _.includes(project.status, 'Approved'));
+  const hasApprovedProjects = !!_.find(projects.results, project =>
+    _.includes(project.status, 'Approved'),
+  );
 
   return (
     <div className="requests-actions">
