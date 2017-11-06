@@ -10,9 +10,9 @@ const FETCH_PROJECTS_REQUEST = 'project/FETCH_PROJECTS_REQUEST';
 const FETCH_PROJECTS_SUCCESS = 'project/FETCH_PROJECTS_SUCCESS';
 const FETCH_PROJECTS_FAILURE = 'project/FETCH_PROJECTS_FAILURE';
 
-// const FETCH_ONE_PROJECT_REQUEST = 'project/FETCH_ONE_PROJECT_REQUEST';
-// const FETCH_ONE_PROJECT_SUCCESS = 'project/FETCH_ONE_PROJECT_SUCCESS';
-// const FETCH_ONE_PROJECT_FAILURE = 'project/FETCH_ONE_PROJECT_FAILURE';
+const FETCH_ONE_PROJECT_REQUEST = 'project/FETCH_ONE_PROJECT_REQUEST';
+const FETCH_ONE_PROJECT_SUCCESS = 'project/FETCH_ONE_PROJECT_SUCCESS';
+const FETCH_ONE_PROJECT_FAILURE = 'project/FETCH_ONE_PROJECT_FAILURE';
 
 const SUBMIT_PROJECT_REQUEST = 'project/SUBMIT_PROJECT_REQUEST';
 const SUBMIT_PROJECT_SUCCESS = 'project/SUBMIT_PROJECT_SUCCESS';
@@ -34,9 +34,9 @@ const fetchProjectsStart = emptyActionGenerator(FETCH_PROJECTS_REQUEST);
 const fetchProjectsSuccess = payloadActionGenerator(FETCH_PROJECTS_SUCCESS);
 const fetchProjectsError = payloadActionGenerator(FETCH_PROJECTS_FAILURE);
 
-// const fetchOneProjectStart = emptyActionGenerator(FETCH_ONE_PROJECT_REQUEST);
-// const fetchOneProjectSuccess = payloadActionGenerator(FETCH_ONE_PROJECT_SUCCESS);
-// const fetchOneProjectError = payloadActionGenerator(FETCH_ONE_PROJECT_FAILURE);
+const fetchOneProjectStart = emptyActionGenerator(FETCH_ONE_PROJECT_REQUEST);
+const fetchOneProjectSuccess = payloadActionGenerator(FETCH_ONE_PROJECT_SUCCESS);
+const fetchOneProjectError = payloadActionGenerator(FETCH_ONE_PROJECT_FAILURE);
 
 const submitProjectStart = emptyActionGenerator(SUBMIT_PROJECT_REQUEST);
 const submitProjectSuccess = payloadActionGenerator(SUBMIT_PROJECT_SUCCESS);
@@ -72,6 +72,19 @@ export function fetchProjects(dispatch) {
     })
     .catch(error => {
       dispatch(fetchProjectsError(error));
+    });
+}
+
+export function fetchOneProject(dispatch, id) {
+  dispatch(fetchOneProjectStart());
+
+  return asyncServices.project
+    .fetchProject(id)
+    .then(response => {
+      dispatch(fetchOneProjectSuccess(response.data));
+    })
+    .catch(error => {
+      dispatch(fetchOneProjectError(error));
     });
 }
 
