@@ -40,14 +40,14 @@ class ProjectUsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectUsers
         fields = ('id', 'project', 'user', 'firstname', 'lastname', 'agreementDate', 'agreementCheck', 'position',
-                  'institution_name', 'institution_email', 'daco_email', 'status', 'createdDate', 'updatedDate')
+                  'institution_name', 'institution_email', 'phone', 'daco_email', 'status', 'createdDate', 'updatedDate')
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Applications
         fields = ('id', 'project', 'user', 'firstname', 'lastname', 'agreementDate', 'agreementCheck',
-                  'position', 'institution_name', 'address', 'institution_email', 'daco_email')
+                  'position', 'institution_name', 'address', 'institution_email', 'phone', 'daco_email')
 
 
 class ProjectsSerializer(serializers.ModelSerializer):

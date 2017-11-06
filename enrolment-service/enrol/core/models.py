@@ -38,6 +38,7 @@ class Applications(models.Model):
     institution_name = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     institution_email = models.EmailField()
+    phone = models.CharField(max_length=50)
     daco_email = models.EmailField()
 
     class Meta:
@@ -57,6 +58,7 @@ class ProjectUsers(models.Model):
     position = models.CharField(max_length=50)
     institution_name = models.CharField(max_length=100)
     institution_email = models.EmailField()
+    phone = models.CharField(max_length=50)
     daco_email = models.EmailField()
     createdDate = models.DateField(auto_now_add=True, auto_now=False)
     updatedDate = models.DateField(auto_now=True)

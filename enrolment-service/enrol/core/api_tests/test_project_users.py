@@ -50,6 +50,7 @@ class ProjectUsersTest(APITestCase):
             'position': 'Overlord',
             'institution_name': 'Cats Inc',
             'institution_email': 'flastington@cats.inc',
+            'phone': '123-123-1234',
             'daco_email': 'fluffykins@gmail.com',
             'status': 0,
         }
@@ -65,6 +66,7 @@ class ProjectUsersTest(APITestCase):
             'position',
             'institution_name',
             'institution_email',
+            'phone',
             'daco_email',
             'status',
             'createdDate',
@@ -82,6 +84,7 @@ class ProjectUsersTest(APITestCase):
             'position',
             'institution_name',
             'institution_email',
+            'phone',
             'daco_email',
             'status',
             'createdDate',
