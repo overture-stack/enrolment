@@ -24,6 +24,7 @@ const UPDATE_PROJECT_FAILURE = 'project/UPDATE_PROJECT_FAILURE';
 
 const UI_SELECT_PROJECT = 'projectUI/SELECT_PROJECT';
 const UI_SELECT_TAB = 'projectUI/SELECT_TAB';
+const UI_RESET_TAB = 'projectUI/UI_RESET_TAB';
 
 const NEXT_STEP = 'projectRequestForm/NEXT_STEP';
 const PREVIOUS_STEP = 'projectRequestForm/PREVIOUS_STEP';
@@ -52,6 +53,7 @@ const updateProjectError = payloadActionGenerator(UPDATE_PROJECT_FAILURE);
 
 export const uiSelectProject = payloadActionGenerator(UI_SELECT_PROJECT);
 export const uiSelectTab = payloadActionGenerator(UI_SELECT_TAB);
+export const uiResetTab = payloadActionGenerator(UI_RESET_TAB);
 
 export const formNextStep = emptyActionGenerator(NEXT_STEP);
 export const formPrevStep = emptyActionGenerator(PREVIOUS_STEP);
@@ -112,6 +114,7 @@ export function submitProjectApplication(dispatch, data) {
         address: data.address,
         institution_name: data.institution_name,
         institution_email: data.institution_email,
+        phone: data.phone,
         agreementCheck: data.agreementCheck,
       };
 
@@ -198,28 +201,37 @@ const _defaultProjectState = {
   loading: false,
   data: null,
   error: null,
+  hasFetched: false,
 };
 
 export const projectReducer = (state = _defaultProjectState, action) => {
   switch (action.type) {
     case SUBMIT_PROJECT_REQUEST:
+    case FETCH_ONE_PROJECT_REQUEST:
       return {
         ...state,
         loading: true,
+        data: null,
+        error: null,
+        hasFetched: false,
       };
     case SUBMIT_PROJECT_SUCCESS:
+    case FETCH_ONE_PROJECT_SUCCESS:
       return {
         ...state,
         loading: false,
         data: action.payload,
         error: null,
+        hasFetched: true,
       };
     case SUBMIT_PROJECT_FAILURE:
+    case FETCH_ONE_PROJECT_FAILURE:
       return {
         ...state,
         loading: false,
         data: null,
         error: action.payload,
+        hasFetched: true,
       };
     default:
       return state;
@@ -243,6 +255,11 @@ export const projectsUIReducer = (state = _defaultProjectsUIState, action) => {
       return {
         ...state,
         activeTab: action.payload,
+      };
+    case UI_RESET_TAB:
+      return {
+        ...state,
+        activeTab: 1,
       };
     default:
       return state;

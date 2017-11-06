@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
+import { initialize, destroy } from 'redux-form';
 
 import ProgressBar from './ProgressBar';
 import ReqFormStep1 from './ReqFormStep1';
 import ReqFormStep2 from './ReqFormStep2';
 import ReqFormStep3 from './ReqFormStep3';
 
-import { formNextStep, formPrevStep, fetchOneProject, submitProjectApplication } from '../redux';
+import { formNextStep, formPrevStep, formResetStep, submitProjectApplication } from '../redux';
+import { fetchApplicationAndProject } from '../../Applications/redux';
 
 class ReqForm extends Component {
   static displayName = 'ReqForm';
@@ -17,8 +19,24 @@ class ReqForm extends Component {
     super(props);
     this.onSubmit = this.onSubmit.bind(this);
 
-    // Load a project if there is an id in the URL
-    this.loadProjectifId();
+    // Load application/project if there is an id in the URL
+    this.loadApplicationAndProjectIfId();
+
+    // Either load form with application/project data
+    // or clear it in case of new project
+    this.InititiateOrClearFormsOnId();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const shouldReload = !this.props.project.hasFetched && nextProps.project.hasFetched;
+
+    if (shouldReload) {
+      const data = {
+        ...nextProps.project.data,
+        ...nextProps.application.data,
+      };
+      this.InititiateOrClearFormsOnId(data);
+    }
   }
 
   onSubmit(data) {
@@ -27,19 +45,50 @@ class ReqForm extends Component {
     submitProjectApplication(submission);
   }
 
-  loadProjectifId() {
-    const { location: { search = '' }, fetchOneProject } = this.props;
+  checkForAndReturnId() {
+    const { location: { search = '' } } = this.props;
 
     const queryVars = search.length > 0 ? queryString.parse(search) : null;
-    const projectId = queryVars ? queryVars.id : null;
+    const applicationId = queryVars ? queryVars.id : null;
 
-    if (!projectId) return false;
+    if (!applicationId) return false;
 
-    fetchOneProject(projectId);
+    return applicationId;
+  }
+
+  loadApplicationAndProjectIfId() {
+    const id = this.checkForAndReturnId();
+    if (id) this.props.fetchApplicationAndProject(id);
+  }
+
+  InititiateOrClearFormsOnId(newData = {}) {
+    const id = this.checkForAndReturnId();
+
+    // If id load data into form, else reset form to empty
+    if (id) {
+      const data = {
+        ...this.props.project.data,
+        ...this.props.application.data,
+        ...newData,
+      };
+
+      this.props.initializeForm(data);
+    } else {
+      this.props.resetForm();
+    }
+
+    // Reset form pagination in all cases
+    this.props.formResetStep();
   }
 
   render() {
-    const { projectRequestForm: { step }, formNextStep, formPrevStep } = this.props;
+    const {
+      projectRequestForm: { step },
+      formNextStep,
+      formPrevStep,
+      application,
+      project,
+    } = this.props;
 
     return (
       <div className="project">
@@ -56,6 +105,8 @@ const mapStateToProps = state => {
   return {
     projectRequestForm: state.projectRequestForm,
     profile: state.profile,
+    application: state.application,
+    project: state.project,
   };
 };
 
@@ -63,8 +114,11 @@ const mapDispatchToProps = dispatch => {
   return {
     formNextStep: () => dispatch(formNextStep()),
     formPrevStep: () => dispatch(formPrevStep()),
-    fetchOneProject: id => fetchOneProject(dispatch, id),
+    formResetStep: () => dispatch(formResetStep()),
+    fetchApplicationAndProject: id => fetchApplicationAndProject(dispatch, id),
     submitProjectApplication: data => submitProjectApplication(dispatch, data),
+    initializeForm: data => dispatch(initialize('projectRequestForm', data)),
+    resetForm: () => dispatch(destroy('projectRequestForm')),
   };
 };
 

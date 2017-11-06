@@ -37,7 +37,7 @@ const ReqFormStep2 = props => {
           <button onClick={previousPage} className="previous action-button">
             Previous
           </button>
-          <button type="submit" className="next action-button" disabled={pristine || invalid}>
+          <button type="submit" className="next action-button" disabled={invalid}>
             Next
           </button>
         </div>

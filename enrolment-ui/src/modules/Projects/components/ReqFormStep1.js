@@ -86,7 +86,7 @@ const ReqFormStep1 = props => {
       </div>
       <div className="row">
         <div className="col-md-12">
-          <button type="submit" className="next action-button" disabled={pristine || invalid}>
+          <button type="submit" className="next action-button" disabled={invalid}>
             Next
           </button>
         </div>

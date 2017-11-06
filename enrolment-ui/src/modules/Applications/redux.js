@@ -1,5 +1,6 @@
 import { emptyActionGenerator, payloadActionGenerator } from '../../redux/helpers';
 import asyncServices from '../../services';
+import { fetchOneProject } from '../Projects/redux';
 
 /*
 * Actions
@@ -51,6 +52,20 @@ export function fetchOneApplication(dispatch, id) {
     .fetchApplication(id)
     .then(response => {
       dispatch(fetchOneApplicationSuccess(response.data));
+    })
+    .catch(error => {
+      dispatch(fetchOneApplicationError(error));
+    });
+}
+
+export function fetchApplicationAndProject(dispatch, applicationId) {
+  dispatch(fetchOneApplicationStart());
+
+  return asyncServices.application
+    .fetchApplication(applicationId)
+    .then(response => {
+      dispatch(fetchOneApplicationSuccess(response.data));
+      fetchOneProject(dispatch, response.data.project);
     })
     .catch(error => {
       dispatch(fetchOneApplicationError(error));
@@ -114,6 +129,7 @@ const _defaultApplicationState = {
   loading: false,
   data: null,
   error: null,
+  hasFetched: false,
 };
 
 export const applicationReducer = (state = _defaultApplicationState, action) => {
@@ -123,6 +139,9 @@ export const applicationReducer = (state = _defaultApplicationState, action) => 
       return {
         ...state,
         loading: true,
+        data: null,
+        error: null,
+        hasFetched: false,
       };
     case SUBMIT_APPLICATION_SUCCESS:
     case FETCH_ONE_APPLICATION_SUCCESS:
@@ -131,6 +150,7 @@ export const applicationReducer = (state = _defaultApplicationState, action) => 
         loading: false,
         data: action.payload,
         error: null,
+        hasFetched: true,
       };
     case SUBMIT_APPLICATION_FAILURE:
     case FETCH_ONE_APPLICATION_FAILURE:
@@ -139,6 +159,7 @@ export const applicationReducer = (state = _defaultApplicationState, action) => 
         loading: false,
         data: null,
         error: action.payload,
+        hasFetched: true,
       };
     default:
       return state;
