@@ -132,7 +132,7 @@ export function approveProject(dispatch, id, next = () => null) {
   dispatch(updateProjectStart('Approve Project Request'));
 
   return asyncServices.project
-    .update({ id, status: 1 })
+    .update(id, { status: 1 })
     .then(response => {
       dispatch(updateProjectSuccess('Project Approved'));
       next();
@@ -146,7 +146,7 @@ export function denyProject(dispatch, id, next = () => null) {
   dispatch(updateProjectStart('Deny Project Request'));
 
   return asyncServices.project
-    .update({ id, status: 2 })
+    .update(id, { status: 2 })
     .then(response => {
       dispatch(updateProjectSuccess('Project Denied'));
       next();

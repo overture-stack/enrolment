@@ -110,8 +110,6 @@ class Projects extends Component {
   }
 }
 
-Projects.displayName = 'Projects';
-
 const mapStateToProps = state => {
   return {
     projects: state.projects,

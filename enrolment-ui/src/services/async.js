@@ -49,10 +49,11 @@ export function createAsyncs(isDevelopment = false) {
       fetchProjectUsers: (projectId, id) =>
         asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/${id}`)(),
       submit: asyncServiceCreator('POST', `${apiBase}/projects/`, withDataAndCSRF),
-      update: asyncServiceCreator('PUT', `${apiBase}/projects/`, withDataAndCSRF),
+      update: (id, data) =>
+        asyncServiceCreator('PATCH', `${apiBase}/projects/${id}/`, withDataAndCSRF)(data),
     },
     user: {
-      dacoAccess: email => asyncServiceCreator('GET', `${apiBase}/daco/${email}`)(),
+      dacoCheck: email => asyncServiceCreator('GET', `${apiBase}/daco/${email}`)(),
       userRequest: asyncServiceCreator('POST', `${apiBase}/request/user/`, withDataAndCSRF),
       fetchUserRequests: projectId =>
         asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/`)(),
