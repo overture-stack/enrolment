@@ -43,11 +43,11 @@ export const removeEmail = payloadActionGenerator(REMOVE_EMAIL);
 * Public async thunk actions (mapped to component props)
 */
 
-export function fetchRequests(dispatch) {
+export function fetchUserRequests(dispatch) {
   dispatch(fetchRequestsStart());
 
   return asyncServices.user
-    .fetchUserRequests()
+    .fetchAllProjectUserRequests()
     .then(response => {
       dispatch(fetchRequestsSuccess(response.data));
     })
@@ -86,15 +86,15 @@ export function dacoCheck(dispatch, email) {
 * Reducer
 */
 
-// User Reducer
-const _defaultState = {
+// User Request Reducer
+const _defaultUserRequestState = {
   loading: false,
   hasRequests: false,
   data: [],
   error: null,
 };
 
-export const reducer = (state = _defaultState, action) => {
+export const userRequestReducer = (state = _defaultUserRequestState, action) => {
   switch (action.type) {
     case FETCH_REQUESTS_REQUEST:
       return {
@@ -106,7 +106,7 @@ export const reducer = (state = _defaultState, action) => {
         ...state,
         loading: false,
         hasRequests: true,
-        data: [],
+        data: action.payload,
         error: null,
       };
     case FETCH_REQUESTS_FAILURE:

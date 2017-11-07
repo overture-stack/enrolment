@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
 const UserRequests = props => {
-  const { profile, users } = props;
+  const { profile, userRequests } = props;
 
   return (
     <div className="col-md-12">
@@ -21,7 +21,7 @@ const UserRequests = props => {
           </tr>
         </thead>
         <tbody>
-          {users.data.map(user => {
+          {userRequests.data.map(user => {
             return (
               <tr key={user.id}>
                 <td>
@@ -60,7 +60,7 @@ UserRequests.displayName = 'UserRequests';
 const mapStateToProps = state => {
   return {
     profile: state.profile,
-    users: state.users,
+    userRequests: state.userRequests,
   };
 };
 

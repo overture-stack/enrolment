@@ -132,7 +132,15 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
         project_pk = self.kwargs['project_pk']
 
         if user.is_superuser:
+            # on "all" do not filter by project
+            if (project_pk == 'all'):
+                return ProjectUsers.objects.all()
+
             return ProjectUsers.objects.filter(project=project_pk)
+
+        # on "all" do not filter by project
+        if (project_pk == 'all'):
+            return ProjectUsers.objects.filter(user=user)
 
         return ProjectUsers.objects.filter(user=user, project=project_pk)
 

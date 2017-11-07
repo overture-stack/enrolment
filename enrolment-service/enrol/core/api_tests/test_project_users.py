@@ -164,6 +164,26 @@ class ProjectUsersTest(APITestCase):
         self.assertEqual(ProjectUsers.objects.count(), 2)
         self.assertEqual(len(json.loads(response.content)), 1)
 
+    def test_get_projectUsers_list_all(self):
+        """
+        Ensure we can fetch a projectUsers
+        """
+        all_url = reverse('project-users-list', args=['all'])
+        projectUser_1 = self.create_test_projectUser(
+            projectUser={'project': self.testProject})
+        projectUser_2 = self.create_test_projectUser(
+            projectUser={'firstname': 'Secundo', 'project': self.secondProject})
+        user = User.objects.get(username='user')
+        client = APIClient()
+        client.force_authenticate(user=self.user)
+        response = client.get(all_url)
+
+        print(all_url)
+
+        # Test Response Success
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(ProjectUsers.objects.count(), 2)
+
     def test_get_projectUser_by_id(self):
         projectUser = self.create_test_projectUser(
             projectUser={'project': self.testProject})
