@@ -82,13 +82,7 @@ class ReqForm extends Component {
   }
 
   render() {
-    const {
-      projectRequestForm: { step },
-      formNextStep,
-      formPrevStep,
-      application,
-      project,
-    } = this.props;
+    const { projectRequestForm: { step }, formNextStep, formPrevStep } = this.props;
 
     return (
       <div className="project">
