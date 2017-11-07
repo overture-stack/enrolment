@@ -43,8 +43,8 @@ urlpatterns = [
         views.UserRequestConfirmation),
 
     # Daco
-    url(r'^api/daco/$', views.daco),
-    url(r'^api/daco/(?P<email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$',
+    url(r'^api/v1/daco/$', views.daco),
+    url(r'^api/v1/daco/(?P<email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$',
         views.dacoAccess),
 
     # Django Rest Router + Nested Routers
