@@ -3,7 +3,8 @@ import { Field, reduxForm } from 'redux-form';
 import { RFInput, rules } from '../../ReduxForm';
 
 const ReqFormStep1 = props => {
-  const { handleSubmit, pristine, invalid } = props;
+  const { handleSubmit, invalid, initialized } = props;
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="row">
@@ -20,6 +21,7 @@ const ReqFormStep1 = props => {
           component={RFInput}
           bootstrapClass="col-md-6"
           validate={rules.required}
+          disabled={initialized}
         />
         <Field
           name="lastname"
@@ -28,6 +30,7 @@ const ReqFormStep1 = props => {
           component={RFInput}
           bootstrapClass="col-md-6"
           validate={rules.required}
+          disabled={initialized}
         />
       </div>
       <div className="row">
@@ -37,6 +40,7 @@ const ReqFormStep1 = props => {
           placeholder="Position"
           component={RFInput}
           validate={rules.required}
+          disabled={initialized}
         />
       </div>
       <div className="row">
@@ -46,6 +50,7 @@ const ReqFormStep1 = props => {
           placeholder="Institution Name"
           component={RFInput}
           validate={rules.required}
+          disabled={initialized}
         />
       </div>
       <div className="row">
@@ -55,6 +60,7 @@ const ReqFormStep1 = props => {
           placeholder="Address"
           component={RFInput}
           validate={rules.required}
+          disabled={initialized}
         />
       </div>
       <div className="row">
@@ -65,6 +71,7 @@ const ReqFormStep1 = props => {
           component={RFInput}
           bootstrapClass="col-md-6"
           validate={[rules.required, rules.email]}
+          disabled={initialized}
         />
         <Field
           type="tel"
@@ -73,6 +80,7 @@ const ReqFormStep1 = props => {
           component={RFInput}
           bootstrapClass="col-md-6"
           validate={rules.required}
+          disabled={initialized}
         />
       </div>
       <div className="row">
@@ -82,6 +90,7 @@ const ReqFormStep1 = props => {
           placeholder="Daco Email"
           component={RFInput}
           validate={[rules.required, rules.email]}
+          disabled={initialized}
         />
       </div>
       <div className="row">

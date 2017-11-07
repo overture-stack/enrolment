@@ -15,9 +15,17 @@ export const RFInput = ({
   placeholder,
   bootstrapClass = 'col-md-12',
   meta: { touched, error, warning },
+  disabled,
 }) => (
   <div className={bootstrapClass}>
-    <input name={name} className="form-control" {...input} placeholder={placeholder} type={type} />
+    <input
+      name={name}
+      className="form-control"
+      {...input}
+      placeholder={placeholder}
+      type={type}
+      disabled={disabled}
+    />
     {touched &&
       ((error && <span className="error">{error}</span>) ||
         (warning && <span className="warning">{warning}</span>))}
@@ -30,9 +38,16 @@ export const RFTextArea = ({
   placeholder,
   bootstrapClass = 'col-md-12',
   meta: { touched, error, warning },
+  disabled,
 }) => (
   <div className={bootstrapClass}>
-    <textarea name={name} className="form-control" {...input} placeholder={placeholder} />
+    <textarea
+      name={name}
+      className="form-control"
+      {...input}
+      placeholder={placeholder}
+      disabled={disabled}
+    />
     {touched &&
       ((error && <span className="error">{error}</span>) ||
         (warning && <span className="warning">{warning}</span>))}
@@ -45,6 +60,7 @@ export const RFConsent = ({
   input,
   placeholder,
   meta: { touched, error, warning },
+  disabled,
 }) => (
   <label className="form-check-label col-md-12">
     <input
@@ -53,6 +69,7 @@ export const RFConsent = ({
       {...input}
       placeholder={placeholder}
       type="checkbox"
+      disabled={disabled}
     />
     <span>{label}</span>
     {touched &&
@@ -68,9 +85,10 @@ export const RFSelect = ({
   defaultOption,
   options,
   meta: { touched, error, warning },
+  disabled,
 }) => (
   <div className={bootstrapClass}>
-    <select className="form-control" id={name} {...input}>
+    <select className="form-control" id={name} {...input} disabled={disabled}>
       <option value="">{defaultOption}</option>
       {options.map((option, idx) => (
         <option key={idx} value={option.value}>
