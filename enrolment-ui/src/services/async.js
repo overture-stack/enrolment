@@ -54,6 +54,7 @@ export function createAsyncs(isDevelopment = false) {
     },
     user: {
       dacoCheck: email => asyncServiceCreator('GET', `${apiBase}/daco/?email=${email}/`)(),
+      userRequest: asyncServiceCreator('POST', `${apiBase}/request/user/`, withDataAndCSRF),
       fetchAllProjectUserRequests: asyncServiceCreator('GET', `${apiBase}/projects/all/users/`),
       fetchProjectUserRequests: projectId =>
         asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/`)(),
