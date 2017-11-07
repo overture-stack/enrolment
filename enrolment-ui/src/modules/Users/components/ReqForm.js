@@ -7,7 +7,7 @@ import EmailList from './EmailList';
 
 import { toggleModal } from '../redux';
 
-const successMessage = props => {
+const SuccessMessage = props => {
   return (
     <div className="success">
       <div className="alert alert-success">The Enrolment Request was send Successfully!</div>
@@ -32,7 +32,6 @@ const ReqForm = props => {
     toggleModal,
     userEnrolmentModal: { submitSuccess, error },
     projects,
-    profile,
   } = props;
 
   const projectOptions = projects.results
@@ -51,36 +50,43 @@ const ReqForm = props => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Modal.Body>
-        {submitSuccess ? <successMessage /> : null}
-        <div className="form-group row">
-          <div className="col-md-4">
-            <label htmlFor="projectSelector">Project</label>
+      {submitSuccess ? (
+        <Modal.Body>
+          <SuccessMessage />
+        </Modal.Body>
+      ) : (
+        <Modal.Body>
+          <div className="form-group row">
+            <div className="col-md-4">
+              <label htmlFor="projectSelector">Project</label>
+            </div>
+            <Field
+              name="project"
+              component={RFSelect}
+              bootstrapClass="col-md-6"
+              options={projectOptions}
+              defaultOption="Select a Project"
+              validate={rules.required}
+            />
           </div>
           <Field
-            name="project"
-            component={RFSelect}
-            bootstrapClass="col-md-6"
-            options={projectOptions}
-            defaultOption="Select a Project"
+            component={EmailList}
+            label="Users' Daco Email"
+            name="email"
             validate={rules.required}
           />
-        </div>
-        <Field
-          component={EmailList}
-          label="Users' Daco Email"
-          name="email"
-          validate={rules.required}
-        />
-        {error ? <ErrorMessage message={error.response.statusText} /> : null}
-      </Modal.Body>
+          {error ? <ErrorMessage message={error.response.statusText} /> : null}
+        </Modal.Body>
+      )}
       <Modal.Footer>
         <button className="action-button" onClick={closeModal}>
           Close
         </button>
-        <button type="submit" className="action-button" disabled={pristine || invalid}>
-          Submit
-        </button>
+        {!submitSuccess ? (
+          <button type="submit" className="action-button" disabled={pristine || invalid}>
+            Submit
+          </button>
+        ) : null}
       </Modal.Footer>
     </form>
   );
@@ -88,7 +94,6 @@ const ReqForm = props => {
 
 const mapStateToProps = state => {
   return {
-    profile: state.profile.data,
     projects: state.projects.data,
     userEnrolmentModal: state.userEnrolmentModal,
   };

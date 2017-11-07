@@ -134,6 +134,7 @@ const _defaultUserEnrolmentModalState = {
 export const userEnrolmentModalReducer = (state = _defaultUserEnrolmentModalState, action) => {
   switch (action.type) {
     case DACO_CHECK_REQUEST:
+    case ENROLL_USERS_REQUEST:
       return {
         ...state,
         isFetching: true,
@@ -145,10 +146,17 @@ export const userEnrolmentModalReducer = (state = _defaultUserEnrolmentModalStat
         users: [...state.users, action.payload],
       };
     case DACO_CHECK_FAILURE:
+    case ENROLL_USERS_FAILURE:
       return {
         ...state,
         isFetching: false,
         error: action.payload,
+      };
+    case ENROLL_USERS_SUCCESS:
+      return {
+        ..._defaultUserEnrolmentModalState,
+        show: true,
+        submitSuccess: true,
       };
     case REMOVE_EMAIL: {
       const users = [...state.users];
@@ -160,16 +168,8 @@ export const userEnrolmentModalReducer = (state = _defaultUserEnrolmentModalStat
     }
     case TOGGLE_MODAL:
       return {
-        ...state,
-        show: !state.show,
-        isFetching: false,
-        submitSuccess: false,
-        error: null,
-        users: [],
-      };
-    case ENROLL_USERS_SUCCESS:
-      return {
         ..._defaultUserEnrolmentModalState,
+        show: !state.show,
       };
     default:
       return state;
