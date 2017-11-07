@@ -31,6 +31,8 @@ projects_router.register(
 urlpatterns = [
     url(r'^$', views.schema_view),
     url(r'^admin/', admin.site.urls),
+
+    # Auth
     url(r'^api/v1/auth/', include('rest_auth.urls')),
     url(r'^api/v1/auth/google/$', GoogleLogin.as_view(), name='google_login'),
     url(r'^api/v1/auth/social/$', views.SocialViewSet),
@@ -39,6 +41,11 @@ urlpatterns = [
     url(r'^api/v1/request/user/$', views.UserRequestViewSet),
     url(r'^api/v1/request/user/check/(?P<id>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
         views.UserRequestConfirmation),
+
+    # Daco
+    url(r'^api/daco/$', views.daco),
+    url(r'^api/daco/(?P<email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$',
+        views.dacoAccess),
 
     # Django Rest Router + Nested Routers
     url(r'^api/v1/', include(router.urls)),
