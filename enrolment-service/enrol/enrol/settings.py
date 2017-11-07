@@ -164,12 +164,12 @@ STATIC_URL = '/static/'
 SITE_ID = 1
 
 
-# DACO
-ICGC_BASE_URL = ''
-ICGC_CLIENT_KEY = ''
-ICGC_CLIENT_SECRET = ''
-ICGC_TOKEN = ''
-ICGC_TOKEN_SECRET = ''
+# DACO (set these in env however you prefer)
+ICGC_BASE_URL = os.environ.get('ICGC_BASE_URL', '')
+ICGC_CLIENT_KEY = os.environ.get('ICGC_CLIENT_KEY', '')
+ICGC_CLIENT_SECRET = os.environ.get('ICGC_CLIENT_SECRET', '')
+ICGC_TOKEN = os.environ.get('ICGC_TOKEN', '')
+ICGC_TOKEN_SECRET = os.environ.get('ICGC_TOKEN_SECRET', '')
 
 # SMTP
-SMTP_URL = ''
+SMTP_URL = os.environ.get('SMTP_URL', '')

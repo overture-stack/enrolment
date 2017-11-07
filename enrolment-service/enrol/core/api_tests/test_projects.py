@@ -123,7 +123,7 @@ class ProjectsTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Test Response Format
-        project_responce_obj = response.data  # json.loads(response.data)
+        project_responce_obj = response.data
         self.assertEqual(self.single_response_set.issubset(
             project_responce_obj), True)
 

@@ -10,9 +10,9 @@ const FETCH_PROJECTS_REQUEST = 'project/FETCH_PROJECTS_REQUEST';
 const FETCH_PROJECTS_SUCCESS = 'project/FETCH_PROJECTS_SUCCESS';
 const FETCH_PROJECTS_FAILURE = 'project/FETCH_PROJECTS_FAILURE';
 
-// const FETCH_ONE_PROJECT_REQUEST = 'project/FETCH_ONE_PROJECT_REQUEST';
-// const FETCH_ONE_PROJECT_SUCCESS = 'project/FETCH_ONE_PROJECT_SUCCESS';
-// const FETCH_ONE_PROJECT_FAILURE = 'project/FETCH_ONE_PROJECT_FAILURE';
+const FETCH_ONE_PROJECT_REQUEST = 'project/FETCH_ONE_PROJECT_REQUEST';
+const FETCH_ONE_PROJECT_SUCCESS = 'project/FETCH_ONE_PROJECT_SUCCESS';
+const FETCH_ONE_PROJECT_FAILURE = 'project/FETCH_ONE_PROJECT_FAILURE';
 
 const SUBMIT_PROJECT_REQUEST = 'project/SUBMIT_PROJECT_REQUEST';
 const SUBMIT_PROJECT_SUCCESS = 'project/SUBMIT_PROJECT_SUCCESS';
@@ -24,6 +24,7 @@ const UPDATE_PROJECT_FAILURE = 'project/UPDATE_PROJECT_FAILURE';
 
 const UI_SELECT_PROJECT = 'projectUI/SELECT_PROJECT';
 const UI_SELECT_TAB = 'projectUI/SELECT_TAB';
+const UI_RESET_TAB = 'projectUI/UI_RESET_TAB';
 
 const NEXT_STEP = 'projectRequestForm/NEXT_STEP';
 const PREVIOUS_STEP = 'projectRequestForm/PREVIOUS_STEP';
@@ -34,9 +35,9 @@ const fetchProjectsStart = emptyActionGenerator(FETCH_PROJECTS_REQUEST);
 const fetchProjectsSuccess = payloadActionGenerator(FETCH_PROJECTS_SUCCESS);
 const fetchProjectsError = payloadActionGenerator(FETCH_PROJECTS_FAILURE);
 
-// const fetchOneProjectStart = emptyActionGenerator(FETCH_ONE_PROJECT_REQUEST);
-// const fetchOneProjectSuccess = payloadActionGenerator(FETCH_ONE_PROJECT_SUCCESS);
-// const fetchOneProjectError = payloadActionGenerator(FETCH_ONE_PROJECT_FAILURE);
+const fetchOneProjectStart = emptyActionGenerator(FETCH_ONE_PROJECT_REQUEST);
+const fetchOneProjectSuccess = payloadActionGenerator(FETCH_ONE_PROJECT_SUCCESS);
+const fetchOneProjectError = payloadActionGenerator(FETCH_ONE_PROJECT_FAILURE);
 
 const submitProjectStart = emptyActionGenerator(SUBMIT_PROJECT_REQUEST);
 const submitProjectSuccess = payloadActionGenerator(SUBMIT_PROJECT_SUCCESS);
@@ -52,6 +53,7 @@ const updateProjectError = payloadActionGenerator(UPDATE_PROJECT_FAILURE);
 
 export const uiSelectProject = payloadActionGenerator(UI_SELECT_PROJECT);
 export const uiSelectTab = payloadActionGenerator(UI_SELECT_TAB);
+export const uiResetTab = payloadActionGenerator(UI_RESET_TAB);
 
 export const formNextStep = emptyActionGenerator(NEXT_STEP);
 export const formPrevStep = emptyActionGenerator(PREVIOUS_STEP);
@@ -72,6 +74,19 @@ export function fetchProjects(dispatch) {
     })
     .catch(error => {
       dispatch(fetchProjectsError(error));
+    });
+}
+
+export function fetchOneProject(dispatch, id) {
+  dispatch(fetchOneProjectStart());
+
+  return asyncServices.project
+    .fetchProject(id)
+    .then(response => {
+      dispatch(fetchOneProjectSuccess(response.data));
+    })
+    .catch(error => {
+      dispatch(fetchOneProjectError(error));
     });
 }
 
@@ -99,6 +114,7 @@ export function submitProjectApplication(dispatch, data) {
         address: data.address,
         institution_name: data.institution_name,
         institution_email: data.institution_email,
+        phone: data.phone,
         agreementCheck: data.agreementCheck,
       };
 
@@ -116,7 +132,7 @@ export function approveProject(dispatch, id, next = () => null) {
   dispatch(updateProjectStart('Approve Project Request'));
 
   return asyncServices.project
-    .update({ id, status: 1 })
+    .update(id, { status: 1 })
     .then(response => {
       dispatch(updateProjectSuccess('Project Approved'));
       next();
@@ -130,7 +146,7 @@ export function denyProject(dispatch, id, next = () => null) {
   dispatch(updateProjectStart('Deny Project Request'));
 
   return asyncServices.project
-    .update({ id, status: 2 })
+    .update(id, { status: 2 })
     .then(response => {
       dispatch(updateProjectSuccess('Project Denied'));
       next();
@@ -185,28 +201,37 @@ const _defaultProjectState = {
   loading: false,
   data: null,
   error: null,
+  hasFetched: false,
 };
 
 export const projectReducer = (state = _defaultProjectState, action) => {
   switch (action.type) {
     case SUBMIT_PROJECT_REQUEST:
+    case FETCH_ONE_PROJECT_REQUEST:
       return {
         ...state,
         loading: true,
+        data: null,
+        error: null,
+        hasFetched: false,
       };
     case SUBMIT_PROJECT_SUCCESS:
+    case FETCH_ONE_PROJECT_SUCCESS:
       return {
         ...state,
         loading: false,
         data: action.payload,
         error: null,
+        hasFetched: true,
       };
     case SUBMIT_PROJECT_FAILURE:
+    case FETCH_ONE_PROJECT_FAILURE:
       return {
         ...state,
         loading: false,
         data: null,
         error: action.payload,
+        hasFetched: true,
       };
     default:
       return state;
@@ -230,6 +255,11 @@ export const projectsUIReducer = (state = _defaultProjectsUIState, action) => {
       return {
         ...state,
         activeTab: action.payload,
+      };
+    case UI_RESET_TAB:
+      return {
+        ...state,
+        activeTab: 1,
       };
     default:
       return state;

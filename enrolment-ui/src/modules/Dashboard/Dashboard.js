@@ -7,6 +7,7 @@ import { UserEnrolmentModal } from '../Users';
 
 import { fetchProjects } from '../Projects/redux';
 import { fetchApplications } from '../Applications/redux';
+import { fetchUserRequests } from '../Users/redux';
 
 import './dashboard.scss';
 
@@ -24,6 +25,7 @@ class Dashboard extends Component {
   fetchNewData() {
     this.props.fetchProjects();
     this.props.fetchApplications();
+    this.props.fetchUserRequests();
   }
 
   render() {
@@ -61,6 +63,7 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchApplications: () => fetchApplications(dispatch),
     fetchProjects: () => fetchProjects(dispatch),
+    fetchUserRequests: () => fetchUserRequests(dispatch),
   };
 };
 

@@ -11,7 +11,7 @@ export function createAsyncs(isDevelopment = false) {
   const asyncs = {
     application: {
       fetchApplications: asyncServiceCreator('GET', `${apiBase}/applications/`),
-      fetchApplication: id => asyncServiceCreator('GET', `${apiBase}/applications/${id}`)(),
+      fetchApplication: id => asyncServiceCreator('GET', `${apiBase}/applications/${id}/`)(),
       submit: asyncServiceCreator('POST', `${apiBase}/applications/`, withDataAndCSRF),
     },
     auth: {
@@ -39,33 +39,34 @@ export function createAsyncs(isDevelopment = false) {
       logout: asyncServiceCreator('POST', `${apiBase}/auth/logout/`, withCSRF),
     },
     profile: {
-      getUser: asyncServiceCreator('GET', `${apiBase}/auth/user`),
-      getSocial: asyncServiceCreator('GET', `${apiBase}/auth/social`),
-      userCheck: id => asyncServiceCreator('GET', `${apiBase}/request/user/check/${id}`)(),
+      getUser: asyncServiceCreator('GET', `${apiBase}/auth/user/`),
+      getSocial: asyncServiceCreator('GET', `${apiBase}/auth/social/`),
+      userCheck: id => asyncServiceCreator('GET', `${apiBase}/request/user/check/${id}/`)(),
     },
     project: {
       fetchProjects: asyncServiceCreator('GET', `${apiBase}/projects/`),
-      fetchProject: id => asyncServiceCreator('GET', `${apiBase}/projects/${id}`)(),
+      fetchProject: id => asyncServiceCreator('GET', `${apiBase}/projects/${id}/`)(),
       fetchProjectUsers: (projectId, id) =>
-        asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/${id}`)(),
+        asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/${id}/`)(),
       submit: asyncServiceCreator('POST', `${apiBase}/projects/`, withDataAndCSRF),
-      update: asyncServiceCreator('PUT', `${apiBase}/projects/`, withDataAndCSRF),
+      update: (id, data) =>
+        asyncServiceCreator('PATCH', `${apiBase}/projects/${id}/`, withDataAndCSRF)(data),
     },
     user: {
-      dacoAccess: email => asyncServiceCreator('GET', `${apiBase}/daco/${email}`)(),
-      userRequest: asyncServiceCreator('POST', `${apiBase}/request/user/`, withDataAndCSRF),
-      fetchUserRequests: projectId =>
+      dacoCheck: email => asyncServiceCreator('GET', `${apiBase}/daco/?email=${email}/`)(),
+      fetchAllProjectUserRequests: asyncServiceCreator('GET', `${apiBase}/projects/all/users/`),
+      fetchProjectUserRequests: projectId =>
         asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/`)(),
       approveUserRequests: (projectId, id) =>
         asyncServiceCreator(
           'PUT',
-          `${apiBase}/projects/${projectId}/users/${id}`,
+          `${apiBase}/projects/${projectId}/users/${id}/`,
           withDataAndCSRF,
         )(),
       denyUserRequests: (projectId, id) =>
         asyncServiceCreator(
           'PUT',
-          `${apiBase}/projects/${projectId}/users/${id}`,
+          `${apiBase}/projects/${projectId}/users/${id}/`,
           withDataAndCSRF,
         )(),
     },
@@ -94,6 +95,15 @@ export function createAsyncs(isDevelopment = false) {
             },
             250,
           ),
+      },
+      user: {
+        ...asyncs.user,
+        dacoCheck: asyncDummyCreator(
+          {
+            success: true,
+          },
+          1000,
+        ),
       },
     };
   }

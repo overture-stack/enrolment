@@ -1,9 +1,20 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
+import { withRouter } from 'react-router-dom';
 import { RFConsent, rules } from '../../ReduxForm';
 
 const ReqFormStep3 = props => {
-  const { handleSubmit, previousPage, submitting, pristine, invalid } = props;
+  const {
+    handleSubmit,
+    previousPage,
+    submitting,
+    pristine,
+    invalid,
+    location: { search = '' },
+  } = props;
+
+  const existingApplication = search.length > 0;
+
   return (
     <form onSubmit={handleSubmit} className="agreement">
       <div className="row">
@@ -24,34 +35,40 @@ const ReqFormStep3 = props => {
           </p>
         </div>
       </div>
-      <div className="row">
-        <Field
-          name="agreementCheck"
-          label="I agree"
-          component={RFConsent}
-          validate={rules.required}
-        />
-      </div>
+      {existingApplication ? null : (
+        <div className="row">
+          <Field
+            name="agreementCheck"
+            label="I agree"
+            component={RFConsent}
+            validate={rules.required}
+          />
+        </div>
+      )}
       <div className="row">
         <div className="col-md-12">
           <button onClick={previousPage} className="previous action-button">
             Previous
           </button>
-          <button
-            type="submit"
-            className="submit action-button"
-            disabled={submitting || pristine || invalid}
-          >
-            Submit
-          </button>
+          {existingApplication ? null : (
+            <button
+              type="submit"
+              className="submit action-button"
+              disabled={submitting || pristine || invalid}
+            >
+              Submit
+            </button>
+          )}
         </div>
       </div>
     </form>
   );
 };
 
-export default reduxForm({
-  form: 'projectRequestForm', // <------ same form name
-  destroyOnUnmount: true, // <------ clear form data
-  forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
-})(ReqFormStep3);
+export default withRouter(
+  reduxForm({
+    form: 'projectRequestForm', // <------ same form name
+    destroyOnUnmount: false, // <------ clear form data
+    forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
+  })(ReqFormStep3),
+);

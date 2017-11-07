@@ -10,7 +10,9 @@ import { UserRequests } from '../../Users';
 const Requests = props => {
   const { profile, projects } = props;
 
-  const hasApprovedProjects = !!_.find(projects, project => _.includes(project.status, 'Approved'));
+  const hasApprovedProjects = !!_.find(projects.results, project =>
+    _.includes(project.status, 'Approved'),
+  );
 
   return (
     <div className="row dashboard">

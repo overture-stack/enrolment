@@ -8,6 +8,7 @@ STATUS_CHOICES = (
     (2, "Denied"),
 )
 
+
 class Projects(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -21,6 +22,7 @@ class Projects(models.Model):
 
     class Meta:
         db_table = "projects"
+        ordering = ['-id']
 
 
 class Applications(models.Model):
@@ -36,10 +38,12 @@ class Applications(models.Model):
     institution_name = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     institution_email = models.EmailField()
+    phone = models.CharField(max_length=50)
     daco_email = models.EmailField()
 
     class Meta:
         db_table = "applications"
+        ordering = ['-id']
 
 
 class ProjectUsers(models.Model):
@@ -54,6 +58,7 @@ class ProjectUsers(models.Model):
     position = models.CharField(max_length=50)
     institution_name = models.CharField(max_length=100)
     institution_email = models.EmailField()
+    phone = models.CharField(max_length=50)
     daco_email = models.EmailField()
     createdDate = models.DateField(auto_now_add=True, auto_now=False)
     updatedDate = models.DateField(auto_now=True)
@@ -61,6 +66,7 @@ class ProjectUsers(models.Model):
 
     class Meta:
         db_table = "project_users"
+        ordering = ['-id']
 
 
 class UserRequest(models.Model):
@@ -71,4 +77,4 @@ class UserRequest(models.Model):
 
     class Meta:
         db_table = "user_requests"
-
+        ordering = ['-id']

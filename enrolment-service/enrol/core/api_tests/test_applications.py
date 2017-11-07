@@ -39,6 +39,7 @@ class ApplicationsTest(APITestCase):
             'institution_name': 'Cats Inc',
             'address': '123 Fake Street',
             'institution_email': 'flastington@cats.inc',
+            'phone': '123-123-1234',
             'daco_email': 'fluffykins@gmail.com',
         }
 
@@ -54,6 +55,7 @@ class ApplicationsTest(APITestCase):
             'institution_name',
             'address',
             'institution_email',
+            'phone',
             'daco_email',
         ])
 
@@ -69,6 +71,7 @@ class ApplicationsTest(APITestCase):
             'institution_name',
             'address',
             'institution_email',
+            'phone',
             'daco_email',
         ])
 
