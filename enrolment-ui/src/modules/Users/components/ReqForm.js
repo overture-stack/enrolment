@@ -2,7 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { Modal } from 'react-bootstrap';
-import { RFSelect, EmailList, rules } from '../../ReduxForm';
+import { RFSelect, rules } from '../../ReduxForm';
+import EmailList from './EmailList';
 
 import { toggleModal } from '../redux';
 
@@ -14,13 +15,11 @@ const successMessage = props => {
   );
 };
 
-const errorMessage = props => {
+const ErrorMessage = props => {
   const { message } = props;
   return (
     <div className="error">
-      {this.state.error && (
-        <div className="alert alert-danger" dangerouslySetInnerHTML={{ __html: message }} />
-      )}
+      <div className="alert alert-danger">{message}</div>
     </div>
   );
 };
@@ -45,6 +44,11 @@ const ReqForm = props => {
       };
     });
 
+  const closeModal = event => {
+    event.preventDefault();
+    toggleModal();
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       <Modal.Body>
@@ -68,10 +72,10 @@ const ReqForm = props => {
           name="email"
           validate={rules.required}
         />
-        {error ? <errorMessage message={error} /> : null}
+        {error ? <ErrorMessage message={error.response.statusText} /> : null}
       </Modal.Body>
       <Modal.Footer>
-        <button className="action-button" onClick={toggleModal}>
+        <button className="action-button" onClick={closeModal}>
           Close
         </button>
         <button type="submit" className="action-button" disabled={pristine || invalid}>

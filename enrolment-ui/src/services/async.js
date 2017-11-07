@@ -53,7 +53,7 @@ export function createAsyncs(isDevelopment = false) {
         asyncServiceCreator('PATCH', `${apiBase}/projects/${id}/`, withDataAndCSRF)(data),
     },
     user: {
-      dacoCheck: email => asyncServiceCreator('GET', `${apiBase}/daco/${email}`)(),
+      dacoCheck: email => asyncServiceCreator('GET', `${apiBase}/daco/?email=${email}`)(),
       userRequest: asyncServiceCreator('POST', `${apiBase}/request/user/`, withDataAndCSRF),
       fetchUserRequests: projectId =>
         asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/`)(),
@@ -95,6 +95,15 @@ export function createAsyncs(isDevelopment = false) {
             },
             250,
           ),
+      },
+      user: {
+        ...asyncs.user,
+        dacoCheck: asyncDummyCreator(
+          {
+            success: true,
+          },
+          1000,
+        ),
       },
     };
   }
