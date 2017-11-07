@@ -172,4 +172,4 @@ ICGC_TOKEN = os.environ.get('ICGC_TOKEN', '')
 ICGC_TOKEN_SECRET = os.environ.get('ICGC_TOKEN_SECRET', '')
 
 # SMTP
-SMTP_URL = ''
+SMTP_URL = os.environ.get('SMTP_URL', '')

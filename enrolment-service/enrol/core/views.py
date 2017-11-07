@@ -243,7 +243,7 @@ def UserRequestViewSet(request):
             if serializer.is_valid():
                 serializer.save()
                 msg = MIMEText(
-                    Environment().from_string(open(os.path.join(settings.BASE_DIR, 'enrol/template.html')).read()).render(
+                    Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/template.html')).read()).render(
                         id=serializer.data['id'],
                         name=project['project_name'],
                         pi=project['pi']
