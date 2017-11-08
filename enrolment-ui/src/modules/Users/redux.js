@@ -17,6 +17,10 @@ const SUBMIT_USER_REQUEST = 'user/SUBMIT_USER_REQUEST';
 const SUBMIT_USER_SUCCESS = 'user/SUBMIT_USER_SUCCESS';
 const SUBMIT_USER_FAILURE = 'user/SUBMIT_USER_FAILURE';
 
+const UPDATE_REQUEST_REQUEST = 'user/UPDATE_REQUEST_REQUEST';
+const UPDATE_REQUEST_SUCCESS = 'user/UPDATE_REQUEST_SUCCESS';
+const UPDATE_REQUEST_FAILURE = 'user/UPDATE_REQUEST_FAILURE';
+
 const DACO_CHECK_REQUEST = 'user/DACO_CHECK_REQUEST';
 const DACO_CHECK_SUCCESS = 'user/DACO_CHECK_SUCCESS';
 const DACO_CHECK_FAILURE = 'user/DACO_CHECK_FAILURE';
@@ -44,6 +48,10 @@ const enrollUsersError = payloadActionGenerator(ENROLL_USERS_FAILURE);
 const submitUserStart = emptyActionGenerator(SUBMIT_USER_REQUEST);
 const submitUserSuccess = payloadActionGenerator(SUBMIT_USER_SUCCESS);
 const submitUserError = payloadActionGenerator(SUBMIT_USER_FAILURE);
+
+const updateUserRequestStart = payloadActionGenerator(UPDATE_REQUEST_REQUEST);
+const updateUserRequestSuccess = payloadActionGenerator(UPDATE_REQUEST_SUCCESS);
+const updateUserRequestError = payloadActionGenerator(UPDATE_REQUEST_FAILURE);
 
 /*
 * Public actions
@@ -100,23 +108,51 @@ export function dacoCheck(dispatch, email) {
     });
 }
 
-export function submitUserApplication(dispatch, project_id, data, next = () => {}) {
+export function submitUserApplication(dispatch, projectId, data, next = () => null) {
   const userData = {
     ...data,
-    project: project_id,
+    project: projectId,
     status: 0,
   };
 
   dispatch(submitUserStart());
 
   return asyncServices.user
-    .submit(project_id, userData)
+    .submit(projectId, userData)
     .then(response => {
-      dispatch(submitUserSuccess(response.data));
+      dispatch(submitUserSuccess('User request submitted!'));
       next();
     })
     .catch(error => {
       dispatch(submitUserError(error));
+    });
+}
+
+export function approveUserRequest(dispatch, projectId, id, next = () => null) {
+  dispatch(updateUserRequestStart('Approve User Request'));
+
+  return asyncServices.user
+    .updateUserRequest(projectId, id, { status: 1 })
+    .then(response => {
+      dispatch(updateUserRequestSuccess('User Approved'));
+      next();
+    })
+    .catch(error => {
+      dispatch(updateUserRequestError(error));
+    });
+}
+
+export function denyUserRequest(dispatch, projectId, id, next = () => null) {
+  dispatch(updateUserRequestStart('Deny User Request'));
+
+  return asyncServices.user
+    .updateUserRequest(projectId, id, { status: 2 })
+    .then(response => {
+      dispatch(updateUserRequestSuccess('User Denied'));
+      next();
+    })
+    .catch(error => {
+      dispatch(updateUserRequestError(error));
     });
 }
 
@@ -218,6 +254,7 @@ export const userEnrolmentModalReducer = (state = _defaultUserEnrolmentModalStat
 const _defaultRequestFormState = {
   step: 1,
   showModal: false,
+  error: null,
 };
 
 export const requestFormReducer = (state = _defaultRequestFormState, action) => {
@@ -230,6 +267,11 @@ export const requestFormReducer = (state = _defaultRequestFormState, action) => 
       return { ...state, step: 1 };
     case RF_TOGGLE_MODAL:
       return { ...state, showModal: !state.showModal };
+    case SUBMIT_USER_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+      };
     default:
       return state;
   }

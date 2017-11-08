@@ -62,18 +62,12 @@ export function createAsyncs(isDevelopment = false) {
         asyncServiceCreator('POST', `${apiBase}/projects/${projectId}/users/`, withDataAndCSRF)(
           data,
         ),
-      approveUserRequests: (projectId, id) =>
+      updateUserRequest: (projectId, id, data) =>
         asyncServiceCreator(
-          'PUT',
+          'PATCH',
           `${apiBase}/projects/${projectId}/users/${id}/`,
           withDataAndCSRF,
-        )(),
-      denyUserRequests: (projectId, id) =>
-        asyncServiceCreator(
-          'PUT',
-          `${apiBase}/projects/${projectId}/users/${id}/`,
-          withDataAndCSRF,
-        )(),
+        )(data),
     },
   };
 

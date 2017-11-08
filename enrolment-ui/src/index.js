@@ -31,13 +31,13 @@ render(
       <App>
         <Switch>
           <OnlyNonLoggedInRoute exact path="/" component={Login} />
-          <OnlyNonLoggedInRoute exact path="/register-user/:id/:project_id" component={Login} />
+          <OnlyNonLoggedInRoute exact path="/register-user/:id/:projectId" component={Login} />
           <OnlyNonLoggedInRoute exact path="/login" component={Login} />
           <Main>
             <Switch>
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
               <PrivateRoute exact path="/register/project" component={RegisterProject} />
-              <PrivateRoute exact path="/register/user/:id/:project_id" component={RegisterUser} />
+              <PrivateRoute exact path="/register/user/:id/:projectId" component={RegisterUser} />
               <PrivateRoute exact path="/projects" component={Projects} />
               <PrivateRoute component={NotFound} />
             </Switch>

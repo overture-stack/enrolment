@@ -41,16 +41,16 @@ class ReqForm extends Component {
 
   onSubmit(data) {
     const {
-      match: { params: { project_id } },
+      match: { params: { projectId } },
       history: { push },
       submitUserApplication,
     } = this.props;
-    submitUserApplication(project_id, data, () => push('/dashboard'));
+    submitUserApplication(projectId, data, () => push('/dashboard'));
   }
 
   loadProjectOrProjectUser() {
-    const project_id = this.props.match.params.project_id; // or project user id
-    this.props.fetchOneProject(project_id);
+    const projectId = this.props.match.params.projectId; // or project user id
+    this.props.fetchOneProject(projectId);
   }
 
   InititiateForm(newData = false) {
@@ -104,8 +104,8 @@ const mapDispatchToProps = dispatch => {
     formPrevStep: () => dispatch(rfPrevStep()),
     formResetStep: () => dispatch(rfResetStep()),
     fetchOneProject: id => fetchOneProject(dispatch, id),
-    submitUserApplication: (project_id, data, next) =>
-      submitUserApplication(dispatch, project_id, data, next),
+    submitUserApplication: (projectId, data, next) =>
+      submitUserApplication(dispatch, projectId, data, next),
     initializeForm: data => dispatch(initialize('userRequestForm', data)),
   };
 };

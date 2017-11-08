@@ -39,10 +39,10 @@ export const OnlyNonLoggedInRoute = connect(
     {...rest}
     render={props => {
       // Special redirect case for new users
-      const { match: { path, params: { id = '', project_id = '' } } } = props;
+      const { match: { path, params: { id = '', projectId = '' } } } = props;
       const redirect =
-        path === '/register-user/:id/:project_id'
-          ? `/register/user/${id}/${project_id}`
+        path === '/register-user/:id/:projectId'
+          ? `/register/user/${id}/${projectId}`
           : '/dashboard';
 
       return !auth.isLoggedIn ? (
