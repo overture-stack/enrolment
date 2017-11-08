@@ -285,6 +285,7 @@ def UserRequestViewSet(request):
                     Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/template.html')).read()).render(
                         id=serializer.data['id'],
                         name=project['project_name'],
+                        project_id=project['id'],
                         pi=project['pi']
                     ), "html"
                 )

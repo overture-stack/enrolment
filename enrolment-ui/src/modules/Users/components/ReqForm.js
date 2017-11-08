@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import queryString from 'query-string';
 import { initialize } from 'redux-form';
 
 import RequestProgressBar from '../../Common/RequestProgressBar';
@@ -10,7 +9,7 @@ import ReqFormStep2 from './ReqFormStep2';
 import ReqFormStep3 from './ReqFormStep3';
 
 import { rfNextStep, rfPrevStep, rfResetStep, submitUserApplication } from '../redux';
-// import { fetchApplicationAndProject } from '../../Applications/redux';
+import { fetchOneProject } from '../../Projects/redux';
 
 class ReqForm extends Component {
   static displayName = 'ReqForm';
@@ -19,12 +18,11 @@ class ReqForm extends Component {
     super(props);
     this.onSubmit = this.onSubmit.bind(this);
 
-    // Load application/project if there is an id in the URL
-    this.loadApplicationAndProjectIfId();
+    // Load either the project or complete project user if available
+    this.loadProjectOrProjectUser();
 
-    // Either load form with application/project data
-    // or clear it in case of new project
-    this.InititiateOrClearFormsOnId();
+    // Init form
+    this.InititiateForm();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -33,52 +31,40 @@ class ReqForm extends Component {
     if (shouldReload) {
       const data = {
         ...nextProps.project.data,
-        ...nextProps.application.data,
+        daco_email: nextProps.profile.data.email,
+        firstname: nextProps.profile.data.first_name,
+        lastname: nextProps.profile.data.last_name,
       };
-      this.InititiateOrClearFormsOnId(data);
+      this.InititiateForm(data);
     }
   }
 
   onSubmit(data) {
-    const { profile: { data: { pk } }, submitProjectApplication } = this.props;
-    const submission = { ...data, user: pk };
-    submitProjectApplication(submission);
+    const {
+      match: { params: { project_id } },
+      history: { push },
+      submitUserApplication,
+    } = this.props;
+    submitUserApplication(project_id, data, () => push('/dashboard'));
   }
 
-  checkForAndReturnId() {
-    const { location: { search = '' } } = this.props;
-
-    const queryVars = search.length > 0 ? queryString.parse(search) : null;
-    const applicationId = queryVars ? queryVars.id : null;
-
-    if (!applicationId) return false;
-
-    return applicationId;
+  loadProjectOrProjectUser() {
+    const project_id = this.props.match.params.project_id; // or project user id
+    this.props.fetchOneProject(project_id);
   }
 
-  loadApplicationAndProjectIfId() {
-    const id = this.checkForAndReturnId();
-    if (id) this.props.fetchApplicationAndProject(id);
-  }
+  InititiateForm(newData = false) {
+    const data =
+      newData !== false
+        ? newData
+        : {
+            ...this.props.project.data,
+            daco_email: this.props.profile.data.email,
+            firstname: this.props.profile.data.first_name,
+            lastname: this.props.profile.data.last_name,
+          };
 
-  InititiateOrClearFormsOnId(newData = {}) {
-    const id = this.checkForAndReturnId();
-
-    // If id load data into form, else reset form to empty (but include daco email)
-    if (id) {
-      const data = {
-        ...this.props.project.data,
-        ...this.props.application.data,
-        ...newData,
-      };
-
-      this.props.initializeForm(data);
-    } else {
-      const data = {
-        daco_email: this.props.profile.data.email,
-      };
-      this.props.initializeForm(data);
-    }
+    this.props.initializeForm(data);
 
     // Reset form pagination in all cases
     this.props.formResetStep();
@@ -89,15 +75,13 @@ class ReqForm extends Component {
 
     const steps = ['Personal Information', 'Collaboratory Project', 'Acceptance & Signature'];
 
-    const disabled = this.checkForAndReturnId() !== false;
+    const disabled = false; // this.checkForAndReturnId() !== false;
 
     return (
       <div className="project">
         <RequestProgressBar steps={steps} active={step} />
         {step === 1 ? <ReqFormStep1 onSubmit={formNextStep} disabled={disabled} /> : null}
-        {step === 2 ? (
-          <ReqFormStep2 onSubmit={formNextStep} disabled={disabled} previousPage={formPrevStep} />
-        ) : null}
+        {step === 2 ? <ReqFormStep2 onSubmit={formNextStep} previousPage={formPrevStep} /> : null}
         {step === 3 ? (
           <ReqFormStep3 onSubmit={this.onSubmit} disabled={disabled} previousPage={formPrevStep} />
         ) : null}
@@ -110,7 +94,6 @@ const mapStateToProps = state => {
   return {
     userRequestForm: state.userRequestForm,
     profile: state.profile,
-    application: state.application,
     project: state.project,
   };
 };
@@ -120,8 +103,9 @@ const mapDispatchToProps = dispatch => {
     formNextStep: () => dispatch(rfNextStep()),
     formPrevStep: () => dispatch(rfPrevStep()),
     formResetStep: () => dispatch(rfResetStep()),
-    // fetchApplicationAndProject: id => fetchApplicationAndProject(dispatch, id),
-    submitUserApplication: data => submitUserApplication(dispatch, data),
+    fetchOneProject: id => fetchOneProject(dispatch, id),
+    submitUserApplication: (project_id, data, next) =>
+      submitUserApplication(dispatch, project_id, data, next),
     initializeForm: data => dispatch(initialize('userRequestForm', data)),
   };
 };

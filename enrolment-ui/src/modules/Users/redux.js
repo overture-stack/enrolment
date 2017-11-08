@@ -13,6 +13,10 @@ const ENROLL_USERS_REQUEST = 'user/ENROLL_USERS_REQUEST';
 const ENROLL_USERS_SUCCESS = 'user/ENROLL_USERS_SUCCESS';
 const ENROLL_USERS_FAILURE = 'user/ENROLL_USERS_FAILURE';
 
+const SUBMIT_USER_REQUEST = 'user/SUBMIT_USER_REQUEST';
+const SUBMIT_USER_SUCCESS = 'user/SUBMIT_USER_SUCCESS';
+const SUBMIT_USER_FAILURE = 'user/SUBMIT_USER_FAILURE';
+
 const DACO_CHECK_REQUEST = 'user/DACO_CHECK_REQUEST';
 const DACO_CHECK_SUCCESS = 'user/DACO_CHECK_SUCCESS';
 const DACO_CHECK_FAILURE = 'user/DACO_CHECK_FAILURE';
@@ -36,6 +40,10 @@ const dacoCheckError = payloadActionGenerator(DACO_CHECK_FAILURE);
 const enrollUsersStart = emptyActionGenerator(ENROLL_USERS_REQUEST);
 const enrollUsersSuccess = payloadActionGenerator(ENROLL_USERS_SUCCESS);
 const enrollUsersError = payloadActionGenerator(ENROLL_USERS_FAILURE);
+
+const submitUserStart = emptyActionGenerator(SUBMIT_USER_REQUEST);
+const submitUserSuccess = payloadActionGenerator(SUBMIT_USER_SUCCESS);
+const submitUserError = payloadActionGenerator(SUBMIT_USER_FAILURE);
 
 /*
 * Public actions
@@ -92,8 +100,24 @@ export function dacoCheck(dispatch, email) {
     });
 }
 
-export function submitUserApplication(dispatch, data) {
-  return true;
+export function submitUserApplication(dispatch, project_id, data, next = () => {}) {
+  const userData = {
+    ...data,
+    project: project_id,
+    status: 0,
+  };
+
+  dispatch(submitUserStart());
+
+  return asyncServices.user
+    .submit(project_id, userData)
+    .then(response => {
+      dispatch(submitUserSuccess(response.data));
+      next();
+    })
+    .catch(error => {
+      dispatch(submitUserError(error));
+    });
 }
 
 /*

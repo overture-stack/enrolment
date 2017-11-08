@@ -58,6 +58,10 @@ export function createAsyncs(isDevelopment = false) {
       fetchAllProjectUserRequests: asyncServiceCreator('GET', `${apiBase}/projects/all/users/`),
       fetchProjectUserRequests: projectId =>
         asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/`)(),
+      submit: (projectId, data) =>
+        asyncServiceCreator('POST', `${apiBase}/projects/${projectId}/users/`, withDataAndCSRF)(
+          data,
+        ),
       approveUserRequests: (projectId, id) =>
         asyncServiceCreator(
           'PUT',
