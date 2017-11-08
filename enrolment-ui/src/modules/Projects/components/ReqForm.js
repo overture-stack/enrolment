@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
 import { initialize, destroy } from 'redux-form';
 
-import ProgressBar from './ProgressBar';
+import RequestProgressBar from '../../Common/RequestProgressBar';
 import ReqFormStep1 from './ReqFormStep1';
 import ReqFormStep2 from './ReqFormStep2';
 import ReqFormStep3 from './ReqFormStep3';
@@ -84,9 +84,11 @@ class ReqForm extends Component {
   render() {
     const { projectRequestForm: { step }, formNextStep, formPrevStep } = this.props;
 
+    const steps = ['Principal Investigator', 'Collaboratory Project', 'Acceptance & Signature'];
+
     return (
       <div className="project">
-        <ProgressBar />
+        <RequestProgressBar steps={steps} active={step} />
         {step === 1 ? <ReqFormStep1 onSubmit={formNextStep} /> : null}
         {step === 2 ? <ReqFormStep2 onSubmit={formNextStep} previousPage={formPrevStep} /> : null}
         {step === 3 ? <ReqFormStep3 onSubmit={this.onSubmit} previousPage={formPrevStep} /> : null}

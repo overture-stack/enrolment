@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import ReqForm from './components/ReqForm';
-import ReqSuccessModal from './components/ReqSuccessModal';
+import RequestSuccessModal from '../Common/RequestSuccessModal';
 
 import { toggleFormModal, formResetStep } from './redux';
 
@@ -32,13 +32,19 @@ const RegisterProject = props => {
     () => push('/dashboard'),
   );
 
+  const modalText = {
+    title: 'Application',
+    body:
+      'Thanks! Your Application has been received. A confirmation email was sent to your provided email. We will contact you shortly with the results of your application.',
+  };
+
   return (
     <div className="wrapper">
       <h2 style={{ textAlign: 'center' }}>Register a Project</h2>
       <div className="project-registration">
         <ReqForm />
       </div>
-      <ReqSuccessModal showModal={showModal} handleClose={handleClose} />
+      <RequestSuccessModal showModal={showModal} handleClose={handleClose} text={modalText} />
     </div>
   );
 };
