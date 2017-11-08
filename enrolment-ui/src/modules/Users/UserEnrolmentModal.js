@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Modal } from 'react-bootstrap';
 
 import { toggleModal, enrollUsers } from './redux';
-import ReqForm from './components/ReqForm';
+import ModalReqForm from './components/ModalReqForm';
 
 const onSubmit = enroll => {
   return data => {
@@ -22,7 +22,7 @@ const UserEnrolmentModal = props => {
       <Modal.Header>
         <Modal.Title>User enrollment form</Modal.Title>
       </Modal.Header>
-      <ReqForm onSubmit={onSubmit(enrollUsers)} />
+      <ModalReqForm onSubmit={onSubmit(enrollUsers)} />
     </Modal>
   );
 };

@@ -1,114 +1,129 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
-import { Modal } from 'react-bootstrap';
-import { RFSelect, rules } from '../../ReduxForm';
-import EmailList from './EmailList';
+import { withRouter } from 'react-router-dom';
+import queryString from 'query-string';
+import { initialize } from 'redux-form';
 
-import { toggleModal } from '../redux';
+import RequestProgressBar from '../../Common/RequestProgressBar';
+import ReqFormStep1 from './ReqFormStep1';
+import ReqFormStep2 from './ReqFormStep2';
+import ReqFormStep3 from './ReqFormStep3';
 
-const SuccessMessage = props => {
-  return (
-    <div className="success">
-      <div className="alert alert-success">The Enrolment Request was send Successfully!</div>
-    </div>
-  );
-};
+import { rfNextStep, rfPrevStep, rfResetStep, submitUserApplication } from '../redux';
+// import { fetchApplicationAndProject } from '../../Applications/redux';
 
-const ErrorMessage = props => {
-  const { message } = props;
-  return (
-    <div className="error">
-      <div className="alert alert-danger">{message}</div>
-    </div>
-  );
-};
+class ReqForm extends Component {
+  static displayName = 'ReqForm';
 
-const ReqForm = props => {
-  const {
-    handleSubmit,
-    pristine,
-    invalid,
-    toggleModal,
-    userEnrolmentModal: { submitSuccess, error },
-    projects,
-  } = props;
+  constructor(props) {
+    super(props);
+    this.onSubmit = this.onSubmit.bind(this);
 
-  const projectOptions = projects.results
-    .filter(project => project.status === 'Approved')
-    .map(project => {
-      return {
-        text: project.project_name,
-        value: project.id,
+    // Load application/project if there is an id in the URL
+    this.loadApplicationAndProjectIfId();
+
+    // Either load form with application/project data
+    // or clear it in case of new project
+    this.InititiateOrClearFormsOnId();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const shouldReload = !this.props.project.hasFetched && nextProps.project.hasFetched;
+
+    if (shouldReload) {
+      const data = {
+        ...nextProps.project.data,
+        ...nextProps.application.data,
       };
-    });
+      this.InititiateOrClearFormsOnId(data);
+    }
+  }
 
-  const closeModal = event => {
-    event.preventDefault();
-    toggleModal();
-  };
+  onSubmit(data) {
+    const { profile: { data: { pk } }, submitProjectApplication } = this.props;
+    const submission = { ...data, user: pk };
+    submitProjectApplication(submission);
+  }
 
-  return (
-    <form onSubmit={handleSubmit}>
-      {submitSuccess ? (
-        <Modal.Body>
-          <SuccessMessage />
-        </Modal.Body>
-      ) : (
-        <Modal.Body>
-          <div className="form-group row">
-            <div className="col-md-4">
-              <label htmlFor="projectSelector">Project</label>
-            </div>
-            <Field
-              name="project"
-              component={RFSelect}
-              bootstrapClass="col-md-6"
-              options={projectOptions}
-              defaultOption="Select a Project"
-              validate={rules.required}
-            />
-          </div>
-          <Field
-            component={EmailList}
-            label="Users' Daco Email"
-            name="email"
-            validate={rules.required}
-          />
-          {error ? <ErrorMessage message={error.response.statusText} /> : null}
-        </Modal.Body>
-      )}
-      <Modal.Footer>
-        <button className="action-button" onClick={closeModal}>
-          Close
-        </button>
-        {!submitSuccess ? (
-          <button type="submit" className="action-button" disabled={pristine || invalid}>
-            Submit
-          </button>
+  checkForAndReturnId() {
+    const { location: { search = '' } } = this.props;
+
+    const queryVars = search.length > 0 ? queryString.parse(search) : null;
+    const applicationId = queryVars ? queryVars.id : null;
+
+    if (!applicationId) return false;
+
+    return applicationId;
+  }
+
+  loadApplicationAndProjectIfId() {
+    const id = this.checkForAndReturnId();
+    if (id) this.props.fetchApplicationAndProject(id);
+  }
+
+  InititiateOrClearFormsOnId(newData = {}) {
+    const id = this.checkForAndReturnId();
+
+    // If id load data into form, else reset form to empty (but include daco email)
+    if (id) {
+      const data = {
+        ...this.props.project.data,
+        ...this.props.application.data,
+        ...newData,
+      };
+
+      this.props.initializeForm(data);
+    } else {
+      const data = {
+        daco_email: this.props.profile.data.email,
+      };
+      this.props.initializeForm(data);
+    }
+
+    // Reset form pagination in all cases
+    this.props.formResetStep();
+  }
+
+  render() {
+    const { userRequestForm: { step }, formNextStep, formPrevStep } = this.props;
+
+    const steps = ['Personal Information', 'Collaboratory Project', 'Acceptance & Signature'];
+
+    const disabled = this.checkForAndReturnId() !== false;
+
+    return (
+      <div className="project">
+        <RequestProgressBar steps={steps} active={step} />
+        {step === 1 ? <ReqFormStep1 onSubmit={formNextStep} disabled={disabled} /> : null}
+        {step === 2 ? (
+          <ReqFormStep2 onSubmit={formNextStep} disabled={disabled} previousPage={formPrevStep} />
         ) : null}
-      </Modal.Footer>
-    </form>
-  );
-};
+        {step === 3 ? (
+          <ReqFormStep3 onSubmit={this.onSubmit} disabled={disabled} previousPage={formPrevStep} />
+        ) : null}
+      </div>
+    );
+  }
+}
 
 const mapStateToProps = state => {
   return {
-    projects: state.projects.data,
-    userEnrolmentModal: state.userEnrolmentModal,
+    userRequestForm: state.userRequestForm,
+    profile: state.profile,
+    application: state.application,
+    project: state.project,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    toggleModal: () => dispatch(toggleModal()),
+    formNextStep: () => dispatch(rfNextStep()),
+    formPrevStep: () => dispatch(rfPrevStep()),
+    formResetStep: () => dispatch(rfResetStep()),
+    // fetchApplicationAndProject: id => fetchApplicationAndProject(dispatch, id),
+    submitUserApplication: data => submitUserApplication(dispatch, data),
+    initializeForm: data => dispatch(initialize('userRequestForm', data)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  reduxForm({
-    form: 'userRequestForm',
-    destroyOnUnmount: true,
-    forceUnregisterOnUnmount: true,
-  })(ReqForm),
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ReqForm));

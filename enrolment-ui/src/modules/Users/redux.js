@@ -20,6 +20,11 @@ const REMOVE_EMAIL = 'user/REMOVE_EMAIL';
 
 const TOGGLE_MODAL = 'user/TOGGLE_MODAL';
 
+const RF_NEXT_STEP = 'userRequestForm/NEXT_STEP';
+const RF_PREVIOUS_STEP = 'userRequestForm/PREVIOUS_STEP';
+const RF_RESET_FORM_STEP = 'userRequestForm/RESET_FORM_STEP';
+const RF_TOGGLE_MODAL = 'userRequestForm/TOGGLE_MODAL';
+
 const fetchRequestsStart = emptyActionGenerator(FETCH_REQUESTS_REQUEST);
 const fetchRequestsSuccess = payloadActionGenerator(FETCH_REQUESTS_SUCCESS);
 const fetchRequestsError = payloadActionGenerator(FETCH_REQUESTS_FAILURE);
@@ -38,6 +43,11 @@ const enrollUsersError = payloadActionGenerator(ENROLL_USERS_FAILURE);
 
 export const toggleModal = emptyActionGenerator(TOGGLE_MODAL);
 export const removeEmail = payloadActionGenerator(REMOVE_EMAIL);
+
+export const rfNextStep = emptyActionGenerator(RF_NEXT_STEP);
+export const rfPrevStep = emptyActionGenerator(RF_PREVIOUS_STEP);
+export const rfResetStep = emptyActionGenerator(RF_RESET_FORM_STEP);
+export const rfToggleModal = emptyActionGenerator(RF_TOGGLE_MODAL);
 
 /*
 * Public async thunk actions (mapped to component props)
@@ -80,6 +90,10 @@ export function dacoCheck(dispatch, email) {
     .catch(error => {
       dispatch(dacoCheckError(error));
     });
+}
+
+export function submitUserApplication(dispatch, data) {
+  return true;
 }
 
 /*
@@ -171,6 +185,27 @@ export const userEnrolmentModalReducer = (state = _defaultUserEnrolmentModalStat
         ..._defaultUserEnrolmentModalState,
         show: !state.show,
       };
+    default:
+      return state;
+  }
+};
+
+// User Request Form UI
+const _defaultRequestFormState = {
+  step: 1,
+  showModal: false,
+};
+
+export const requestFormReducer = (state = _defaultRequestFormState, action) => {
+  switch (action.type) {
+    case RF_NEXT_STEP:
+      return { ...state, step: state.step + 1 };
+    case RF_PREVIOUS_STEP:
+      return { ...state, step: state.step - 1 };
+    case RF_RESET_FORM_STEP:
+      return { ...state, step: 1 };
+    case RF_TOGGLE_MODAL:
+      return { ...state, showModal: !state.showModal };
     default:
       return state;
   }
