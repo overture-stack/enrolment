@@ -5,7 +5,11 @@ const RequestProgressBar = props => {
   return (
     <ul className="progressbar">
       {steps.map((step, index) => {
-        return <li className={active > index ? 'active' : ''}>{step}</li>;
+        return (
+          <li key={index} className={active > index ? 'active' : ''}>
+            {step}
+          </li>
+        );
       })}
     </ul>
   );
