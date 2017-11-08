@@ -4,16 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { RFConsent, rules } from '../../ReduxForm';
 
 const ReqFormStep3 = props => {
-  const {
-    handleSubmit,
-    previousPage,
-    submitting,
-    pristine,
-    invalid,
-    location: { search = '' },
-  } = props;
-
-  const existingApplication = search.length > 0;
+  const { handleSubmit, previousPage, submitting, pristine, invalid, disabled } = props;
 
   return (
     <form onSubmit={handleSubmit} className="agreement">
@@ -35,7 +26,7 @@ const ReqFormStep3 = props => {
           </p>
         </div>
       </div>
-      {existingApplication ? null : (
+      {disabled ? null : (
         <div className="row">
           <Field
             name="agreementCheck"
@@ -50,7 +41,7 @@ const ReqFormStep3 = props => {
           <button onClick={previousPage} className="previous action-button">
             Previous
           </button>
-          {existingApplication ? null : (
+          {disabled ? null : (
             <button
               type="submit"
               className="submit action-button"

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
-import { initialize, destroy } from 'redux-form';
+import { initialize } from 'redux-form';
 
 import RequestProgressBar from '../../Common/RequestProgressBar';
 import ReqFormStep1 from './ReqFormStep1';
@@ -64,7 +64,7 @@ class ReqForm extends Component {
   InititiateOrClearFormsOnId(newData = {}) {
     const id = this.checkForAndReturnId();
 
-    // If id load data into form, else reset form to empty
+    // If id load data into form, else reset form to empty (but include daco email)
     if (id) {
       const data = {
         ...this.props.project.data,
@@ -74,7 +74,10 @@ class ReqForm extends Component {
 
       this.props.initializeForm(data);
     } else {
-      this.props.resetForm();
+      const data = {
+        daco_email: this.props.profile.data.email,
+      };
+      this.props.initializeForm(data);
     }
 
     // Reset form pagination in all cases
@@ -86,12 +89,18 @@ class ReqForm extends Component {
 
     const steps = ['Principal Investigator', 'Collaboratory Project', 'Acceptance & Signature'];
 
+    const disabled = this.checkForAndReturnId() !== false;
+
     return (
       <div className="project">
         <RequestProgressBar steps={steps} active={step} />
-        {step === 1 ? <ReqFormStep1 onSubmit={formNextStep} /> : null}
-        {step === 2 ? <ReqFormStep2 onSubmit={formNextStep} previousPage={formPrevStep} /> : null}
-        {step === 3 ? <ReqFormStep3 onSubmit={this.onSubmit} previousPage={formPrevStep} /> : null}
+        {step === 1 ? <ReqFormStep1 onSubmit={formNextStep} disabled={disabled} /> : null}
+        {step === 2 ? (
+          <ReqFormStep2 onSubmit={formNextStep} disabled={disabled} previousPage={formPrevStep} />
+        ) : null}
+        {step === 3 ? (
+          <ReqFormStep3 onSubmit={this.onSubmit} disabled={disabled} previousPage={formPrevStep} />
+        ) : null}
       </div>
     );
   }
@@ -114,7 +123,6 @@ const mapDispatchToProps = dispatch => {
     fetchApplicationAndProject: id => fetchApplicationAndProject(dispatch, id),
     submitProjectApplication: data => submitProjectApplication(dispatch, data),
     initializeForm: data => dispatch(initialize('projectRequestForm', data)),
-    resetForm: () => dispatch(destroy('projectRequestForm')),
   };
 };
 
