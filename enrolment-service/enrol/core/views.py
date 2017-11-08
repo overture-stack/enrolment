@@ -91,6 +91,37 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
 
         return Projects.objects.filter(user=user)
 
+    def retrieve(self, request, pk=None):
+        """
+        Return for admin,
+        return for owner,
+        return for user that is invited,
+        404 everyone else
+        """
+        queryset = Projects.objects.all()
+
+        user = self.request.user
+        project = get_object_or_404(queryset, pk=pk)
+
+        if user.is_superuser:
+            serializer = ProjectSerializer(project)
+            return Response(serializer.data)
+
+        if user == project.user:
+            serializer = ProjectSerializer(project)
+            return Response(serializer.data)
+
+        # Special case for requested user's
+        user_request_on_project = UserRequest.objects.filter(
+            email=user.email, project=pk)
+        is_user_requested = len(user_request_on_project) > 0
+        if is_user_requested:
+            serializer = ProjectSerializer(project)
+            return Response(serializer.data)
+
+        # Otherwise return 404
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
 
 class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
     """
