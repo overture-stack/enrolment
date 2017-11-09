@@ -189,18 +189,6 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, ))
 @permission_classes((IsAuthenticated, ))
-def ProjectsUsersByProjectViewSet(request, project):
-    try:
-        serializer = ProjectUsersSerializer(
-            ProjectUsers.objects.filter(project=project), many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    except ProjectUsers.DoesNotExist:
-        raise Http404("No Project User matches the given query.")
-
-
-@api_view(['GET'])
-@authentication_classes((SessionAuthentication, ))
-@permission_classes((IsAuthenticated, ))
 def daco(request):
     if request.user.is_authenticated():
         email = request.user.email
