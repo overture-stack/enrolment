@@ -8,6 +8,7 @@ import PTUserDetails from './components/PTUserDetails';
 
 import { fetchOneProject, fetchProjects, uiSelectProject, uiSelectTab } from '../Projects/redux';
 import { fetchProjectUsers } from '../ProjectUsers/redux';
+import { resetEnrolmentForm } from '../Users/redux';
 
 import './projects.scss';
 
@@ -38,12 +39,13 @@ class Projects extends Component {
   }
 
   handleProjectSelect(event) {
-    const { uiSelectProject } = this.props;
+    const { uiSelectProject, resetEnrolmentForm, fetchOneProject, fetchProjectUsers } = this.props;
     const projectId = event.target.value;
 
-    this.props.fetchOneProject(projectId);
-    this.props.fetchProjectUsers(projectId);
+    fetchOneProject(projectId);
+    fetchProjectUsers(projectId);
     uiSelectProject(projectId);
+    resetEnrolmentForm();
   }
 
   renderNoProjectTab() {
@@ -133,6 +135,7 @@ const mapDispatchToProps = dispatch => {
     fetchProjectUsers: projectId => fetchProjectUsers(dispatch, projectId),
     uiSelectProject: project => dispatch(uiSelectProject(project)),
     uiSelectTab: tabIdx => dispatch(uiSelectTab(tabIdx)),
+    resetEnrolmentForm: () => dispatch(resetEnrolmentForm()),
   };
 };
 

@@ -25,8 +25,8 @@ const DACO_CHECK_REQUEST = 'user/DACO_CHECK_REQUEST';
 const DACO_CHECK_SUCCESS = 'user/DACO_CHECK_SUCCESS';
 const DACO_CHECK_FAILURE = 'user/DACO_CHECK_FAILURE';
 const REMOVE_EMAIL = 'user/REMOVE_EMAIL';
-
 const TOGGLE_MODAL = 'user/TOGGLE_MODAL';
+const RESET_ENROLMENT_FORM = 'user/RESET_ENROLMENT_FORM';
 
 const RF_NEXT_STEP = 'userRequestForm/NEXT_STEP';
 const RF_PREVIOUS_STEP = 'userRequestForm/PREVIOUS_STEP';
@@ -59,6 +59,7 @@ const updateUserRequestError = payloadActionGenerator(UPDATE_REQUEST_FAILURE);
 
 export const toggleModal = emptyActionGenerator(TOGGLE_MODAL);
 export const removeEmail = payloadActionGenerator(REMOVE_EMAIL);
+export const resetEnrolmentForm = emptyActionGenerator(RESET_ENROLMENT_FORM);
 
 export const rfNextStep = emptyActionGenerator(RF_NEXT_STEP);
 export const rfPrevStep = emptyActionGenerator(RF_PREVIOUS_STEP);
@@ -243,6 +244,7 @@ export const userEnrolmentFormReducer = (state = _defaultUserEnrolmentFormState,
       };
     }
     case TOGGLE_MODAL:
+    case RESET_ENROLMENT_FORM:
       return {
         ..._defaultUserEnrolmentFormState,
       };
