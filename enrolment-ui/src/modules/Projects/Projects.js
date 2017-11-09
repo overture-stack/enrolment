@@ -6,7 +6,7 @@ import PTProjectDetails from './components/PTProjectDetails';
 import PTUserEnrolment from './components/PTUserEnrolment';
 import PTUserDetails from './components/PTUserDetails';
 
-import { fetchProjects, uiSelectProject, uiSelectTab } from '../Projects/redux';
+import { fetchOneProject, fetchProjects, uiSelectProject, uiSelectTab } from '../Projects/redux';
 import { fetchProjectUsers } from '../ProjectUsers/redux';
 
 import './projects.scss';
@@ -41,6 +41,7 @@ class Projects extends Component {
     const { uiSelectProject } = this.props;
     const projectId = event.target.value;
 
+    this.props.fetchOneProject(projectId);
     this.props.fetchProjectUsers(projectId);
     uiSelectProject(projectId);
   }
@@ -121,13 +122,13 @@ class Projects extends Component {
 const mapStateToProps = state => {
   return {
     projects: state.projects,
-    projectUsers: state.projectUsers,
     projectsUI: state.projectsUI,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
+    fetchOneProject: id => fetchOneProject(dispatch, id),
     fetchProjects: () => fetchProjects(dispatch),
     fetchProjectUsers: projectId => fetchProjectUsers(dispatch, projectId),
     uiSelectProject: project => dispatch(uiSelectProject(project)),
