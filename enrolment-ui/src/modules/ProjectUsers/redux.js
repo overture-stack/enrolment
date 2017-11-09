@@ -46,7 +46,13 @@ export const reducer = (state = _defaultState, action) => {
     case FETCH_USERS_REQUEST:
       return { ...state, loading: true };
     case FETCH_USERS_SUCCESS:
-      return { ...state, loading: false, hasProjectUsers: true, data: action.payload, error: null };
+      return {
+        ...state,
+        loading: false,
+        hasProjectUsers: action.payload.length > 0,
+        data: action.payload,
+        error: null,
+      };
     case FETCH_USERS_FAILURE:
       return { ...state, loading: false, hasProjectUsers: false, data: [], error: action.payload };
     default:
