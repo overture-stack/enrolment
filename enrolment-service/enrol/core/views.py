@@ -19,6 +19,8 @@ import smtplib
 
 schema_view = get_swagger_view(title='Enrol API')
 SMTP_SERVER = smtplib.SMTP(settings.SMTP_URL, 25)
+SMTP_FROM = settings.SMTP_FROM
+RESOURCE_ADMIN_EMAIL = settings.RESOURCE_ADMIN_EMAIL
 
 
 class CreateListRetrieveUpdateViewSet(mixins.CreateModelMixin,
@@ -144,6 +146,25 @@ class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
 
         return Applications.objects.filter(user=user)
 
+    def perform_create(self, serializer):
+        # Save the data
+        application = serializer.save()
+
+        # Send email to request admin review
+        msg = MIMEText(
+            Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/resource_request.html')).read()).render(
+                resource_type="Project Application",
+                data=serializer.data.items(),
+                link='view/project-application/{}'.format(
+                    application.id)
+            ), "html"
+        )
+        msg['Subject'] = 'Collaboratory - New Project Application'
+        msg['To'] = RESOURCE_ADMIN_EMAIL
+        msg['From'] = SMTP_FROM
+
+        SMTP_SERVER.send_message(msg)
+
 
 class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
     """
@@ -184,6 +205,26 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
         project_user = self.get_object()
         serializer = ProjectUsersSerializer(project_user)
         return Response(serializer.data)
+
+    def perform_create(self, serializer):
+        # Save the data
+        project_user = serializer.save()
+        print(project_user)
+
+        # Send email to request admin review
+        msg = MIMEText(
+            Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/resource_request.html')).read()).render(
+                resource_type="Project User Application",
+                data=serializer.data.items(),
+                link='view/project-user-application/{}'.format(
+                    project_user.id)
+            ), "html"
+        )
+        msg['Subject'] = 'Collaboratory - New Project User Request'
+        msg['To'] = RESOURCE_ADMIN_EMAIL
+        msg['From'] = SMTP_FROM
+
+        SMTP_SERVER.send_message(msg)
 
 
 @api_view(['GET'])
@@ -261,7 +302,7 @@ def UserRequestViewSet(request):
                 msg['Subject'] = 'Collaboratory - Enrollment to project ' + \
                     project['project_name']
                 msg['To'] = data['email']
-                msg['From'] = 'test@cancercollaboratory.org'
+                msg['From'] = SMTP_FROM
                 SMTP_SERVER.send_message(msg)
                 continue
             else:
