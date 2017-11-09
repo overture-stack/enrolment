@@ -10,6 +10,7 @@ import ReqFormStep3 from './ReqFormStep3';
 
 import { rfNextStep, rfPrevStep, rfResetStep, submitUserApplication } from '../redux';
 import { fetchOneProject } from '../../Projects/redux';
+import { fetchOneProjectUser } from '../../ProjectUsers/redux';
 
 class ReqForm extends Component {
   static displayName = 'ReqForm';
@@ -26,7 +27,9 @@ class ReqForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const shouldReload = !this.props.project.hasFetched && nextProps.project.hasFetched;
+    const shouldReload =
+      (!this.props.project.hasFetched && nextProps.project.hasFetched) ||
+      (!this.props.projectUser.hasFetched && nextProps.projectUser.hasFetched);
 
     if (shouldReload) {
       const data = {
@@ -34,6 +37,7 @@ class ReqForm extends Component {
         daco_email: nextProps.profile.data.email,
         firstname: nextProps.profile.data.first_name,
         lastname: nextProps.profile.data.last_name,
+        ...nextProps.projectUser.data,
       };
       this.InititiateForm(data);
     }
@@ -49,8 +53,18 @@ class ReqForm extends Component {
   }
 
   loadProjectOrProjectUser() {
-    const projectId = this.props.match.params.projectId; // or project user id
-    this.props.fetchOneProject(projectId);
+    const path = this.props.match.path;
+    const projectId = this.props.match.params.projectId;
+    const userId = this.props.match.params.userId;
+
+    if (path.indexOf('view' !== -1)) {
+      // On view-only load application
+      this.props.fetchOneProjectUser(projectId, userId);
+      this.props.fetchOneProject(projectId);
+    } else {
+      // or project user id
+      this.props.fetchOneProject(projectId);
+    }
   }
 
   InititiateForm(newData = false) {
@@ -75,7 +89,7 @@ class ReqForm extends Component {
 
     const steps = ['Personal Information', 'Collaboratory Project', 'Acceptance & Signature'];
 
-    const disabled = false; // this.checkForAndReturnId() !== false;
+    const disabled = this.props.match.path.indexOf('view') !== -1;
 
     return (
       <div className="project">
@@ -95,6 +109,7 @@ const mapStateToProps = state => {
     userRequestForm: state.userRequestForm,
     profile: state.profile,
     project: state.project,
+    projectUser: state.projectUser,
   };
 };
 
@@ -104,6 +119,7 @@ const mapDispatchToProps = dispatch => {
     formPrevStep: () => dispatch(rfPrevStep()),
     formResetStep: () => dispatch(rfResetStep()),
     fetchOneProject: id => fetchOneProject(dispatch, id),
+    fetchOneProjectUser: (projectId, useriId) => fetchOneProjectUser(dispatch, projectId, useriId),
     submitUserApplication: (projectId, data, next) =>
       submitUserApplication(dispatch, projectId, data, next),
     initializeForm: data => dispatch(initialize('userRequestForm', data)),

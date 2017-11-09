@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import queryString from 'query-string';
 import { initialize } from 'redux-form';
 
 import RequestProgressBar from '../../Common/RequestProgressBar';
@@ -46,10 +45,9 @@ class ReqForm extends Component {
   }
 
   checkForAndReturnId() {
-    const { location: { search = '' } } = this.props;
+    const { match: { params: { id = '' } } } = this.props;
 
-    const queryVars = search.length > 0 ? queryString.parse(search) : null;
-    const applicationId = queryVars ? queryVars.id : null;
+    const applicationId = id.length > 0 ? id : null;
 
     if (!applicationId) return false;
 
