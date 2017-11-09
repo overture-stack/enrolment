@@ -3,7 +3,7 @@
 }
 
 .nav {
-  li {
+  > li {
     &:first-child {
       padding-left: 40px;
     }
@@ -47,6 +47,10 @@
   }
 }
 
+.tab-req-form {
+  margin-top: 40px;
+}
+
 .user-email {
   img {
     display: none;
@@ -83,6 +87,7 @@
       }
     }
   }
+
   button {
     float: right;
   }

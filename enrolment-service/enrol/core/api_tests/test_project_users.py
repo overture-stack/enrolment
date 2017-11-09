@@ -178,8 +178,6 @@ class ProjectUsersTest(APITestCase):
         client.force_authenticate(user=self.user)
         response = client.get(all_url)
 
-        print(all_url)
-
         # Test Response Success
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(ProjectUsers.objects.count(), 2)

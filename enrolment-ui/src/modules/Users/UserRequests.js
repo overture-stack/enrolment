@@ -3,8 +3,10 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
+import { fetchUserRequests, approveUserRequest, denyUserRequest } from './redux';
+
 const UserRequests = props => {
-  const { profile, userRequests } = props;
+  const { profile, userRequests, fetchUserRequests, approveUserRequest, denyUserRequest } = props;
 
   return (
     <div className="col-md-12">
@@ -17,11 +19,11 @@ const UserRequests = props => {
             <th>Created Date</th>
             <th>Updated Date</th>
             <th>Status</th>
-            {profile.is_staff && <th>Action</th>}
+            {profile.is_staff ? <th>Action</th> : null}
           </tr>
         </thead>
         <tbody>
-          {userRequests.data.map(user => {
+          {userRequests.map(user => {
             return (
               <tr key={user.id}>
                 <td>
@@ -35,17 +37,26 @@ const UserRequests = props => {
                 <td>{user.createdDate}</td>
                 <td>{user.updatedDate}</td>
                 <td>{user.status}</td>
-                {props.profile.is_staff && (
+                {profile.is_staff ? (
                   <td>
-                    {user.status === 'Pending' && (
+                    {user.status === 'Pending' ? (
                       <div className="admin-actions">
-                        <a onClick={() => console.log('approveRequest(user.id)')}>Approve</a>
-                        <a onClick={() => console.log('denyRequest(user.id)')}>Deny</a>
+                        <a
+                          onClick={() =>
+                            approveUserRequest(user.project, user.id, fetchUserRequests)}
+                        >
+                          Approve
+                        </a>
+                        <a
+                          onClick={() => denyUserRequest(user.project, user.id, fetchUserRequests)}
+                        >
+                          Deny
+                        </a>
                       </div>
-                    )}
+                    ) : null}
                     {user.status !== 'Pending' && <span>No Action Needed</span>}
                   </td>
-                )}
+                ) : null}
               </tr>
             );
           })}
@@ -59,13 +70,17 @@ UserRequests.displayName = 'UserRequests';
 
 const mapStateToProps = state => {
   return {
-    profile: state.profile,
-    userRequests: state.userRequests,
+    profile: state.profile.data,
+    userRequests: state.userRequests.data,
   };
 };
 
 const mapDispatchToProps = dispatch => {
-  return {};
+  return {
+    fetchUserRequests: () => fetchUserRequests(dispatch),
+    approveUserRequest: (projectId, id, next) => approveUserRequest(dispatch, projectId, id, next),
+    denyUserRequest: (projectId, id, next) => denyUserRequest(dispatch, projectId, id, next),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserRequests);

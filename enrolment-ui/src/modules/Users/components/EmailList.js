@@ -21,8 +21,8 @@ class EmailList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const currentEmails = this.props.userEnrolmentModal.users;
-    const nextEmails = nextProps.userEnrolmentModal.users;
+    const currentEmails = this.props.userEnrolmentForm.users;
+    const nextEmails = nextProps.userEnrolmentForm.users;
     if (currentEmails.length !== nextEmails.length) {
       const emails = nextEmails.length > 0 ? { emails: nextEmails } : '';
       this.onChange(this.state, emails);
@@ -33,7 +33,7 @@ class EmailList extends Component {
     event.preventDefault();
 
     const email = this.state.emailField;
-    const users = this.props.userEnrolmentModal.users;
+    const users = this.props.userEnrolmentForm.users;
 
     if (users.indexOf(email) !== -1)
       return this.setState({
@@ -54,7 +54,7 @@ class EmailList extends Component {
 
   onChange(newState = this.state, emails = false) {
     // Get redux-form onChange function from props
-    const { input: { onChange }, userEnrolmentModal: { users } } = this.props;
+    const { input: { onChange }, userEnrolmentForm: { users } } = this.props;
 
     const formValue = users.length > 0 ? { emails: users } : '';
 
@@ -99,7 +99,7 @@ class EmailList extends Component {
       input: { name },
       label,
       meta: { touched, error, warning },
-      userEnrolmentModal: { users, isFetching },
+      userEnrolmentForm: { users, isFetching },
     } = this.props;
 
     const { emailField } = this.state;
@@ -142,7 +142,7 @@ class EmailList extends Component {
 
 const mapStateToProps = state => {
   return {
-    userEnrolmentModal: state.userEnrolmentModal,
+    userEnrolmentForm: state.userEnrolmentForm,
   };
 };
 

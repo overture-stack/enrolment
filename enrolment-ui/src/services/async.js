@@ -46,7 +46,9 @@ export function createAsyncs(isDevelopment = false) {
     project: {
       fetchProjects: asyncServiceCreator('GET', `${apiBase}/projects/`),
       fetchProject: id => asyncServiceCreator('GET', `${apiBase}/projects/${id}/`)(),
-      fetchProjectUsers: (projectId, id) =>
+      fetchProjectUsers: projectId =>
+        asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/`)(),
+      fetchProjectUser: (projectId, id) =>
         asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/${id}/`)(),
       submit: asyncServiceCreator('POST', `${apiBase}/projects/`, withDataAndCSRF),
       update: (id, data) =>
@@ -54,21 +56,20 @@ export function createAsyncs(isDevelopment = false) {
     },
     user: {
       dacoCheck: email => asyncServiceCreator('GET', `${apiBase}/daco/?email=${email}/`)(),
+      userRequest: asyncServiceCreator('POST', `${apiBase}/request/user/`, withDataAndCSRF),
       fetchAllProjectUserRequests: asyncServiceCreator('GET', `${apiBase}/projects/all/users/`),
       fetchProjectUserRequests: projectId =>
         asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/`)(),
-      approveUserRequests: (projectId, id) =>
+      submit: (projectId, data) =>
+        asyncServiceCreator('POST', `${apiBase}/projects/${projectId}/users/`, withDataAndCSRF)(
+          data,
+        ),
+      updateUserRequest: (projectId, id, data) =>
         asyncServiceCreator(
-          'PUT',
+          'PATCH',
           `${apiBase}/projects/${projectId}/users/${id}/`,
           withDataAndCSRF,
-        )(),
-      denyUserRequests: (projectId, id) =>
-        asyncServiceCreator(
-          'PUT',
-          `${apiBase}/projects/${projectId}/users/${id}/`,
-          withDataAndCSRF,
-        )(),
+        )(data),
     },
   };
 

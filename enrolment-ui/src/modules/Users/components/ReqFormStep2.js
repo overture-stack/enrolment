@@ -1,9 +1,9 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { RFInput, RFTextArea, rules } from '../../ReduxForm';
+import { RFInput, rules } from '../../ReduxForm';
 
 const ReqFormStep2 = props => {
-  const { handleSubmit, previousPage, invalid, disabled } = props;
+  const { handleSubmit, previousPage, invalid } = props;
   return (
     <form onSubmit={handleSubmit}>
       <div className="row">
@@ -22,16 +22,17 @@ const ReqFormStep2 = props => {
           placeholder="Project Name"
           component={RFInput}
           validate={rules.required}
-          disabled={disabled}
+          disabled={true}
         />
       </div>
       <div className="row">
         <Field
-          name="project_description"
-          placeholder="Project Description"
-          component={RFTextArea}
+          type="text"
+          name="pi"
+          placeholder="Principal Investigtor"
+          component={RFInput}
           validate={rules.required}
-          disabled={disabled}
+          disabled={true}
         />
       </div>
       <div className="row">
@@ -49,7 +50,7 @@ const ReqFormStep2 = props => {
 };
 
 export default reduxForm({
-  form: 'projectRequestForm', // <------ same form name
+  form: 'userRequestForm', // <------ same form name
   destroyOnUnmount: false, // <------ preserve form data
   forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
 })(ReqFormStep2);

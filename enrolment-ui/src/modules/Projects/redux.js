@@ -211,7 +211,6 @@ export const projectReducer = (state = _defaultProjectState, action) => {
       return {
         ...state,
         loading: true,
-        data: null,
         error: null,
         hasFetched: false,
       };
@@ -229,7 +228,6 @@ export const projectReducer = (state = _defaultProjectState, action) => {
       return {
         ...state,
         loading: false,
-        data: null,
         error: action.payload,
         hasFetched: true,
       };

@@ -58,7 +58,7 @@ const ReqFormStep3 = props => {
 
 export default withRouter(
   reduxForm({
-    form: 'projectRequestForm', // <------ same form name
+    form: 'userRequestForm', // <------ same form name
     destroyOnUnmount: false, // <------ clear form data
     forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
   })(ReqFormStep3),
