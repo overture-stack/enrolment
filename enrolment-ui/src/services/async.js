@@ -46,7 +46,9 @@ export function createAsyncs(isDevelopment = false) {
     project: {
       fetchProjects: asyncServiceCreator('GET', `${apiBase}/projects/`),
       fetchProject: id => asyncServiceCreator('GET', `${apiBase}/projects/${id}/`)(),
-      fetchProjectUsers: (projectId, id) =>
+      fetchProjectUsers: projectId =>
+        asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/`)(),
+      fetchProjectUser: (projectId, id) =>
         asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/${id}/`)(),
       submit: asyncServiceCreator('POST', `${apiBase}/projects/`, withDataAndCSRF),
       update: (id, data) =>

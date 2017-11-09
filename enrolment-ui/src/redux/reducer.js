@@ -19,6 +19,7 @@ import {
   userEnrolmentModalReducer as userEnrolmentModal,
   requestFormReducer as userRequestForm,
 } from '../modules/Users';
+import { reducer as projectUsers } from '../modules/ProjectUsers';
 
 const reducer = combineReducers({
   login,
@@ -33,6 +34,7 @@ const reducer = combineReducers({
   userRequests,
   userEnrolmentModal,
   userRequestForm,
+  projectUsers,
   form,
 });
 

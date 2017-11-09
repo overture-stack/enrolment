@@ -7,6 +7,7 @@ import PTUserEnrolment from './components/PTUserEnrolment';
 import PTUserDetails from './components/PTUserDetails';
 
 import { fetchProjects, uiSelectProject, uiSelectTab } from '../Projects/redux';
+import { fetchProjectUsers } from '../ProjectUsers/redux';
 
 import './projects.scss';
 
@@ -22,6 +23,14 @@ class Projects extends Component {
 
     // Bind class methods
     this.handleProjectSelect = this.handleProjectSelect.bind(this);
+
+    // Go to tab based on hash
+    const hash = this.props.location.hash;
+    if (hash === '#viewUsers') {
+      this.props.uiSelectTab(3);
+    } else if (hash === '#addUsers') {
+      this.props.uiSelectTab(2);
+    }
   }
 
   fetchNewData() {
@@ -30,11 +39,10 @@ class Projects extends Component {
 
   handleProjectSelect(event) {
     const { uiSelectProject } = this.props;
-    const projectID = event.target.value;
+    const projectId = event.target.value;
 
-    uiSelectProject(projectID);
-
-    // todo - load project users
+    this.props.fetchProjectUsers(projectId);
+    uiSelectProject(projectId);
   }
 
   renderNoProjectTab() {
@@ -113,6 +121,7 @@ class Projects extends Component {
 const mapStateToProps = state => {
   return {
     projects: state.projects,
+    projectUsers: state.projectUsers,
     projectsUI: state.projectsUI,
   };
 };
@@ -120,6 +129,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     fetchProjects: () => fetchProjects(dispatch),
+    fetchProjectUsers: projectId => fetchProjectUsers(dispatch, projectId),
     uiSelectProject: project => dispatch(uiSelectProject(project)),
     uiSelectTab: tabIdx => dispatch(uiSelectTab(tabIdx)),
   };
