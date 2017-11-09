@@ -247,25 +247,6 @@ def SocialViewSet(request):
         raise Http404("No Users matches the given query.")
 
 
-@api_view(['GET'])
-@authentication_classes((SessionAuthentication, ))
-@permission_classes((IsAuthenticated, ))
-def UserRequestConfirmation(request, id):
-    user = request.user
-    email = request.user.email
-    if user.is_authenticated():
-        userRequest = UserRequestSerializer(
-            UserRequest.objects.get(pk=id)).data
-
-        if userRequest['email'] == email:
-            return Response({
-                'confirm': True,
-                'user': userRequest
-            }, status=status.HTTP_200_OK)
-
-        return Response({'confirm': False}, status=status.HTTP_403_FORBIDDEN)
-
-
 @api_view(['POST'])
 @authentication_classes((SessionAuthentication, ))
 @permission_classes((IsAuthenticated, ))
@@ -282,7 +263,7 @@ def UserRequestViewSet(request):
             if serializer.is_valid():
                 serializer.save()
                 msg = MIMEText(
-                    Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/template.html')).read()).render(
+                    Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/user_request.html')).read()).render(
                         id=serializer.data['id'],
                         name=project['project_name'],
                         project_id=project['id'],
