@@ -196,16 +196,15 @@ export const userRequestReducer = (state = _defaultUserRequestState, action) => 
   }
 };
 
-// Enrolment Modal Reducer
-const _defaultUserEnrolmentModalState = {
-  show: false,
+// Enrolment Form Reducer
+const _defaultUserEnrolmentFormState = {
   isFetching: false,
   submitSuccess: false,
   error: null,
   users: [],
 };
 
-export const userEnrolmentModalReducer = (state = _defaultUserEnrolmentModalState, action) => {
+export const userEnrolmentFormReducer = (state = _defaultUserEnrolmentFormState, action) => {
   switch (action.type) {
     case DACO_CHECK_REQUEST:
     case ENROLL_USERS_REQUEST:
@@ -218,6 +217,7 @@ export const userEnrolmentModalReducer = (state = _defaultUserEnrolmentModalStat
         ...state,
         isFetching: false,
         users: [...state.users, action.payload],
+        error: null,
       };
     case DACO_CHECK_FAILURE:
     case ENROLL_USERS_FAILURE:
@@ -228,9 +228,10 @@ export const userEnrolmentModalReducer = (state = _defaultUserEnrolmentModalStat
       };
     case ENROLL_USERS_SUCCESS:
       return {
-        ..._defaultUserEnrolmentModalState,
+        ..._defaultUserEnrolmentFormState,
         show: true,
         submitSuccess: true,
+        error: null,
       };
     case REMOVE_EMAIL: {
       const users = [...state.users];
@@ -238,8 +239,25 @@ export const userEnrolmentModalReducer = (state = _defaultUserEnrolmentModalStat
       return {
         ...state,
         users,
+        error: null,
       };
     }
+    case TOGGLE_MODAL:
+      return {
+        ..._defaultUserEnrolmentFormState,
+      };
+    default:
+      return state;
+  }
+};
+
+// Enrolment Modal Reducer
+const _defaultUserEnrolmentModalState = {
+  show: false,
+};
+
+export const userEnrolmentModalReducer = (state = _defaultUserEnrolmentModalState, action) => {
+  switch (action.type) {
     case TOGGLE_MODAL:
       return {
         ..._defaultUserEnrolmentModalState,

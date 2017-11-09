@@ -30,7 +30,7 @@ const ModalReqForm = props => {
     pristine,
     invalid,
     toggleModal,
-    userEnrolmentModal: { submitSuccess, error },
+    userEnrolmentForm: { submitSuccess, error },
     projects,
   } = props;
 
@@ -95,7 +95,7 @@ const ModalReqForm = props => {
 const mapStateToProps = state => {
   return {
     projects: state.projects.data,
-    userEnrolmentModal: state.userEnrolmentModal,
+    userEnrolmentForm: state.userEnrolmentForm,
   };
 };
 
