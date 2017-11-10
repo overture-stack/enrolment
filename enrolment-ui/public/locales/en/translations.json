@@ -1,0 +1,6 @@
+{
+  "ChangeLogin": {
+    "internal": "Internal Login",
+    "external": "External Login"
+  }
+}

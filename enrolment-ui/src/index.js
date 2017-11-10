@@ -8,6 +8,8 @@ import configureStore from './redux/store';
 
 import { PrivateRoute, OnlyNonLoggedInRoute } from './routeHelpers';
 
+import './i18n';
+
 import {
   App,
   Login,

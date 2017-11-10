@@ -3,10 +3,19 @@ import { connect } from 'react-redux';
 
 import { changeLoginGateway } from '../redux';
 
+import { I18n } from 'react-i18next';
+
 const ChangeLogin = props => {
   const { isGoogleLogin, changeLoginGateway } = props;
-  const text = isGoogleLogin ? 'Internal Login' : 'External Login';
-  return <a onClick={changeLoginGateway}>{text}</a>;
+  return (
+    <I18n ns="translations">
+      {(t, { i18n }) => (
+        <a onClick={changeLoginGateway}>
+          {isGoogleLogin ? t('ChangeLogin.internal') : t('ChangeLogin.external')}
+        </a>
+      )}
+    </I18n>
+  );
 };
 
 ChangeLogin.displayName = 'ChangeLogin';
