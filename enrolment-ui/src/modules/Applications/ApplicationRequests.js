@@ -43,12 +43,7 @@ const ApplicationRequests = props => {
             return (
               <tr key={application.id}>
                 <td>
-                  <Link
-                    to={{
-                      pathname: '/register/project',
-                      search: `id=${application.id}`,
-                    }}
-                  >
+                  <Link to={`/view/project-application/${application.id}`}>
                     {_.truncate(application.id, { length: 10, omission: '...' })}
                   </Link>
                 </td>

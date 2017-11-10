@@ -39,8 +39,6 @@ urlpatterns = [
 
     # Users
     url(r'^api/v1/request/user/$', views.UserRequestViewSet),
-    url(r'^api/v1/request/user/check/(?P<id>[\w]{8}-[\w]{4}-4[\w]{3}-[\w][\w]{3}-[\w]{12})/$',
-        views.UserRequestConfirmation),
 
     # Daco
     url(r'^api/v1/daco/$', views.daco),

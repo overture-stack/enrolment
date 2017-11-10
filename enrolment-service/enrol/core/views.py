@@ -19,6 +19,8 @@ import smtplib
 
 schema_view = get_swagger_view(title='Enrol API')
 SMTP_SERVER = smtplib.SMTP(settings.SMTP_URL, 25)
+SMTP_FROM = settings.SMTP_FROM
+RESOURCE_ADMIN_EMAIL = settings.RESOURCE_ADMIN_EMAIL
 
 
 class CreateListRetrieveUpdateViewSet(mixins.CreateModelMixin,
@@ -144,6 +146,25 @@ class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
 
         return Applications.objects.filter(user=user)
 
+    def perform_create(self, serializer):
+        # Save the data
+        application = serializer.save()
+
+        # Send email to request admin review
+        msg = MIMEText(
+            Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/resource_request.html')).read()).render(
+                resource_type="Project Application",
+                data=serializer.data.items(),
+                link='view/project-application/{}'.format(
+                    application.id)
+            ), "html"
+        )
+        msg['Subject'] = 'Collaboratory - New Project Application'
+        msg['To'] = RESOURCE_ADMIN_EMAIL
+        msg['From'] = SMTP_FROM
+
+        SMTP_SERVER.send_message(msg)
+
 
 class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
     """
@@ -185,17 +206,25 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
         serializer = ProjectUsersSerializer(project_user)
         return Response(serializer.data)
 
+    def perform_create(self, serializer):
+        # Save the data
+        project_user = serializer.save()
+        print(project_user)
 
-@api_view(['GET'])
-@authentication_classes((SessionAuthentication, ))
-@permission_classes((IsAuthenticated, ))
-def ProjectsUsersByProjectViewSet(request, project):
-    try:
-        serializer = ProjectUsersSerializer(
-            ProjectUsers.objects.filter(project=project), many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    except ProjectUsers.DoesNotExist:
-        raise Http404("No Project User matches the given query.")
+        # Send email to request admin review
+        msg = MIMEText(
+            Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/resource_request.html')).read()).render(
+                resource_type="Project User Application",
+                data=serializer.data.items(),
+                link='view/project-user-application/{}'.format(
+                    project_user.id)
+            ), "html"
+        )
+        msg['Subject'] = 'Collaboratory - New Project User Request'
+        msg['To'] = RESOURCE_ADMIN_EMAIL
+        msg['From'] = SMTP_FROM
+
+        SMTP_SERVER.send_message(msg)
 
 
 @api_view(['GET'])
@@ -247,25 +276,6 @@ def SocialViewSet(request):
         raise Http404("No Users matches the given query.")
 
 
-@api_view(['GET'])
-@authentication_classes((SessionAuthentication, ))
-@permission_classes((IsAuthenticated, ))
-def UserRequestConfirmation(request, id):
-    user = request.user
-    email = request.user.email
-    if user.is_authenticated():
-        userRequest = UserRequestSerializer(
-            UserRequest.objects.get(pk=id)).data
-
-        if userRequest['email'] == email:
-            return Response({
-                'confirm': True,
-                'user': userRequest
-            }, status=status.HTTP_200_OK)
-
-        return Response({'confirm': False}, status=status.HTTP_403_FORBIDDEN)
-
-
 @api_view(['POST'])
 @authentication_classes((SessionAuthentication, ))
 @permission_classes((IsAuthenticated, ))
@@ -282,7 +292,7 @@ def UserRequestViewSet(request):
             if serializer.is_valid():
                 serializer.save()
                 msg = MIMEText(
-                    Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/template.html')).read()).render(
+                    Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/user_request.html')).read()).render(
                         id=serializer.data['id'],
                         name=project['project_name'],
                         project_id=project['id'],
@@ -292,7 +302,7 @@ def UserRequestViewSet(request):
                 msg['Subject'] = 'Collaboratory - Enrollment to project ' + \
                     project['project_name']
                 msg['To'] = data['email']
-                msg['From'] = 'test@cancercollaboratory.org'
+                msg['From'] = SMTP_FROM
                 SMTP_SERVER.send_message(msg)
                 continue
             else:

@@ -189,7 +189,6 @@ export const userRequestReducer = (state = _defaultUserRequestState, action) => 
         ...state,
         loading: false,
         hasRequests: false,
-        data: [],
         error: action.payload,
       };
     default:

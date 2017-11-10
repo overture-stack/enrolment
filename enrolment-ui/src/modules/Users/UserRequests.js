@@ -27,7 +27,7 @@ const UserRequests = props => {
             return (
               <tr key={user.id}>
                 <td>
-                  <Link to={{ pathname: '/register/user', query: { id: user.id } }}>
+                  <Link to={`/view/project-user-application/${user.project}/${user.id}/`}>
                     {_.truncate(user.id, { length: 10, omission: '...' })}
                   </Link>
                 </td>
