@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { translate, Trans } from 'react-i18next';
 
 import Requests from './components/Requests';
 import { UserEnrolmentModal } from '../Users';
@@ -29,20 +30,20 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { applications, profile } = this.props;
+    const { t, applications, profile } = this.props;
 
     return (
       <div className="wrapper">
         <div className="inner">
-          <h1>Collaboratory Enrolment</h1>
-          <p>Welcome to Collaboratory online Project / User enrollment app.</p>
+          <h1>{t('Dashboard.title')}</h1>
+          <p>{t('Dashboard.intro')}</p>
           {!applications.hasApplications && !profile.is_staff ? (
-            <p>
+            <Trans i18nKey="Dashboard.register" parent={'p'}>
               Please click here to <Link to="register/project">Register a project</Link>.
-            </p>
+            </Trans>
           ) : null}
           {!applications.hasApplications && profile.is_staff ? (
-            <p>There are currently no Requests for you to view.</p>
+            <p>{t('Dashboard.noRequests')}</p>
           ) : null}
           {applications.hasApplications ? <Requests /> : null}
         </div>
@@ -67,4 +68,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default translate()(connect(mapStateToProps, mapDispatchToProps)(Dashboard));

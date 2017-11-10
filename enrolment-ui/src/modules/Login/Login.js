@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { translate } from 'react-i18next';
 
 import GoogleLoginForm from './components/GoogleLoginForm';
 import InternalLoginForm from './components/InternalLoginForm';
@@ -7,8 +8,6 @@ import LoginStatus from './components/LoginStatus';
 
 import './login.scss';
 import logo from '../../assets/img/logo.svg';
-
-import { translate } from 'react-i18next';
 
 const Login = props => {
   const { i18n, isGoogleLogin, auth: { error } } = props;
@@ -31,13 +30,13 @@ const Login = props => {
           className={activeLanguageClass(i18n.language, 'en')}
           onClick={() => i18n.changeLanguage('en')}
         >
-          en
+          EN
         </button>
         <button
           className={activeLanguageClass(i18n.language, 'fr')}
           onClick={() => i18n.changeLanguage('fr')}
         >
-          fr
+          FR
         </button>
       </div>
     </div>

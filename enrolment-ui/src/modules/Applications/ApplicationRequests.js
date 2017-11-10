@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { translate, Trans } from 'react-i18next';
 import _ from 'lodash';
 
 import { fetchProjects, approveProject, denyProject } from '../Projects/redux';
@@ -8,6 +9,7 @@ import { fetchApplications } from '../Applications/redux';
 
 const ApplicationRequests = props => {
   const {
+    t,
     applications,
     profile,
     projects,
@@ -24,17 +26,22 @@ const ApplicationRequests = props => {
 
   return (
     <div className="col-md-12">
-      <h4>Application Requests</h4>
+      <h4>{t('ApplicationRequests.title')}</h4>
       <table className="table table-striped table-bordered">
         <thead>
-          <tr>
+          <Trans
+            i18nKey={
+              profile.is_staff ? 'RequestTable.tableHeaderAdmin' : 'RequestTable.tableHeader'
+            }
+            parent="tr"
+          >
             <th>Request ID</th>
             <th>Project Title</th>
             <th>Created Date</th>
             <th>Updated Date</th>
             <th>Status</th>
             {profile.is_staff ? <th>Action</th> : null}
-          </tr>
+          </Trans>
         </thead>
         <tbody>
           {applications.results.map(application => {
@@ -55,11 +62,17 @@ const ApplicationRequests = props => {
                   <td>
                     {project.status === 'Pending' && (
                       <div className="admin-actions">
-                        <a onClick={() => approveProject(project.id, fetchNewData)}>Approve</a>
-                        <a onClick={() => denyProject(project.id, fetchNewData)}>Deny</a>
+                        <a onClick={() => approveProject(project.id, fetchNewData)}>
+                          {t('RequestTable.action.approve')}
+                        </a>
+                        <a onClick={() => denyProject(project.id, fetchNewData)}>
+                          {t('RequestTable.action.deny')}
+                        </a>
                       </div>
                     )}
-                    {project.status !== 'Pending' && <span>No Action Needed</span>}
+                    {project.status !== 'Pending' ? (
+                      <span>{t('RequestTable.action.none')}</span>
+                    ) : null}
                   </td>
                 ) : null}
               </tr>
@@ -90,4 +103,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ApplicationRequests);
+export default translate()(connect(mapStateToProps, mapDispatchToProps)(ApplicationRequests));

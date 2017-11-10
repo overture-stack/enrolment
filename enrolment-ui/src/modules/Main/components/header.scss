@@ -8,7 +8,7 @@ header {
     background-color: #444444;
 
     .link-container {
-      margin: 5px 30px;
+      margin: 5px 24px;
 
       .links {
         font-weight: bold;
@@ -31,6 +31,15 @@ header {
         margin: 5px 10px;
         color: #fff;
         cursor: pointer;
+      }
+    }
+
+    .lang-toggle {
+      margin: 6px 10px 5px 0;
+      .btn {
+        font-family: montserrat, sans-serif;
+        font-size: 12px;
+        padding: 2px 8px;
       }
     }
   }
