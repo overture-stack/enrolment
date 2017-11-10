@@ -17,3 +17,23 @@ h1 {
 a {
   cursor: pointer;
 }
+
+.btn-toggles {
+  outline: none !important;
+
+  &:focus,
+  &:active,
+  &:visited {
+    outline: none !important;
+  }
+
+  &:first-of-type {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  &:last-of-type {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}

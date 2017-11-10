@@ -3,19 +3,12 @@ import { connect } from 'react-redux';
 
 import { changeLoginGateway } from '../redux';
 
-import { I18n } from 'react-i18next';
+import { translate } from 'react-i18next';
 
 const ChangeLogin = props => {
-  const { isGoogleLogin, changeLoginGateway } = props;
-  return (
-    <I18n ns="translations">
-      {(t, { i18n }) => (
-        <a onClick={changeLoginGateway}>
-          {isGoogleLogin ? t('ChangeLogin.internal') : t('ChangeLogin.external')}
-        </a>
-      )}
-    </I18n>
-  );
+  const { t, isGoogleLogin, changeLoginGateway } = props;
+  const text = isGoogleLogin ? t('ChangeLogin.internal') : t('ChangeLogin.external');
+  return <a onClick={changeLoginGateway}>{text}</a>;
 };
 
 ChangeLogin.displayName = 'ChangeLogin';
@@ -32,4 +25,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ChangeLogin);
+export default translate()(connect(mapStateToProps, mapDispatchToProps)(ChangeLogin));

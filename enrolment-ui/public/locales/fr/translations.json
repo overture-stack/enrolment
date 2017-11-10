@@ -2,5 +2,8 @@
   "ChangeLogin": {
     "internal": "Connexion Interne",
     "external": "Connexion Externe"
+  },
+  "GoogleLogin": {
+    "buttonText": "Connectez-vous avec Google"
   }
 }

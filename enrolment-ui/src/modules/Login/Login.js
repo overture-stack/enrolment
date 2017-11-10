@@ -8,41 +8,39 @@ import LoginStatus from './components/LoginStatus';
 import './login.scss';
 import logo from '../../assets/img/logo.svg';
 
-import { I18n } from 'react-i18next';
+import { translate } from 'react-i18next';
 
 const Login = props => {
-  const { isGoogleLogin, auth: { error } } = props;
+  const { i18n, isGoogleLogin, auth: { error } } = props;
 
   const activeLanguageClass = (currentLang, button) => {
-    if (currentLang === button) return 'active';
+    if (currentLang === button) return 'btn btn-default btn-toggles active';
+
+    return 'btn btn-default btn-toggles';
   };
 
   return (
-    <I18n ns="translations">
-      {(t, { i18n }) => (
-        <div className="login">
-          <div className="login-logo-container">
-            <img src={logo} className="login-logo" alt="logo" />
-          </div>
-          {isGoogleLogin ? <GoogleLoginForm /> : <InternalLoginForm />}
-          {error ? <LoginStatus /> : null}
-          <div>
-            <button
-              className={activeLanguageClass(i18n.language, 'en')}
-              onClick={() => i18n.changeLanguage('en')}
-            >
-              en
-            </button>
-            <button
-              className={activeLanguageClass(i18n.language, 'fr')}
-              onClick={() => i18n.changeLanguage('fr')}
-            >
-              fr
-            </button>
-          </div>
-        </div>
-      )}
-    </I18n>
+    <div className="login">
+      <div className="login-logo-container">
+        <img src={logo} className="login-logo" alt="logo" />
+      </div>
+      {isGoogleLogin ? <GoogleLoginForm /> : <InternalLoginForm />}
+      {error ? <LoginStatus /> : null}
+      <div className="lang-toggle">
+        <button
+          className={activeLanguageClass(i18n.language, 'en')}
+          onClick={() => i18n.changeLanguage('en')}
+        >
+          en
+        </button>
+        <button
+          className={activeLanguageClass(i18n.language, 'fr')}
+          onClick={() => i18n.changeLanguage('fr')}
+        >
+          fr
+        </button>
+      </div>
+    </div>
   );
 };
 
@@ -55,4 +53,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, null)(Login);
+export default translate()(connect(mapStateToProps, null)(Login));
