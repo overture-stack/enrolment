@@ -1,0 +1,47 @@
+{
+  "ChangeLogin": {
+    "internal": "Internal Login",
+    "external": "External Login"
+  },
+  "GoogleLogin": {
+    "buttonText": "Login with Google"
+  },
+  "Dashboard": {
+    "title": "Collaboratory Enrolment",
+    "intro": "Welcome to Collaboratory online Project / User enrollment app.",
+    "register": "Please click here to <1>Register a project</1>.",
+    "noRequests": "There are currently no Requests for you to view."
+  },
+  "Requests": {
+    "requestsHeader": {
+      "title": "My Requests"
+    },
+    "projects": {
+      "title": "My Projects",
+      "projectDetailLink": "View Project Details",
+      "addUserLink": "Add Users",
+      "viewUserLink": "View / Edit Users"
+    }
+  },
+  "StaffActions": {
+    "register": "Register Project",
+    "enroll": "Enroll Users"
+  },
+  "ApplicationRequests": {
+    "title": "Application Requests"
+  },
+  "UserRequests": {
+    "title": "User Requests"
+  },
+  "RequestTable": {
+    "tableHeader":
+      "<0>Request ID</0><1>Project Title</1><2>Created Date</2><3>Updated Date</3><4>Status</4>",
+    "tableHeaderAdmin":
+      "<0>Request ID</0><1>Project Title</1><2>Created Date</2><3>Updated Date</3><4>Status</4><5>Action</5>",
+    "action": {
+      "approve": "Approve",
+      "deny": "Deny",
+      "none": "No Action Needed"
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { translate } from 'react-i18next';
 
 import GoogleLoginForm from './components/GoogleLoginForm';
 import InternalLoginForm from './components/InternalLoginForm';
@@ -9,7 +10,13 @@ import './login.scss';
 import logo from '../../assets/img/logo.svg';
 
 const Login = props => {
-  const { isGoogleLogin, auth: { error } } = props;
+  const { i18n, isGoogleLogin, auth: { error } } = props;
+
+  const activeLanguageClass = (currentLang, button) => {
+    if (currentLang === button) return 'btn btn-default btn-toggles active';
+
+    return 'btn btn-default btn-toggles';
+  };
 
   return (
     <div className="login">
@@ -18,6 +25,20 @@ const Login = props => {
       </div>
       {isGoogleLogin ? <GoogleLoginForm /> : <InternalLoginForm />}
       {error ? <LoginStatus /> : null}
+      <div className="lang-toggle">
+        <button
+          className={activeLanguageClass(i18n.language, 'en')}
+          onClick={() => i18n.changeLanguage('en')}
+        >
+          EN
+        </button>
+        <button
+          className={activeLanguageClass(i18n.language, 'fr')}
+          onClick={() => i18n.changeLanguage('fr')}
+        >
+          FR
+        </button>
+      </div>
     </div>
   );
 };
@@ -31,4 +52,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, null)(Login);
+export default translate()(connect(mapStateToProps, null)(Login));
