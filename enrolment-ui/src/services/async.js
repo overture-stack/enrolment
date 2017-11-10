@@ -41,7 +41,6 @@ export function createAsyncs(isDevelopment = false) {
     profile: {
       getUser: asyncServiceCreator('GET', `${apiBase}/auth/user/`),
       getSocial: asyncServiceCreator('GET', `${apiBase}/auth/social/`),
-      userCheck: id => asyncServiceCreator('GET', `${apiBase}/request/user/check/${id}/`)(),
     },
     project: {
       fetchProjects: asyncServiceCreator('GET', `${apiBase}/projects/`),

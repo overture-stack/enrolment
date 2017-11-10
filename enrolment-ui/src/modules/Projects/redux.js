@@ -188,7 +188,6 @@ export const reducer = (state = _defaultState, action) => {
         ...state,
         loading: false,
         hasProjects: false,
-        data: [],
         error: action.payload,
       };
     default:

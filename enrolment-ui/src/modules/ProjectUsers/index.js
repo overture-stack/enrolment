@@ -1,3 +1,3 @@
-import { reducer } from './redux';
+import { reducer, projectUserReducer } from './redux';
 
-export { reducer };
+export { reducer, projectUserReducer };
