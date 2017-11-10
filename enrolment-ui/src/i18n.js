@@ -14,7 +14,7 @@ i18n
     ns: ['translations'],
     defaultNS: 'translations',
 
-    debug: true,
+    debug: process.env.NODE_ENV !== 'production',
 
     interpolation: {
       escapeValue: false, // not needed for react!!
