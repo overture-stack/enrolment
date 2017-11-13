@@ -18,8 +18,8 @@ from core.client.daco import DacoClient
 import smtplib
 
 schema_view = get_swagger_view(title='Enrol API')
-SMTP_SERVER = smtplib.SMTP(settings.SMTP_URL, 25)
-SMTP_FROM = settings.SMTP_FROM
+# SMTP_SERVER = smtplib.SMTP(settings.SMTP_URL, 25)
+# SMTP_FROM = settings.SMTP_FROM
 RESOURCE_ADMIN_EMAIL = settings.RESOURCE_ADMIN_EMAIL
 
 
@@ -151,19 +151,19 @@ class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
         application = serializer.save()
 
         # Send email to request admin review
-        msg = MIMEText(
-            Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/resource_request.html')).read()).render(
-                resource_type="Project Application",
-                data=serializer.data.items(),
-                link='view/project-application/{}'.format(
-                    application.id)
-            ), "html"
-        )
-        msg['Subject'] = 'Collaboratory - New Project Application'
-        msg['To'] = RESOURCE_ADMIN_EMAIL
-        msg['From'] = SMTP_FROM
+        # msg = MIMEText(
+        #     Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/resource_request.html')).read()).render(
+        #         resource_type="Project Application",
+        #         data=serializer.data.items(),
+        #         link='view/project-application/{}'.format(
+        #             application.id)
+        #     ), "html"
+        # )
+        # msg['Subject'] = 'Collaboratory - New Project Application'
+        # msg['To'] = RESOURCE_ADMIN_EMAIL
+        # msg['From'] = SMTP_FROM
 
-        SMTP_SERVER.send_message(msg)
+        # SMTP_SERVER.send_message(msg)
 
 
 class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
@@ -209,22 +209,24 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
     def perform_create(self, serializer):
         # Save the data
         project_user = serializer.save()
-        print(project_user)
 
-        # Send email to request admin review
-        msg = MIMEText(
-            Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/resource_request.html')).read()).render(
-                resource_type="Project User Application",
-                data=serializer.data.items(),
-                link='view/project-user-application/{}'.format(
-                    project_user.id)
-            ), "html"
-        )
-        msg['Subject'] = 'Collaboratory - New Project User Request'
-        msg['To'] = RESOURCE_ADMIN_EMAIL
-        msg['From'] = SMTP_FROM
+        # # Send email to request admin review
+        # msg = MIMEText(
+        #     Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/resource_request.html')).read()).render(
+        #         resource_type="Project User Application",
+        #         data=serializer.data.items(),
+        #         link='view/project-user-application/{}'.format(
+        #             project_user.id)
+        #     ), "html"
+        # )
+        # msg['Subject'] = 'Collaboratory - New Project User Request'
+        # msg['To'] = RESOURCE_ADMIN_EMAIL
+        # msg['From'] = SMTP_FROM
 
-        SMTP_SERVER.send_message(msg)
+        # Delete existing user application
+        # CODE HERE
+
+        # SMTP_SERVER.send_message(msg)
 
 
 @api_view(['GET'])
@@ -291,27 +293,27 @@ def UserRequestViewSet(request):
                 Projects.objects.get(pk=data['project'])).data
             if serializer.is_valid():
                 serializer.save()
-                msg = MIMEText(
-                    Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/user_request.html')).read()).render(
-                        id=serializer.data['id'],
-                        name=project['project_name'],
-                        project_id=project['id'],
-                        pi=project['pi']
-                    ), "html"
-                )
-                msg['Subject'] = 'Collaboratory - Enrollment to project ' + \
-                    project['project_name']
-                msg['To'] = data['email']
-                msg['From'] = SMTP_FROM
-                SMTP_SERVER.send_message(msg)
+                # msg = MIMEText(
+                #     Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/user_request.html')).read()).render(
+                #         id=serializer.data['id'],
+                #         name=project['project_name'],
+                #         project_id=project['id'],
+                #         pi=project['pi']
+                #     ), "html"
+                # )
+                # msg['Subject'] = 'Collaboratory - Enrollment to project ' + \
+                #     project['project_name']
+                # msg['To'] = data['email']
+                # msg['From'] = SMTP_FROM
+                # SMTP_SERVER.send_message(msg)
                 continue
             else:
-                SMTP_SERVER.quit()
+                # SMTP_SERVER.quit()
                 response = {
                     'success': False,
                     'message': 'Something went wrong'
                 }
         return Response(response, status=status.HTTP_200_OK)
     else:
-        SMTP_SERVER.quit()
+        # SMTP_SERVER.quit()
         return HttpResponseForbidden()
