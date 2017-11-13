@@ -1,26 +1,39 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { translate, Trans } from 'react-i18next';
 import _ from 'lodash';
 
 import { fetchUserRequests, approveUserRequest, denyUserRequest } from './redux';
 
 const UserRequests = props => {
-  const { profile, userRequests, fetchUserRequests, approveUserRequest, denyUserRequest } = props;
+  const {
+    t,
+    profile,
+    userRequests,
+    fetchUserRequests,
+    approveUserRequest,
+    denyUserRequest,
+  } = props;
 
   return (
     <div className="col-md-12">
-      <h4>User Requests</h4>
+      <h4>{t('UserRequests.title')}</h4>
       <table className="table table-striped table-bordered">
         <thead>
-          <tr>
+          <Trans
+            i18nKey={
+              profile.is_staff ? 'RequestTable.tableHeaderAdmin' : 'RequestTable.tableHeader'
+            }
+            parent="tr"
+          >
             <th>Request ID</th>
             <th>Name</th>
             <th>Created Date</th>
             <th>Updated Date</th>
             <th>Status</th>
             {profile.is_staff ? <th>Action</th> : null}
-          </tr>
+          </Trans>
         </thead>
         <tbody>
           {userRequests.map(user => {
@@ -45,16 +58,16 @@ const UserRequests = props => {
                           onClick={() =>
                             approveUserRequest(user.project, user.id, fetchUserRequests)}
                         >
-                          Approve
+                          {t('RequestTable.action.approve')}
                         </a>
                         <a
                           onClick={() => denyUserRequest(user.project, user.id, fetchUserRequests)}
                         >
-                          Deny
+                          {t('RequestTable.action.deny')}
                         </a>
                       </div>
                     ) : null}
-                    {user.status !== 'Pending' && <span>No Action Needed</span>}
+                    {user.status !== 'Pending' && <span>{t('RequestTable.action.none')}</span>}
                   </td>
                 ) : null}
               </tr>
@@ -83,4 +96,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserRequests);
+export default translate()(connect(mapStateToProps, mapDispatchToProps)(UserRequests));

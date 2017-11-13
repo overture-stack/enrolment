@@ -3,9 +3,11 @@ import { connect } from 'react-redux';
 
 import { changeLoginGateway } from '../redux';
 
+import { translate } from 'react-i18next';
+
 const ChangeLogin = props => {
-  const { isGoogleLogin, changeLoginGateway } = props;
-  const text = isGoogleLogin ? 'Internal Login' : 'External Login';
+  const { t, isGoogleLogin, changeLoginGateway } = props;
+  const text = isGoogleLogin ? t('ChangeLogin.internal') : t('ChangeLogin.external');
   return <a onClick={changeLoginGateway}>{text}</a>;
 };
 
@@ -23,4 +25,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ChangeLogin);
+export default translate()(connect(mapStateToProps, mapDispatchToProps)(ChangeLogin));

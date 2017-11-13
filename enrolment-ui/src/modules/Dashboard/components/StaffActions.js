@@ -2,12 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
+import { translate } from 'react-i18next';
 import _ from 'lodash';
 
 import { toggleModal } from '../../Users/redux';
 
 const StaffActions = props => {
-  const { profile, projects, toggleModal } = props;
+  const { t, profile, projects, toggleModal } = props;
 
   const hasApprovedProjects = !!_.find(projects.results, project =>
     _.includes(project.status, 'Approved'),
@@ -16,11 +17,11 @@ const StaffActions = props => {
   return (
     <div className="requests-actions">
       <Link to="register/project" className="btn btn-default">
-        Register Project
+        {t('StaffActions.register')}
       </Link>
       {hasApprovedProjects && !profile.is_staff ? (
         <Button href="#" onClick={toggleModal}>
-          Enroll Users
+          {t('StaffActions.enroll')}
         </Button>
       ) : null}
     </div>
@@ -42,4 +43,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(StaffActions);
+export default translate()(connect(mapStateToProps, mapDispatchToProps)(StaffActions));
