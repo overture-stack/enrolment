@@ -5,6 +5,7 @@ import { translate } from 'react-i18next';
 import _ from 'lodash';
 
 import StaffActions from './StaffActions';
+import FeesSidebarWidget from '../../Fees';
 import { ApplicationRequests } from '../../Applications';
 import { UserRequests } from '../../Users';
 
@@ -41,6 +42,7 @@ const Requests = props => {
               {t('Requests.projects.viewUserLink')}
             </Link>
           </div>
+          <FeesSidebarWidget />
         </section>
       ) : null}
     </div>
