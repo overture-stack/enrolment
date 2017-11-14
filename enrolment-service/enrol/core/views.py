@@ -1,4 +1,5 @@
 import os
+import json
 from core.models import Applications, Projects, UserRequest, ProjectUsers
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404
@@ -14,13 +15,39 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from email.mime.text import MIMEText
 from core.serializers import ProjectsSerializer, ProjectSerializer, ApplicationSerializer, ProjectUsersSerializer, UserRequestSerializer, UserDetailsSerializer
-from core.client.daco import DacoClient
+from core.client.daco import DacoClient, DacoException
 import smtplib
 
 schema_view = get_swagger_view(title='Enrol API')
 SMTP_SERVER = smtplib.SMTP(settings.SMTP_URL, 25)
 SMTP_FROM = settings.SMTP_FROM
 RESOURCE_ADMIN_EMAIL = settings.RESOURCE_ADMIN_EMAIL
+
+
+class CreateRetrieveViewSet(mixins.CreateModelMixin,
+                            mixins.RetrieveModelMixin,
+                            viewsets.GenericViewSet):
+    """
+    A viewset that provides `retrieve`, and `create` actions.
+
+    To use it, override the class and set the `.queryset` and
+    `.serializer_class` attributes.
+
+    Also allows you to set different serializers for the various methods:
+
+    serializers = {
+        'default': serializers.Default,
+        'list':    serializers.List,
+        'detail':  serializers.Details,
+        # etc.
+    }
+    """
+    serializers = {
+        'default': None,
+    }
+
+    def get_serializer_class(self):
+        return self.serializers.get(self.action, self.serializers['default'])
 
 
 class CreateListRetrieveUpdateViewSet(mixins.CreateModelMixin,
@@ -168,7 +195,7 @@ class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
 
 class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
     """
-    Handles the Projects entity for the API
+    Handles the Project Users entity for the API
     """
     serializers = {
         'default': ProjectUsersSerializer,
@@ -209,7 +236,6 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
     def perform_create(self, serializer):
         # Save the data
         project_user = serializer.save()
-        print(project_user)
 
         # Send email to request admin review
         msg = MIMEText(
@@ -224,7 +250,50 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
         msg['To'] = RESOURCE_ADMIN_EMAIL
         msg['From'] = SMTP_FROM
 
-        SMTP_SERVER.send_message(msg)
+        # Delete existing user application
+        UserRequest.objects.filter(
+            email=self.request.user.email, project=project_user.project).delete()
+
+        # SMTP_SERVER.send_message(msg)
+
+
+class UserRequestViewSet(CreateRetrieveViewSet):
+    """
+    Handles the Projects entity for the API
+    """
+    serializers = {
+        'default': UserRequestSerializer
+    }
+    authentication_classes = (SessionAuthentication, )
+    permission_classes = (IsAuthenticated, )
+    queryset = UserRequest.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        many = isinstance(request.data, list)
+        serializer = self.get_serializer(data=request.data, many=many)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def perform_create(self, serializer):
+        user_requests = serializer.save()
+
+        for user_request in user_requests:
+            project = user_request.project
+
+            msg = MIMEText(
+                Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/user_request.html')).read()).render(
+                    id=user_request.id,
+                    name=project.project_name,
+                    project_id=project.id,
+                    pi=project.pi
+                ), "html"
+            )
+            msg['Subject'] = 'Collaboratory - Enrollment to project ' + \
+                project.project_name
+            msg['To'] = user_request.email
+            msg['From'] = SMTP_FROM
+            SMTP_SERVER.send_message(msg)
 
 
 @api_view(['GET'])
@@ -239,8 +308,15 @@ def daco(request):
                           token=settings.ICGC_TOKEN,
                           token_secret=settings.ICGC_TOKEN_SECRET)
 
-        response = daco.get_daco_status(email)
-        return Response(response)
+        try:
+            response = daco.get_daco_status(email)
+            return Response(response)
+        except DacoException as err:
+            if err.status_code == 403:
+                return HttpResponseForbidden()
+            else:
+                return Response(err.message, status=status.HTTP_400_BAD_REQUEST)
+
     else:
         return HttpResponseForbidden()
 
@@ -255,8 +331,15 @@ def dacoAccess(request, email):
                                 client_secret=settings.ICGC_CLIENT_SECRET,
                                 token=settings.ICGC_TOKEN,
                                 token_secret=settings.ICGC_TOKEN_SECRET)
-        response = dacoClient.get_daco_status(email)
-        return Response(response, status=status.HTTP_200_OK)
+        try:
+            response = dacoClient.get_daco_status(email)
+            return Response(response, status=status.HTTP_200_OK)
+        except DacoException as err:
+            if err.status_code == 403:
+                return HttpResponseForbidden()
+            else:
+                return Response(err.message, status=status.HTTP_400_BAD_REQUEST)
+            
     else:
         return HttpResponseForbidden()
 
@@ -274,44 +357,3 @@ def SocialViewSet(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
     except ProjectUsers.DoesNotExist:
         raise Http404("No Users matches the given query.")
-
-
-@api_view(['POST'])
-@authentication_classes((SessionAuthentication, ))
-@permission_classes((IsAuthenticated, ))
-def UserRequestViewSet(request):
-    if request.method == 'POST':
-        response = {
-            'success': True,
-            'message': 'Emails were sent out'
-        }
-        for data in request.data:
-            serializer = UserRequestSerializer(data=data)
-            project = ProjectSerializer(
-                Projects.objects.get(pk=data['project'])).data
-            if serializer.is_valid():
-                serializer.save()
-                msg = MIMEText(
-                    Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/user_request.html')).read()).render(
-                        id=serializer.data['id'],
-                        name=project['project_name'],
-                        project_id=project['id'],
-                        pi=project['pi']
-                    ), "html"
-                )
-                msg['Subject'] = 'Collaboratory - Enrollment to project ' + \
-                    project['project_name']
-                msg['To'] = data['email']
-                msg['From'] = SMTP_FROM
-                SMTP_SERVER.send_message(msg)
-                continue
-            else:
-                SMTP_SERVER.quit()
-                response = {
-                    'success': False,
-                    'message': 'Something went wrong'
-                }
-        return Response(response, status=status.HTTP_200_OK)
-    else:
-        SMTP_SERVER.quit()
-        return HttpResponseForbidden()

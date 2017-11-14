@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
-from core.models import ProjectUsers, Projects
+from core.models import ProjectUsers, Projects, UserRequest
 from django.contrib.auth.models import User
 from core.serializers import ProjectUsersSerializer
 from helpers import createUsers, createNewObjInstance
@@ -123,6 +123,42 @@ class ProjectUsersTest(APITestCase):
         self.assertEqual(ProjectUsers.objects.count(), 1)
         self.assertEqual(ProjectUsers.objects.get(
         ).daco_email, 'fluffykins@gmail.com')
+
+    def test_delete_user_request_on_projectUser_create(self):
+        """
+        Once a project user is created, their associated user
+        request should be deleted
+        """
+        user = User.objects.get(username='user')
+
+        # Create user request
+        userRequestData = {
+            'project': self.testProject,
+            'email': 'user@asd.com'
+        }
+        secondUserRequest = {
+            'project': self.testProject,
+            'email': 'user_2@asd.com'
+        }
+        thirdUserRequest = {
+            'project': self.secondProject,
+            'email': 'user_2@asd.com'
+        }
+        UserRequest.objects.create(**userRequestData)
+        UserRequest.objects.create(**secondUserRequest)
+        UserRequest.objects.create(**thirdUserRequest)
+
+        # Create new instance
+        client = APIClient()
+        client.force_authenticate(user=self.user)
+        response = client.post(self.url, self.newProjectUser)
+
+        # Test that there is no user application with the combination
+        # of projectId and email
+        no_user_request = UserRequest.objects.filter(
+            email="user@asd.com", project=self.testProject.id)
+        self.assertEqual(len(no_user_request), 0)
+        self.assertEqual(UserRequest.objects.count(), 2)
 
     def test_get_projectUsers_list(self):
         """

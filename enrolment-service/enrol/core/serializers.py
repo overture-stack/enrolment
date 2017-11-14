@@ -27,11 +27,16 @@ class ChoicesField(serializers.Field):
         return self._choices[data][0]
 
 
-class UserRequestSerializer(serializers.ModelSerializer):
+class UserRequestListSerializer(serializers.ListSerializer):
+    def create(self, validated_data):
+        userRequests = [UserRequest(**item) for item in validated_data]
+        return UserRequest.objects.bulk_create(userRequests)
 
+class UserRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserRequest
         fields = ('id', 'project', 'email')
+        list_serializer_class = UserRequestListSerializer
 
 
 class ProjectUsersSerializer(serializers.ModelSerializer):

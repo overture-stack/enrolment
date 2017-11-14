@@ -7,7 +7,7 @@ const LoginStatus = props => {
   const { loading, error } = props.auth;
   return (
     <div className={`login-extra-info ${loading || error ? 'show' : 'hide'} `}>
-      {loading && <img src={spinner} alt="loading graphic" />}
+      {loading && <img className="loading-graphic" src={spinner} alt="loading graphic" />}
       {error && (
         <div
           className="alert alert-danger"

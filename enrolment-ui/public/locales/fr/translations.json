@@ -1,4 +1,8 @@
 {
+  "Login": {
+    "invalidUserRequest":
+      "Cette demande de l'utilisateur n'est plus valide, veuillez contacter votre IP si vous pensez qu'il s'agit d'une erreur."
+  },
   "ChangeLogin": {
     "internal": "Connexion Interne",
     "external": "Connexion Externe"
