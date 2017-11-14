@@ -44,5 +44,7 @@
       "deny": "Nier",
       "none": "Pas d'action requise"
     }
-  }
+  },
+  "FeesSidebarWidget":
+    "<0>Frais d'utilisation des ressources de collaboration</0><1><0>0,03$ CAD</0> par vCPU heure</1><2><0>0,000067$ CAD</0> par heure de stockage (volumes, images et stockage d'objets)</2>"
 }
