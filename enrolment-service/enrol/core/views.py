@@ -23,6 +23,31 @@ schema_view = get_swagger_view(title='Enrol API')
 RESOURCE_ADMIN_EMAIL = settings.RESOURCE_ADMIN_EMAIL
 
 
+class CreateRetrieveViewSet(mixins.CreateModelMixin,
+                            mixins.RetrieveModelMixin,
+                            viewsets.GenericViewSet):
+    """
+    A viewset that provides `retrieve`, and `create` actions.
+
+    To use it, override the class and set the `.queryset` and
+    `.serializer_class` attributes.
+
+    Also allows you to set different serializers for the various methods:
+
+    serializers = {
+        'default': serializers.Default,
+        'list':    serializers.List,
+        'detail':  serializers.Details,
+        # etc.
+    }
+    """
+    serializers = {
+        'default': None,
+    }
+
+    def get_serializer_class(self):
+        return self.serializers.get(self.action, self.serializers['default'])
+
 class CreateListRetrieveUpdateViewSet(mixins.CreateModelMixin,
                                       mixins.ListModelMixin,
                                       mixins.RetrieveModelMixin,
@@ -168,7 +193,7 @@ class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
 
 class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
     """
-    Handles the Projects entity for the API
+    Handles the Project Users entity for the API
     """
     serializers = {
         'default': ProjectUsersSerializer,
@@ -230,6 +255,40 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
         # SMTP_SERVER.send_message(msg)
 
 
+class UserRequestViewSet(CreateRetrieveViewSet):
+    """
+    Handles the Projects entity for the API
+    """
+    serializers = {
+        'default': UserRequestSerializer,
+    }
+    authentication_classes = (SessionAuthentication, )
+    permission_classes = (IsAuthenticated, IsOwnerOrAdmin)
+
+    def perform_create(self, serializer):
+        user_request = serializer.save()
+        response = {
+            'success': True,
+            'message': 'Emails were sent out'
+        }
+        for data in self.request.data:
+            project = ProjectSerializer(
+                Projects.objects.get(pk=data['project'])).data
+            # msg = MIMEText(
+            #     Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/user_request.html')).read()).render(
+            #         id=serializer.data['id'],
+            #         name=project['project_name'],
+            #         project_id=project['id'],
+            #         pi=project['pi']
+            #     ), "html"
+            # )
+            # msg['Subject'] = 'Collaboratory - Enrollment to project ' + \
+            #     project['project_name']
+            # msg['To'] = data['email']
+            # msg['From'] = SMTP_FROM
+            # SMTP_SERVER.send_message(msg)
+
+
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, ))
 @permission_classes((IsAuthenticated, ))
@@ -277,44 +336,3 @@ def SocialViewSet(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
     except ProjectUsers.DoesNotExist:
         raise Http404("No Users matches the given query.")
-
-
-@api_view(['POST'])
-@authentication_classes((SessionAuthentication, ))
-@permission_classes((IsAuthenticated, ))
-def UserRequestViewSet(request):
-    if request.method == 'POST':
-        response = {
-            'success': True,
-            'message': 'Emails were sent out'
-        }
-        for data in request.data:
-            serializer = UserRequestSerializer(data=data)
-            project = ProjectSerializer(
-                Projects.objects.get(pk=data['project'])).data
-            if serializer.is_valid():
-                serializer.save()
-                # msg = MIMEText(
-                #     Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/user_request.html')).read()).render(
-                #         id=serializer.data['id'],
-                #         name=project['project_name'],
-                #         project_id=project['id'],
-                #         pi=project['pi']
-                #     ), "html"
-                # )
-                # msg['Subject'] = 'Collaboratory - Enrollment to project ' + \
-                #     project['project_name']
-                # msg['To'] = data['email']
-                # msg['From'] = SMTP_FROM
-                # SMTP_SERVER.send_message(msg)
-                continue
-            else:
-                # SMTP_SERVER.quit()
-                response = {
-                    'success': False,
-                    'message': 'Something went wrong'
-                }
-        return Response(response, status=status.HTTP_200_OK)
-    else:
-        # SMTP_SERVER.quit()
-        return HttpResponseForbidden()
