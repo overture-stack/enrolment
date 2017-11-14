@@ -261,30 +261,38 @@ class UserRequestViewSet(CreateRetrieveViewSet):
     Handles the Projects entity for the API
     """
     serializers = {
-        'default': UserRequestSerializer,
+        'default': UserRequestSerializer
     }
     authentication_classes = (SessionAuthentication, )
     permission_classes = (IsAuthenticated, )
     queryset = UserRequest.objects.all()
 
+    def create(self, request, *args, **kwargs):
+        many = isinstance(request.data, list)
+        serializer = self.get_serializer(data=request.data, many=many)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
     def perform_create(self, serializer):
-        user_request = serializer.save()
+        user_requests = serializer.save()
 
-        project = user_request.project
+        for user_request in user_requests:
+            project = user_request.project
 
-        msg = MIMEText(
-            Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/user_request.html')).read()).render(
-                id=user_request.id,
-                name=project.project_name,
-                project_id=project.id,
-                pi=project.pi
-            ), "html"
-        )
-        msg['Subject'] = 'Collaboratory - Enrollment to project ' + \
-            project.project_name
-        msg['To'] = user_request.email
-        msg['From'] = SMTP_FROM
-        SMTP_SERVER.send_message(msg)
+            msg = MIMEText(
+                Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/user_request.html')).read()).render(
+                    id=user_request.id,
+                    name=project.project_name,
+                    project_id=project.id,
+                    pi=project.pi
+                ), "html"
+            )
+            msg['Subject'] = 'Collaboratory - Enrollment to project ' + \
+                project.project_name
+            msg['To'] = user_request.email
+            msg['From'] = SMTP_FROM
+            SMTP_SERVER.send_message(msg)
 
 
 @api_view(['GET'])

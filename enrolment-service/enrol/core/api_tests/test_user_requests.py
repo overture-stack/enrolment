@@ -38,10 +38,13 @@ class UsersRequestsTest(APITestCase):
             'email': self.user.email
         }
 
-        self.newUserRequestPlain = {
+        self.newUserRequestPlain = [{
             'project': self.testProjectId,
             'email': self.user.email
-        }
+        },
+        {   'project': self.testProjectId,
+            'email': self.user_2.email
+        }]
 
     def create_test_userRequest(self, userRequest={}):
         data = {
@@ -73,7 +76,7 @@ class UsersRequestsTest(APITestCase):
         response = client.post(self.url, self.newUserRequestPlain)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(UserRequest.objects.count(), 1)
+        self.assertEqual(UserRequest.objects.count(), 2)
 
     def test_get_userRequest_by_id(self):
         userRequest = self.create_test_userRequest()

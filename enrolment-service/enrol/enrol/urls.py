@@ -22,7 +22,7 @@ from core import views
 router = routers.SimpleRouter()
 router.register(r'projects', views.ProjectsViewSet, 'projects')
 router.register(r'applications', views.ApplicationsViewSet, 'applications')
-router.register(r'requests/user', views.UserRequestViewSet, 'requests-user')
+router.register(r'request/user', views.UserRequestViewSet, 'requests-user')
 
 projects_router = routers.NestedSimpleRouter(
     router, r'projects', lookup='project')
