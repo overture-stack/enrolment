@@ -136,7 +136,17 @@ class ProjectUsersTest(APITestCase):
             'project': self.testProject,
             'email': 'user@asd.com'
         }
+        secondUserRequest = {
+            'project': self.testProject,
+            'email': 'user_2@asd.com'
+        }
+        thirdUserRequest = {
+            'project': self.secondProject,
+            'email': 'user_2@asd.com'
+        }
         UserRequest.objects.create(**userRequestData)
+        UserRequest.objects.create(**secondUserRequest)
+        UserRequest.objects.create(**thirdUserRequest)
 
         # Create new instance
         client = APIClient()
@@ -148,6 +158,7 @@ class ProjectUsersTest(APITestCase):
         no_user_request = UserRequest.objects.filter(
             email="user@asd.com", project=self.testProject.id)
         self.assertEqual(len(no_user_request), 0)
+        self.assertEqual(UserRequest.objects.count(), 2)
 
     def test_get_projectUsers_list(self):
         """

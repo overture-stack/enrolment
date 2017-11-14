@@ -224,7 +224,8 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
         # msg['From'] = SMTP_FROM
 
         # Delete existing user application
-        # CODE HERE
+        UserRequest.objects.filter(
+            email=self.request.user.email, project=project_user.project).delete()
 
         # SMTP_SERVER.send_message(msg)
 
