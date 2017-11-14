@@ -13,6 +13,8 @@ import json
 
 class UsersRequestsTest(APITestCase):
 
+    url = reverse('requests-user-list')
+
     def setUp(self):
 
         createUsers(self)
@@ -28,7 +30,8 @@ class UsersRequestsTest(APITestCase):
         self.testProject = createNewObjInstance(
             self, Projects, baseProjectData)
 
-        self.url = '/api/v1/request/user/'
+        self.testProjectId = self.testProject.id
+        self.testProject.save()
 
         self.newUserRequest = {
             'project': self.testProject,
@@ -36,7 +39,7 @@ class UsersRequestsTest(APITestCase):
         }
 
         self.newUserRequestPlain = {
-            'project': self.testProject,
+            'project': self.testProjectId,
             'email': self.user.email
         }
 
@@ -73,27 +76,11 @@ class UsersRequestsTest(APITestCase):
         self.assertEqual(UserRequest.objects.count(), 1)
 
     def test_get_userRequest_by_id(self):
-        UserRequest = self.create_test_userRequest()
+        userRequest = self.create_test_userRequest()
         user = User.objects.get(username='user')
         client = APIClient()
         client.force_authenticate(user=self.user)
-        response = client.get(self.url + str(self.testProjectId))
+        response = client.get(
+            reverse('requests-user-detail', args=[userRequest.id]))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    # def test_get_projectUser_by_id_only_for_user(self):
-    #     projectUser_1 = self.create_test_projectUser(
-    #         projectUser={'project': self.testProject})
-    #     projectUser_2 = self.create_test_projectUser(
-    #         projectUser={'firstname': 'Secundo', 'project': self.testProject}, user=self.user_2)
-
-    #     user = User.objects.get(username='user')
-    #     client = APIClient()
-    #     client.force_authenticate(user=self.user)
-    #     response = client.get(
-    #         reverse('project-users-detail', args=[self.testProject.id, projectUser_1.id]))
-    #     response_404 = client.get(
-    #         reverse('project-users-detail', args=[self.testProject.id, projectUser_2.id]))
-
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(response_404.status_code, status.HTTP_404_NOT_FOUND)
