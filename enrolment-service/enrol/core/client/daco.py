@@ -5,11 +5,9 @@ import json
 
 class DacoException(Exception):
 
-    def __init__(self, value):
-        self.parameter = value
-
-    def __str__(self):
-        return repr(self.parameter)
+    def __init__(self, status_code, message):
+        self.status_code = status_code
+        self.message = message
 
 
 class DacoClient:
@@ -41,8 +39,4 @@ class DacoClient:
         if response.status_code == 200:
             return json.loads(response.content)
         else:
-            error = {
-                'status_code':  response.status_code,
-                'message': str(response.content)
-            }
-            raise DacoException(json.dumps(error))
+            raise DacoException(response.status_code, 'Daco Error')

@@ -18,7 +18,7 @@ export function createAsyncs(isDevelopment = false) {
       daco: () =>
         asyncServiceCreator('GET', `${apiBase}/daco/`)().catch(error => {
           // If DACO 403 then return custom error message in promise rejection
-          if (error.response.status === 403)
+          if (error.response.status === 403 || error.response.status === 400)
             return Promise.reject(
               new Error(`You need a DACO account to be able to use this Application. <br/>
                           For more information, Please go to <a href="https://icgc.org/daco" target="_blank">https://icgc.org/daco</a>`),

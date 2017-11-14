@@ -1,4 +1,5 @@
 import os
+import json
 from core.models import Applications, Projects, UserRequest, ProjectUsers
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404
@@ -14,7 +15,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from email.mime.text import MIMEText
 from core.serializers import ProjectsSerializer, ProjectSerializer, ApplicationSerializer, ProjectUsersSerializer, UserRequestSerializer, UserDetailsSerializer
-from core.client.daco import DacoClient
+from core.client.daco import DacoClient, DacoException
 import smtplib
 
 schema_view = get_swagger_view(title='Enrol API')
@@ -307,8 +308,15 @@ def daco(request):
                           token=settings.ICGC_TOKEN,
                           token_secret=settings.ICGC_TOKEN_SECRET)
 
-        response = daco.get_daco_status(email)
-        return Response(response)
+        try:
+            response = daco.get_daco_status(email)
+            return Response(response)
+        except DacoException as err:
+            if err.status_code == 403:
+                return HttpResponseForbidden()
+            else:
+                return Response(err.message, status=status.HTTP_400_BAD_REQUEST)
+
     else:
         return HttpResponseForbidden()
 
@@ -323,8 +331,15 @@ def dacoAccess(request, email):
                                 client_secret=settings.ICGC_CLIENT_SECRET,
                                 token=settings.ICGC_TOKEN,
                                 token_secret=settings.ICGC_TOKEN_SECRET)
-        response = dacoClient.get_daco_status(email)
-        return Response(response, status=status.HTTP_200_OK)
+        try:
+            response = dacoClient.get_daco_status(email)
+            return Response(response, status=status.HTTP_200_OK)
+        except DacoException as err:
+            if err.status_code == 403:
+                return HttpResponseForbidden()
+            else:
+                return Response(err.message, status=status.HTTP_400_BAD_REQUEST)
+            
     else:
         return HttpResponseForbidden()
 
