@@ -54,7 +54,15 @@ export function createAsyncs(isDevelopment = false) {
         asyncServiceCreator('PATCH', `${apiBase}/projects/${id}/`, withDataAndCSRF)(data),
     },
     user: {
-      dacoCheck: email => asyncServiceCreator('GET', `${apiBase}/daco/?email=${email}/`)(),
+      dacoCheck: email =>
+        asyncServiceCreator('GET', `${apiBase}/daco/${email}/`)().catch(error => {
+          if (error)
+            return Promise.reject(
+              new Error(
+                `This email is not a valid DACO email.<br/>The user should create a DACO account before you can enroll him to the project (see <a href="https://icgc.org/daco" target="_blank">https://icgc.org/daco</a>)`,
+              ),
+            );
+        }),
       userRequest: asyncServiceCreator('POST', `${apiBase}/request/user/`, withDataAndCSRF),
       checkUserRequest: id => asyncServiceCreator('GET', `${apiBase}/request/user/${id}`)(),
       fetchAllProjectUserRequests: asyncServiceCreator('GET', `${apiBase}/projects/all/users/`),
@@ -77,35 +85,35 @@ export function createAsyncs(isDevelopment = false) {
   if (isDevelopment) {
     return {
       ...asyncs,
-      auth: {
-        ...asyncs.auth,
-        daco: profileObj =>
-          asyncDummyCreator(
-            {
-              user: {
-                openid: profileObj.email,
-                csa: true,
-                userinfo: [
-                  {
-                    uid: profileObj.email,
-                    name: profileObj.name,
-                    email: profileObj.email,
-                  },
-                ],
-              },
-            },
-            250,
-          ),
-      },
-      user: {
-        ...asyncs.user,
-        dacoCheck: asyncDummyCreator(
-          {
-            success: true,
-          },
-          1000,
-        ),
-      },
+      // auth: {
+      //   ...asyncs.auth,
+      //   daco: profileObj =>
+      //     asyncDummyCreator(
+      //       {
+      //         user: {
+      //           openid: profileObj.email,
+      //           csa: true,
+      //           userinfo: [
+      //             {
+      //               uid: profileObj.email,
+      //               name: profileObj.name,
+      //               email: profileObj.email,
+      //             },
+      //           ],
+      //         },
+      //       },
+      //       250,
+      //     ),
+      // },
+      // user: {
+      //   ...asyncs.user,
+      //   dacoCheck: asyncDummyCreator(
+      //     {
+      //       success: true,
+      //     },
+      //     1000,
+      //   ),
+      // },
     };
   }
 
