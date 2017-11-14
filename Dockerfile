@@ -27,7 +27,7 @@ RUN source ~/.nvm/nvm.sh && npm install && npm run build
 
 # API
 WORKDIR /srv/enrolment-service
-RUN virtualenv -p python3.6 env
+RUN virtualenv -p python3 env
 RUN source env/bin/activate && pip install -r requirements.txt && pip install gunicorn
 
 # NGINX
@@ -36,5 +36,5 @@ ADD nginx/enrolment.conf /etc/nginx/sites-enabled/enrolment.conf
 
 RUN mkdir -p /var/log/gunicorn && mkdir -p /srv/enrolment-service/logs
 
-WORKDIR /srv/enrolment-service
+RUN ["chmod", "+x", "/srv/enrolment-service/enrol/run.sh"]
 CMD ["/srv/enrolment-service/enrol/run.sh"]
