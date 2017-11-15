@@ -85,35 +85,35 @@ export function createAsyncs(isDevelopment = false) {
   if (isDevelopment) {
     return {
       ...asyncs,
-      // auth: {
-      //   ...asyncs.auth,
-      //   daco: profileObj =>
-      //     asyncDummyCreator(
-      //       {
-      //         user: {
-      //           openid: profileObj.email,
-      //           csa: true,
-      //           userinfo: [
-      //             {
-      //               uid: profileObj.email,
-      //               name: profileObj.name,
-      //               email: profileObj.email,
-      //             },
-      //           ],
-      //         },
-      //       },
-      //       250,
-      //     ),
-      // },
-      // user: {
-      //   ...asyncs.user,
-      //   dacoCheck: asyncDummyCreator(
-      //     {
-      //       success: true,
-      //     },
-      //     1000,
-      //   ),
-      // },
+      auth: {
+        ...asyncs.auth,
+        daco: profileObj =>
+          asyncDummyCreator(
+            {
+              user: {
+                openid: profileObj.email,
+                csa: true,
+                userinfo: [
+                  {
+                    uid: profileObj.email,
+                    name: profileObj.name,
+                    email: profileObj.email,
+                  },
+                ],
+              },
+            },
+            250,
+          ),
+      },
+      user: {
+        ...asyncs.user,
+        dacoCheck: asyncDummyCreator(
+          {
+            success: true,
+          },
+          1000,
+        ),
+      },
     };
   }
 
