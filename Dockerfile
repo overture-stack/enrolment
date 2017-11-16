@@ -36,5 +36,6 @@ ADD nginx/enrolment.conf /etc/nginx/sites-enabled/enrolment.conf
 
 RUN mkdir -p /var/log/gunicorn && mkdir -p /srv/enrolment-service/logs
 
-RUN ["chmod", "+x", "/srv/enrolment-service/enrol/run.sh"]
+WORKDIR /srv/enrolment-service/enrol
+RUN ["chmod", "+x", "run.sh"]
 CMD ["/srv/enrolment-service/enrol/run.sh"]
