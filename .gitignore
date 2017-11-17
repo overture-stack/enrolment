@@ -81,7 +81,6 @@ celerybeat-schedule
 
 # dotenv
 .env
-env.list
 
 # virtualenv
 .venv
