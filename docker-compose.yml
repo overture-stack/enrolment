@@ -1,0 +1,52 @@
+version: '3.2'
+services:
+  web:
+    restart: always
+    build: ./enrolment-ui/
+    env_file: .env
+    volumes: 
+      - "web-data:/data/web"
+
+  api:
+    restart: always
+    build: ./enrolment-service/
+    expose:
+      - "8000"
+    links:
+      - postgres:postgres
+    env_file: .env
+    command: /usr/bin/gunicorn -w 6 -b 0.0.0.0:8000 --chdir /data/api/enrol enrol.wsgi enrol.wsgi --access-logfile=/var/log/gunicorn/access.log --error-logfile=/var/log/gunicorn/error.log
+
+  nginx:
+    restart: always
+    build: ./nginx/
+    ports:
+      - "80:80"
+    volumes: 
+      - "web-data:/data/web"
+    links:
+      - web:web
+      - api:api
+    depends_on:
+      - web
+
+  postgres:
+    restart: always
+    image: postgres:latest
+    volumes_from:
+      - data
+    volumes:
+      - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./backups/postgresql:/backup
+    env_file: .env
+    expose:
+      - "5432"
+
+  data:
+    image: alpine
+    volumes:
+      - /var/lib/postgresql
+    command: "true"
+
+  volumes:
+    web-data: {}
