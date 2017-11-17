@@ -106,3 +106,6 @@ ENV/
 
 # sqlite
 db.sqlite3
+
+# Notes
+notes-*.txt
