@@ -1,0 +1,54 @@
+version: '3'
+services:
+
+  web:
+    restart: on-failure
+    build: ./enrolment-ui/
+    env_file: .env
+    volumes: 
+      - web-data:/data/web
+    depends_on:
+      - api
+
+  api:
+    restart: always
+    build: ./enrolment-service/
+    expose:
+      - "8000"
+    volumes: 
+      - api-data:/data/api
+    links:
+      - postgres:postgres
+    env_file: .env
+    entrypoint: /entrypoint.sh 
+    depends_on:
+      - postgres
+
+  nginx:
+    restart: always
+    build: ./nginx/
+    ports:
+      - "3000:8080"
+      - "8000:8000"
+    volumes: 
+      - web-data:/data/web
+      - api-data:/data/api
+    links:
+      - api:api
+    depends_on:
+      - web
+      - api
+
+  postgres:
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./presisted_data/postgresql:/var/lib/postgresql/data
+    env_file: .env
+    expose:
+      - "5432"
+
+volumes:
+  web-data:
+  api-data:
