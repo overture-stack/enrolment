@@ -2,6 +2,7 @@ version: '3'
 services:
 
   web:
+    restart: on-failure
     build: ./enrolment-ui/
     env_file: .env
     volumes: 
@@ -43,18 +44,11 @@ services:
     image: postgres:latest
     volumes:
       - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-      - db-data:/backup
+      - ./presisted_data/postgresql:/var/lib/postgresql/data
     env_file: .env
     expose:
       - "5432"
 
-  data:
-    image: alpine
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    command: "true"
-
 volumes:
   web-data:
   api-data:
-  db-data:

@@ -108,3 +108,6 @@ db.sqlite3
 
 # Notes
 notes-*.txt
+
+# Docker presistent store
+presisted_data
