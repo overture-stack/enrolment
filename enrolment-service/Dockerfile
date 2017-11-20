@@ -17,4 +17,8 @@ RUN apk del -r python3-dev postgresql
 
 # Prepare
 COPY . /data/api/
-RUN mkdir -p /var/log/gunicorn && mkdir -p /data/api/enrolment-service/logs
+RUN mkdir -p /var/log/gunicorn && mkdir -p /data/api/logs
+
+# Entry
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
