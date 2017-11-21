@@ -1,4 +1,8 @@
 {
+  "Login": {
+    "invalidUserRequest":
+      "This user request is no longer valid, please contact your PI if you believe this is an error."
+  },
   "ChangeLogin": {
     "internal": "Internal Login",
     "external": "External Login"

@@ -18,7 +18,7 @@ export function createAsyncs(isDevelopment = false) {
       daco: () =>
         asyncServiceCreator('GET', `${apiBase}/daco/`)().catch(error => {
           // If DACO 403 then return custom error message in promise rejection
-          if (error.response.status === 403)
+          if (error.response.status === 403 || error.response.status === 400)
             return Promise.reject(
               new Error(`You need a DACO account to be able to use this Application. <br/>
                           For more information, Please go to <a href="https://icgc.org/daco" target="_blank">https://icgc.org/daco</a>`),
@@ -54,8 +54,17 @@ export function createAsyncs(isDevelopment = false) {
         asyncServiceCreator('PATCH', `${apiBase}/projects/${id}/`, withDataAndCSRF)(data),
     },
     user: {
-      dacoCheck: email => asyncServiceCreator('GET', `${apiBase}/daco/?email=${email}/`)(),
+      dacoCheck: email =>
+        asyncServiceCreator('GET', `${apiBase}/daco/${email}/`)().catch(error => {
+          if (error)
+            return Promise.reject(
+              new Error(
+                `This email is not a valid DACO email.<br/>The user should create a DACO account before you can enroll him to the project (see <a href="https://icgc.org/daco" target="_blank">https://icgc.org/daco</a>)`,
+              ),
+            );
+        }),
       userRequest: asyncServiceCreator('POST', `${apiBase}/request/user/`, withDataAndCSRF),
+      checkUserRequest: id => asyncServiceCreator('GET', `${apiBase}/request/user/${id}`)(),
       fetchAllProjectUserRequests: asyncServiceCreator('GET', `${apiBase}/projects/all/users/`),
       fetchProjectUserRequests: projectId =>
         asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/`)(),
