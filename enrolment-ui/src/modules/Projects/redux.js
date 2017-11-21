@@ -30,6 +30,7 @@ const NEXT_STEP = 'projectRequestForm/NEXT_STEP';
 const PREVIOUS_STEP = 'projectRequestForm/PREVIOUS_STEP';
 const RESET_FORM_STEP = 'projectRequestForm/RESET_FORM_STEP';
 const TOGGLE_MODAL = 'projectRequestForm/TOGGLE_MODAL';
+const SHOW_BILLING_FIELDS = 'projectRequestForm/SHOW_BILLING_FIELDS';
 
 const fetchProjectsStart = emptyActionGenerator(FETCH_PROJECTS_REQUEST);
 const fetchProjectsSuccess = payloadActionGenerator(FETCH_PROJECTS_SUCCESS);
@@ -59,6 +60,7 @@ export const formNextStep = emptyActionGenerator(NEXT_STEP);
 export const formPrevStep = emptyActionGenerator(PREVIOUS_STEP);
 export const formResetStep = emptyActionGenerator(RESET_FORM_STEP);
 export const toggleFormModal = emptyActionGenerator(TOGGLE_MODAL);
+export const toggleBillingFields = emptyActionGenerator(SHOW_BILLING_FIELDS);
 
 /*
 * Public async thunk actions (mapped to component props)
@@ -111,17 +113,34 @@ export function submitProjectApplication(dispatch, data) {
         firstname: data.firstname,
         lastname: data.lastname,
         position: data.position,
-        address: data.address,
         institution_name: data.institution_name,
         institution_email: data.institution_email,
         phone: data.phone,
+        steet_address: data.street_address, // new
+        city: data.city, // new
+        region: data.region, // new
+        country: data.country, // new
+        postal_code: data.postal_code, // new
         agreementCheck: data.agreementCheck,
+      };
+
+      // Get billing data if present
+      const billingData = Object.keys(data)
+        .filter(key => key.indexOf('billing_') !== -1)
+        .reduce((res, key) => {
+          res[key] = data[key];
+          return res;
+        }, {});
+
+      const compositeApplicationData = {
+        ...applicationData,
+        ...billingData,
       };
 
       dispatch(submitProjectSuccess(response.data));
 
       // Dispatch Application submit with next function that shows the modal
-      submitApplication(dispatch, applicationData, () => dispatch(toggleFormModal()));
+      submitApplication(dispatch, compositeApplicationData, () => dispatch(toggleFormModal()));
     })
     .catch(error => {
       dispatch(submitProjectError(error));
@@ -267,6 +286,7 @@ export const projectsUIReducer = (state = _defaultProjectsUIState, action) => {
 const _defaultRequestFormState = {
   step: 1,
   showModal: false,
+  showBillingFields: false,
 };
 
 export const requestFormReducer = (state = _defaultRequestFormState, action) => {
@@ -279,6 +299,8 @@ export const requestFormReducer = (state = _defaultRequestFormState, action) => 
       return { ...state, step: 1 };
     case TOGGLE_MODAL:
       return { ...state, showModal: !state.showModal };
+    case SHOW_BILLING_FIELDS:
+      return { ...state, showBillingFields: !state.showBillingFields };
     default:
       return state;
   }
