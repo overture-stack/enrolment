@@ -2,7 +2,8 @@ import { asyncServiceCreator, asyncDummyCreator } from './asyncFactory';
 
 // Create all required async services here
 export function createAsyncs(isDevelopment = false) {
-  const apiBase = `/api/v1`;
+  const apiBase = '/api/v1';
+  const billingBase = 'http://142.1.177.54:8080';
 
   // Various configs used for API calls
   const withDataAndCSRF = { csrf: true, withData: true };
@@ -78,6 +79,9 @@ export function createAsyncs(isDevelopment = false) {
           `${apiBase}/projects/${projectId}/users/${id}/`,
           withDataAndCSRF,
         )(data),
+    },
+    billing: {
+      getPrice: asyncServiceCreator('GET', `${billingBase}/price`),
     },
   };
 
