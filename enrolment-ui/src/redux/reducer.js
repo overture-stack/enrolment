@@ -24,6 +24,7 @@ import {
   reducer as projectUsers,
   projectUserReducer as projectUser,
 } from '../modules/ProjectUsers';
+import { reducer as fees } from '../modules/Fees';
 
 const reducer = combineReducers({
   login,
@@ -41,6 +42,7 @@ const reducer = combineReducers({
   userRequestForm,
   projectUsers,
   projectUser,
+  fees,
   form,
 });
 

@@ -49,5 +49,5 @@
     }
   },
   "FeesSidebarWidget":
-    "<0>Fees for using the Collaboratory Resources</0><1><0>$0.03 CAD</0> per vCPU hour</1><2><0>$0.000067 CAD</0> per GB hour of storage (volumes, images and object storage)</2>"
+    "<0>Fees for using the Collaboratory Resources</0><1><0>$<1>{{cpuPrice}}</1> CAD</0> per vCPU hour</1><2><0>$<1>{{volumePrice}}</1> CAD</0> per GB hour of storage (volumes, images and object storage)</2>"
 }
