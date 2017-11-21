@@ -116,11 +116,11 @@ export function submitProjectApplication(dispatch, data) {
         institution_name: data.institution_name,
         institution_email: data.institution_email,
         phone: data.phone,
-        steet_address: data.street_address, // new
-        city: data.city, // new
-        region: data.region, // new
-        country: data.country, // new
-        postal_code: data.postal_code, // new
+        street_address: data.street_address,
+        city: data.city,
+        region: data.region,
+        country: data.country,
+        postal_code: data.postal_code,
         agreementCheck: data.agreementCheck,
       };
 
@@ -128,14 +128,19 @@ export function submitProjectApplication(dispatch, data) {
       const billingData = Object.keys(data)
         .filter(key => key.indexOf('billing_') !== -1)
         .reduce((res, key) => {
-          res[key] = data[key];
+          res[key.replace('billing_', '')] = data[key];
           return res;
         }, {});
 
       const compositeApplicationData = {
         ...applicationData,
-        ...billingData,
+        billing_contact:
+          Object.keys(billingData).length === 0 && billingData.constructor === Object
+            ? billingData
+            : {},
       };
+
+      console.log(compositeApplicationData);
 
       dispatch(submitProjectSuccess(response.data));
 

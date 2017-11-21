@@ -11,7 +11,7 @@ class ReqFormStep1 extends Component {
       <div className="billing-fields">
         <div className="row">
           <Field
-            name="billing_name"
+            name="billing_contact_name"
             type="text"
             placeholder="Billing Contact Name"
             component={RFInput}

@@ -339,7 +339,7 @@ def dacoAccess(request, email):
                 return HttpResponseForbidden()
             else:
                 return Response(err.message, status=status.HTTP_400_BAD_REQUEST)
-            
+
     else:
         return HttpResponseForbidden()
 

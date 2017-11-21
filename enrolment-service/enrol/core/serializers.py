@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
-from core.models import Applications, Projects, UserRequest, ProjectUsers, STATUS_CHOICES
+from core.models import Applications, BillingContact, Projects, UserRequest, ProjectUsers, STATUS_CHOICES
 
 UserModel = get_user_model()
 
@@ -32,6 +32,7 @@ class UserRequestListSerializer(serializers.ListSerializer):
         userRequests = [UserRequest(**item) for item in validated_data]
         return UserRequest.objects.bulk_create(userRequests)
 
+
 class UserRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserRequest
@@ -48,11 +49,65 @@ class ProjectUsersSerializer(serializers.ModelSerializer):
                   'institution_name', 'institution_email', 'phone', 'daco_email', 'status', 'createdDate', 'updatedDate')
 
 
+class BillingContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BillingContact
+        fields = (
+            'id',
+            'contact_name',
+            'street_address',
+            'city',
+            'region',
+            'country',
+            'postal_code',
+            'createdDate',
+            'updatedDate'
+        )
+
+
 class ApplicationSerializer(serializers.ModelSerializer):
+    billing_contact = BillingContactSerializer()
+
     class Meta:
         model = Applications
-        fields = ('id', 'project', 'user', 'firstname', 'lastname', 'agreementDate', 'agreementCheck',
-                  'position', 'institution_name', 'address', 'institution_email', 'phone', 'daco_email')
+        fields = (
+            'id',
+            'project',
+            'user',
+            'firstname',
+            'lastname',
+            'agreementDate',
+            'agreementCheck',
+            'position',
+            'institution_name',
+            'institution_email',
+            'phone',
+            'street_address',
+            'city',
+            'region',
+            'country',
+            'postal_code',
+            'daco_email',
+            'billing_contact',
+            'createdDate',
+            'updatedDate'
+        )
+
+    def create(self, validated_data):
+        billing_contact = validated_data.pop('billing_contact')
+
+        save_data = validated_data
+
+        if (billing_contact):
+            BillingContact.objects.create(**billing_contact)
+            save_data = {
+                'billing_contact': billing_contact,
+                **validated_data
+            }
+
+        application = Applications.objects.create(**save_data)
+
+        return application
 
 
 class ProjectsSerializer(serializers.ModelSerializer):
