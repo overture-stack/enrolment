@@ -66,7 +66,7 @@ class BillingContactSerializer(serializers.ModelSerializer):
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
-    billing_contact = BillingContactSerializer()
+    billing_contact = BillingContactSerializer(required=False)
 
     class Meta:
         model = Applications
@@ -94,14 +94,16 @@ class ApplicationSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        billing_contact = validated_data.pop('billing_contact')
+        billing_contact = validated_data.pop(
+            'billing_contact') if 'billing_contact' in validated_data else False
 
         save_data = validated_data
 
         if (billing_contact):
-            BillingContact.objects.create(**billing_contact)
+            new_billing_contact = BillingContact.objects.create(
+                **billing_contact)
             save_data = {
-                'billing_contact': billing_contact,
+                'billing_contact': new_billing_contact,
                 **validated_data
             }
 

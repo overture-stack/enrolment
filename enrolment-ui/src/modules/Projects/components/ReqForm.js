@@ -8,7 +8,13 @@ import ReqFormStep1 from './ReqFormStep1';
 import ReqFormStep2 from './ReqFormStep2';
 import ReqFormStep3 from './ReqFormStep3';
 
-import { formNextStep, formPrevStep, formResetStep, submitProjectApplication } from '../redux';
+import {
+  formNextStep,
+  formPrevStep,
+  formReset,
+  showBillingFields,
+  submitProjectApplication,
+} from '../redux';
 import { fetchApplicationAndProject } from '../../Applications/redux';
 
 class ReqForm extends Component {
@@ -30,10 +36,18 @@ class ReqForm extends Component {
     const shouldReload = !this.props.project.hasFetched && nextProps.project.hasFetched;
 
     if (shouldReload) {
+      const applicationData = nextProps.application.data.billing_contact
+        ? {
+            ...nextProps.application.data,
+            ...this.extractBillingData(nextProps.application.data.billing_contact),
+          }
+        : nextProps.application.data;
+
       const data = {
         ...nextProps.project.data,
-        ...nextProps.application.data,
+        ...applicationData,
       };
+
       this.InititiateOrClearFormsOnId(data);
     }
   }
@@ -64,9 +78,16 @@ class ReqForm extends Component {
 
     // If id load data into form, else reset form to empty (but include daco email)
     if (id) {
+      const applicationData = this.props.application.data.billing_contact
+        ? {
+            ...this.props.application.data,
+            ...this.extractBillingData(this.props.application.data.billing_contact),
+          }
+        : this.props.application.data;
+
       const data = {
         ...this.props.project.data,
-        ...this.props.application.data,
+        ...applicationData,
         ...newData,
       };
 
@@ -79,7 +100,17 @@ class ReqForm extends Component {
     }
 
     // Reset form pagination in all cases
-    this.props.formResetStep();
+    this.props.formReset();
+
+    // If the form has billing data show it
+    if (this.props.application.data.billing_contact) this.props.showBillingFields();
+  }
+
+  extractBillingData(data) {
+    return Object.keys(data).reduce((res, key) => {
+      res[`billing_${key}`] = data[key];
+      return res;
+    }, {});
   }
 
   render() {
@@ -117,7 +148,8 @@ const mapDispatchToProps = dispatch => {
   return {
     formNextStep: () => dispatch(formNextStep()),
     formPrevStep: () => dispatch(formPrevStep()),
-    formResetStep: () => dispatch(formResetStep()),
+    formReset: () => dispatch(formReset()),
+    showBillingFields: () => dispatch(showBillingFields()),
     fetchApplicationAndProject: id => fetchApplicationAndProject(dispatch, id),
     submitProjectApplication: data => submitProjectApplication(dispatch, data),
     initializeForm: data => dispatch(initialize('projectRequestForm', data)),

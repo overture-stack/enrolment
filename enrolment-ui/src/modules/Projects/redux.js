@@ -28,8 +28,9 @@ const UI_RESET_TAB = 'projectUI/UI_RESET_TAB';
 
 const NEXT_STEP = 'projectRequestForm/NEXT_STEP';
 const PREVIOUS_STEP = 'projectRequestForm/PREVIOUS_STEP';
-const RESET_FORM_STEP = 'projectRequestForm/RESET_FORM_STEP';
+const RESET_FORM = 'projectRequestForm/RESET_FORM';
 const TOGGLE_MODAL = 'projectRequestForm/TOGGLE_MODAL';
+const TOGGLE_BILLING_FIELDS = 'projectRequestForm/TOGGLE_BILLING_FIELDS';
 const SHOW_BILLING_FIELDS = 'projectRequestForm/SHOW_BILLING_FIELDS';
 
 const fetchProjectsStart = emptyActionGenerator(FETCH_PROJECTS_REQUEST);
@@ -58,9 +59,10 @@ export const uiResetTab = payloadActionGenerator(UI_RESET_TAB);
 
 export const formNextStep = emptyActionGenerator(NEXT_STEP);
 export const formPrevStep = emptyActionGenerator(PREVIOUS_STEP);
-export const formResetStep = emptyActionGenerator(RESET_FORM_STEP);
+export const formReset = emptyActionGenerator(RESET_FORM);
 export const toggleFormModal = emptyActionGenerator(TOGGLE_MODAL);
-export const toggleBillingFields = emptyActionGenerator(SHOW_BILLING_FIELDS);
+export const toggleBillingFields = emptyActionGenerator(TOGGLE_BILLING_FIELDS);
+export const showBillingFields = emptyActionGenerator(SHOW_BILLING_FIELDS);
 
 /*
 * Public async thunk actions (mapped to component props)
@@ -132,15 +134,13 @@ export function submitProjectApplication(dispatch, data) {
           return res;
         }, {});
 
-      const compositeApplicationData = {
-        ...applicationData,
-        billing_contact:
-          Object.keys(billingData).length === 0 && billingData.constructor === Object
-            ? billingData
-            : {},
-      };
-
-      console.log(compositeApplicationData);
+      const compositeApplicationData =
+        Object.keys(billingData).length === 0 && billingData.constructor === Object
+          ? applicationData
+          : {
+              ...applicationData,
+              billing_contact: billingData,
+            };
 
       dispatch(submitProjectSuccess(response.data));
 
@@ -300,12 +300,14 @@ export const requestFormReducer = (state = _defaultRequestFormState, action) => 
       return { ...state, step: state.step + 1 };
     case PREVIOUS_STEP:
       return { ...state, step: state.step - 1 };
-    case RESET_FORM_STEP:
-      return { ...state, step: 1 };
+    case RESET_FORM:
+      return { ..._defaultRequestFormState };
     case TOGGLE_MODAL:
       return { ...state, showModal: !state.showModal };
-    case SHOW_BILLING_FIELDS:
+    case TOGGLE_BILLING_FIELDS:
       return { ...state, showBillingFields: !state.showBillingFields };
+    case SHOW_BILLING_FIELDS:
+      return { ...state, showBillingFields: true };
     default:
       return state;
   }

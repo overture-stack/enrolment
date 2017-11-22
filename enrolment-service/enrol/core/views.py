@@ -118,7 +118,7 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
         if user.is_superuser:
             return Projects.objects.all()
 
-        return Projects.objects.filter(user=user)
+        return Projects.objects.order_by('-createdDate').filter(user=user)
 
     def retrieve(self, request, pk=None):
         """
@@ -169,9 +169,9 @@ class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
         user = self.request.user
 
         if user.is_superuser:
-            return Applications.objects.all()
+            return Applications.objects.order_by('-createdDate').all()
 
-        return Applications.objects.filter(user=user)
+        return Applications.objects.order_by('-createdDate').filter(user=user)
 
     def perform_create(self, serializer):
         # Save the data
@@ -254,7 +254,7 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
         UserRequest.objects.filter(
             email=self.request.user.email, project=project_user.project).delete()
 
-        # SMTP_SERVER.send_message(msg)
+        SMTP_SERVER.send_message(msg)
 
 
 class UserRequestViewSet(CreateRetrieveViewSet):
