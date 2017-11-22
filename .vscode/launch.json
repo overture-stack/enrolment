@@ -9,16 +9,11 @@
       "type": "python",
       "request": "launch",
       "stopOnEntry": false,
-      "pythonPath": "${config:python.pythonPath}",
+      "pythonPath": "/Users/alepsa/.virtualenvs/enrolment/bin/python",
       "program": "${workspaceRoot}/enrolment-service/enrol/manage.py",
-      "cwd": "${workspaceRoot}",
-      "args": [
-        "runserver",
-        "--noreload",
-        "--nothreading"
-      ],
-      "env": {},
-      "envFile": "${workspaceRoot}/.env",
+      "cwd":
+        "/Users/alepsa/Git/overture-stack/enrolment/enrolment-service/enrol",
+      "args": ["test", "core/api_tests/"],
       "debugOptions": [
         "WaitOnAbnormalExit",
         "WaitOnNormalExit",
