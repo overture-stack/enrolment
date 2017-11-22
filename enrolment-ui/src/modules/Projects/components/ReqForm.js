@@ -78,12 +78,13 @@ class ReqForm extends Component {
 
     // If id load data into form, else reset form to empty (but include daco email)
     if (id) {
-      const applicationData = this.props.application.data.billing_contact
-        ? {
-            ...this.props.application.data,
-            ...this.extractBillingData(this.props.application.data.billing_contact),
-          }
-        : this.props.application.data;
+      const applicationData =
+        this.props.application.data && this.props.application.data.billing_contact
+          ? {
+              ...this.props.application.data,
+              ...this.extractBillingData(this.props.application.data.billing_contact),
+            }
+          : this.props.application.data;
 
       const data = {
         ...this.props.project.data,
@@ -103,7 +104,8 @@ class ReqForm extends Component {
     this.props.formReset();
 
     // If the form has billing data show it
-    if (this.props.application.data.billing_contact) this.props.showBillingFields();
+    if (this.props.application.data && this.props.application.data.billing_contact)
+      this.props.showBillingFields();
   }
 
   extractBillingData(data) {
