@@ -36,12 +36,13 @@ class ReqForm extends Component {
     const shouldReload = !this.props.project.hasFetched && nextProps.project.hasFetched;
 
     if (shouldReload) {
-      const applicationData = nextProps.application.data.billing_contact
-        ? {
-            ...nextProps.application.data,
-            ...this.extractBillingData(nextProps.application.data.billing_contact),
-          }
-        : nextProps.application.data;
+      const applicationData =
+        nextProps.application.data && nextProps.application.data.billing_contact
+          ? {
+              ...nextProps.application.data,
+              ...this.extractBillingData(nextProps.application.data.billing_contact),
+            }
+          : nextProps.application.data;
 
       const data = {
         ...nextProps.project.data,

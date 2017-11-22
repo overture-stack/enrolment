@@ -27,6 +27,7 @@ DEBUG = os.environ.get('DEBUG', False)
 
 ALLOWED_HOSTS = [
     'local.enrol.cancercollaboratory.org',
+    'django',
     'localhost',
     '127.0.0.1',
 ]
