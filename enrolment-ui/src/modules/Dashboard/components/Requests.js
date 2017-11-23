@@ -53,7 +53,7 @@ Requests.displayName = 'Requests';
 
 const mapStateToProps = state => {
   return {
-    profile: state.profile.data,
+    profile: state.profile,
     projects: state.projects.data,
   };
 };

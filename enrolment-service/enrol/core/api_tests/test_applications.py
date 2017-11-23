@@ -37,10 +37,14 @@ class ApplicationsTest(APITestCase):
             'agreementCheck': False,
             'position': 'Overlord',
             'institution_name': 'Cats Inc',
-            'address': '123 Fake Street',
             'institution_email': 'flastington@cats.inc',
             'phone': '123-123-1234',
-            'daco_email': 'fluffykins@gmail.com',
+            'street_address': '123 Fake Street',
+            'city': 'Toronto',
+            'region': 'Ontario',
+            'country': 'Canada',
+            'postal_code': 'M8V 0C1',
+            'daco_email': 'fluffykins@gmail.com'
         }
 
         self.list_response_set = set([
@@ -53,10 +57,17 @@ class ApplicationsTest(APITestCase):
             'agreementCheck',
             'position',
             'institution_name',
-            'address',
             'institution_email',
             'phone',
+            'street_address',
+            'city',
+            'region',
+            'country',
+            'postal_code',
             'daco_email',
+            'billing_contact',
+            'createdDate',
+            'updatedDate'
         ])
 
         self.single_response_set = set([
@@ -69,10 +80,17 @@ class ApplicationsTest(APITestCase):
             'agreementCheck',
             'position',
             'institution_name',
-            'address',
             'institution_email',
             'phone',
+            'street_address',
+            'city',
+            'region',
+            'country',
+            'postal_code',
             'daco_email',
+            'billing_contact',
+            'createdDate',
+            'updatedDate'
         ])
 
     def create_test_application(self, application={}, user=None):
@@ -102,6 +120,32 @@ class ApplicationsTest(APITestCase):
         client = APIClient()
         client.force_authenticate(user=self.user)
         response = client.post(self.url, self.newApplication)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Applications.objects.count(), 1)
+        self.assertEqual(Applications.objects.get(
+        ).daco_email, 'fluffykins@gmail.com')
+
+    def test_create_application_with_billing_contact(self):
+        """
+        Ensure we can create a new application object.
+        """
+        newApplication = {
+            **self.newApplication,
+            'billing_contact': {
+                'contact_name': 'Test',
+                'street_address': 'Test',
+                'city': 'Test',
+                'region': 'Test',
+                'country': 'Test',
+                'postal_code': 'Test'
+            }
+        }
+
+        user = User.objects.get(username='user')
+        client = APIClient()
+        client.force_authenticate(user=self.user)
+        response = client.post(self.url, newApplication)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Applications.objects.count(), 1)

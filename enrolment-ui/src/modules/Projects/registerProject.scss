@@ -113,6 +113,18 @@
       }
     }
   }
+
+  .billing-toggle {
+    padding: 6px 0 8px;
+
+    label {
+      margin-right: 6px;
+    }
+  }
+
+  .billing-fields {
+    padding-bottom: 10px;
+  }
 }
 
 .action-button {

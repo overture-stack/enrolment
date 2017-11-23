@@ -27,6 +27,7 @@ DEBUG = os.environ.get('DEBUG', False)
 
 ALLOWED_HOSTS = [
     'local.enrol.cancercollaboratory.org',
+    'django',
     'localhost',
     '127.0.0.1',
 ]
@@ -83,7 +84,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.JSONParser',
     ),
-    'PAGE_SIZE': 10,
+    'PAGE_SIZE': 100
 }
 
 REST_AUTH_SERIALIZERS = {
@@ -116,7 +117,6 @@ WSGI_APPLICATION = 'enrol.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 if 'DB_NAME' in os.environ:
-    # Running the Docker image
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -128,7 +128,6 @@ if 'DB_NAME' in os.environ:
         }
     }
 else:
-    # Building the Docker image
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -159,7 +158,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'UTC'
 
