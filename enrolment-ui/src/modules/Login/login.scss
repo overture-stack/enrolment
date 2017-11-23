@@ -70,8 +70,12 @@ $radius: ratio(1);
   .login-logo-container {
     img {
       width: 300px;
-      margin: -100px 0 30px;
+      margin: -100px 0 20px;
     }
+  }
+
+  .login-title {
+    margin: 0 0 40px;
   }
 
   .login-container,

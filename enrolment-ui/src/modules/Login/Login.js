@@ -41,7 +41,7 @@ class Login extends Component {
   }
 
   render() {
-    const { i18n, isGoogleLogin, isUserRequestValid, auth: { error } } = this.props;
+    const { t, i18n, isGoogleLogin, isUserRequestValid, auth: { error } } = this.props;
 
     const activeLanguageClass = (currentLang, button) => {
       if (currentLang === button) return 'btn btn-default btn-toggles active';
@@ -55,6 +55,9 @@ class Login extends Component {
       <div className="login">
         <div className="login-logo-container">
           <img src={logo} className="login-logo" alt="logo" />
+        </div>
+        <div className="login-title">
+          <h2>{t('Login.title')}</h2>
         </div>
         {isGoogleLogin ? <GoogleLoginForm /> : <InternalLoginForm />}
         {error ? <LoginStatus /> : null}
