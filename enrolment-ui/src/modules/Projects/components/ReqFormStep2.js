@@ -11,7 +11,7 @@ const ReqFormStep2 = props => {
           <h2 className="fs-title">Collaboratory Project</h2>
           <h3 className="fs-subtitle">
             Please provide a name and short description of the research project you are requesting
-            Collaboratory’s compute resources for.
+            Collaboratory’s compute resources for. Maximum 250 characters.
           </h3>
         </div>
       </div>
@@ -30,7 +30,7 @@ const ReqFormStep2 = props => {
           name="project_description"
           placeholder="Project Description"
           component={RFTextArea}
-          validate={rules.required}
+          validate={[rules.required, rules.maxLength(250)]}
           disabled={disabled}
         />
       </div>
