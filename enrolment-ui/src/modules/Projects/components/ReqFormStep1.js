@@ -1,10 +1,85 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { RFInput, rules } from '../../ReduxForm';
 
+import { toggleBillingFields } from '../redux';
+
 class ReqFormStep1 extends Component {
+  renderBillingFields(disabled) {
+    return (
+      <div className="billing-fields">
+        <div className="row">
+          <Field
+            name="billing_contact_name"
+            type="text"
+            placeholder="Billing Contact Name"
+            component={RFInput}
+            disabled={disabled}
+          />
+        </div>
+        <div className="row">
+          <Field
+            type="text"
+            name="billing_street_address"
+            placeholder="Billing Street Address"
+            component={RFInput}
+            validate={rules.required}
+            disabled={disabled}
+          />
+        </div>
+        <div className="row">
+          <Field
+            type="text"
+            name="billing_city"
+            placeholder="Billing City"
+            component={RFInput}
+            bootstrapClass="col-md-6"
+            validate={rules.required}
+            disabled={disabled}
+          />
+          <Field
+            type="text"
+            name="billing_region"
+            placeholder="Billing Province / State"
+            component={RFInput}
+            bootstrapClass="col-md-6"
+            validate={rules.required}
+            disabled={disabled}
+          />
+        </div>
+        <div className="row">
+          <Field
+            type="text"
+            name="billing_country"
+            placeholder="Billing Country"
+            component={RFInput}
+            bootstrapClass="col-md-6"
+            validate={rules.required}
+            disabled={disabled}
+          />
+          <Field
+            type="text"
+            name="billing_postal_code"
+            placeholder="Billing Postal / Zip Code"
+            component={RFInput}
+            bootstrapClass="col-md-6"
+            validate={rules.required}
+            disabled={disabled}
+          />
+        </div>
+      </div>
+    );
+  }
+
   render() {
-    const { handleSubmit, invalid, disabled } = this.props;
+    const {
+      handleSubmit,
+      invalid,
+      disabled,
+      projectRequestForm: { showBillingFields },
+      toggleBillingFields,
+    } = this.props;
 
     return (
       <form onSubmit={handleSubmit}>
@@ -44,6 +119,7 @@ class ReqFormStep1 extends Component {
             disabled={disabled}
           />
         </div>
+
         <div className="row">
           <Field
             type="text"
@@ -54,16 +130,7 @@ class ReqFormStep1 extends Component {
             disabled={disabled}
           />
         </div>
-        <div className="row">
-          <Field
-            type="text"
-            name="address"
-            placeholder="Address"
-            component={RFInput}
-            validate={rules.required}
-            disabled={disabled}
-          />
-        </div>
+
         <div className="row">
           <Field
             type="email"
@@ -84,6 +151,67 @@ class ReqFormStep1 extends Component {
             disabled={disabled}
           />
         </div>
+
+        <div className="row">
+          <Field
+            type="text"
+            name="street_address"
+            placeholder="Street Address"
+            component={RFInput}
+            validate={rules.required}
+            disabled={disabled}
+          />
+        </div>
+        <div className="row">
+          <Field
+            type="text"
+            name="city"
+            placeholder="City"
+            component={RFInput}
+            bootstrapClass="col-md-6"
+            validate={rules.required}
+            disabled={disabled}
+          />
+          <Field
+            type="text"
+            name="region"
+            placeholder="Province / State"
+            component={RFInput}
+            bootstrapClass="col-md-6"
+            validate={rules.required}
+            disabled={disabled}
+          />
+        </div>
+        <div className="row">
+          <Field
+            type="text"
+            name="country"
+            placeholder="Country"
+            component={RFInput}
+            bootstrapClass="col-md-6"
+            validate={rules.required}
+            disabled={disabled}
+          />
+          <Field
+            type="text"
+            name="postal_code"
+            placeholder="Postal / Zip Code"
+            component={RFInput}
+            bootstrapClass="col-md-6"
+            validate={rules.required}
+            disabled={disabled}
+          />
+        </div>
+
+        <div className="row billing-toggle">
+          <div className="col-md-12">
+            <label>Different Billing Contact?</label>
+            <input type="checkbox" onChange={toggleBillingFields} checked={showBillingFields} />
+          </div>
+        </div>
+
+        {showBillingFields ? this.renderBillingFields(disabled) : null}
+
         <div className="row">
           <Field
             type="email"
@@ -94,6 +222,7 @@ class ReqFormStep1 extends Component {
             disabled={true}
           />
         </div>
+
         <div className="row">
           <div className="col-md-12">
             <button type="submit" className="next action-button" disabled={invalid}>
@@ -106,8 +235,22 @@ class ReqFormStep1 extends Component {
   }
 }
 
-export default reduxForm({
-  form: 'projectRequestForm', // <------ same form name
-  destroyOnUnmount: false, // <------ preserve form data
-  forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
-})(ReqFormStep1);
+const mapStateToProps = state => {
+  return {
+    projectRequestForm: state.projectRequestForm,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    toggleBillingFields: () => dispatch(toggleBillingFields()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+  reduxForm({
+    form: 'projectRequestForm', // <------ same form name
+    destroyOnUnmount: false, // <------ preserve form data
+    forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
+  })(ReqFormStep1),
+);

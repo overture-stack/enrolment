@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import ReqForm from './components/ReqForm';
 import RequestSuccessModal from '../Common/RequestSuccessModal';
 
-import { toggleFormModal, formResetStep } from './redux';
+import { toggleFormModal, formReset } from './redux';
 
 import './registerProject.scss';
 
@@ -17,17 +17,11 @@ const createCloseModal = (closeFunc, next) => {
 };
 
 const RegisterProject = props => {
-  const {
-    projectRequestForm: { showModal },
-    toggleModal,
-    formResetStep,
-    history: { push },
-  } = props;
+  const { projectRequestForm: { showModal }, formReset, history: { push } } = props;
 
   const handleClose = createCloseModal(
     () => {
-      toggleModal();
-      formResetStep();
+      formReset();
     },
     () => push('/dashboard'),
   );
@@ -58,7 +52,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     toggleModal: () => dispatch(toggleFormModal()),
-    formResetStep: () => dispatch(formResetStep()),
+    formReset: () => dispatch(formReset()),
   };
 };
 

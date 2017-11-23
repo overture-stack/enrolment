@@ -30,11 +30,13 @@ class FeesSidebarWidget extends Component {
   }
 
   render() {
-    const { loading, error, data: { cpuPrice = 'X.XX', volumePrice = 'X.XX' } } = this.props.fees;
+    const { loading, error, data } = this.props.fees;
 
-    if (loading === true) return this.onLoading();
+    if (loading === true || !data) return this.onLoading();
 
     if (error) return this.onError(error);
+
+    const { cpuPrice, volumePrice } = data;
 
     return (
       <Trans i18nKey="FeesSidebarWidget" className="feesSidebarWidget">

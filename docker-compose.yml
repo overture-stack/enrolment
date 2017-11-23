@@ -1,8 +1,8 @@
-version: '3'
+version: '3.2'
 services:
 
   web:
-    restart: on-failure
+    restart: always
     build: ./enrolment-ui/
     env_file: .env
     volumes: 
@@ -17,8 +17,6 @@ services:
       - "8000"
     volumes: 
       - api-data:/data/api
-    links:
-      - postgres:postgres
     env_file: .env
     entrypoint: /entrypoint.sh 
     depends_on:
@@ -31,17 +29,21 @@ services:
       - "3000:8080"
       - "8000:8000"
     volumes: 
-      - web-data:/data/web
-      - api-data:/data/api
-    links:
-      - api:api
+      - type: volume
+        source: web-data
+        target: /data/web
+        read_only: true
+      - type: volume
+        source: api-data
+        target: /data/api
+        read_only: true
     depends_on:
       - web
       - api
 
   postgres:
     restart: always
-    image: postgres:latest
+    image: postgres:10.1
     volumes:
       - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - ./presisted_data/postgresql:/var/lib/postgresql/data

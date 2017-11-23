@@ -22,7 +22,7 @@ class Projects(models.Model):
 
     class Meta:
         db_table = "projects"
-        ordering = ['-id']
+        ordering = ['-createdDate']
 
 
 class Applications(models.Model):
@@ -36,14 +36,38 @@ class Applications(models.Model):
     agreementCheck = models.BooleanField()
     position = models.CharField(max_length=50)
     institution_name = models.CharField(max_length=100)
-    address = models.CharField(max_length=100)
     institution_email = models.EmailField()
     phone = models.CharField(max_length=50)
+    street_address = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    region = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+    postal_code = models.CharField(max_length=100)
     daco_email = models.EmailField()
+    billing_contact = models.ForeignKey(
+        'BillingContact', blank=True, null=True, editable=False)
+    createdDate = models.DateField(auto_now_add=True, auto_now=False)
+    updatedDate = models.DateField(auto_now=True)
 
     class Meta:
         db_table = "applications"
-        ordering = ['-id']
+        ordering = ['-createdDate']
+
+
+class BillingContact(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    contact_name = models.CharField(max_length=100)
+    street_address = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    region = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+    postal_code = models.CharField(max_length=100)
+    createdDate = models.DateField(auto_now_add=True)
+    updatedDate = models.DateField(auto_now=True)
+
+    class Meta:
+        db_table = "billing_contact"
+        ordering = ['-createdDate']
 
 
 class ProjectUsers(models.Model):
@@ -66,7 +90,7 @@ class ProjectUsers(models.Model):
 
     class Meta:
         db_table = "project_users"
-        ordering = ['-id']
+        ordering = ['-createdDate']
 
 
 class UserRequest(models.Model):
@@ -74,7 +98,9 @@ class UserRequest(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     project = models.ForeignKey(Projects, on_delete=models.CASCADE)
     email = models.EmailField()
+    createdDate = models.DateField(auto_now_add=True, auto_now=False)
+    updatedDate = models.DateField(auto_now=True)
 
     class Meta:
         db_table = "user_requests"
-        ordering = ['-id']
+        ordering = ['-createdDate']
