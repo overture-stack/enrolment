@@ -15,9 +15,12 @@ RUN \
 RUN wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.4/install.sh | bash
 RUN source ~/.nvm/nvm.sh && nvm install 6.11.4 && npm install -g npm
 
+# PREPARE
 RUN mkdir -p /data/web
 COPY . /data/web/
 
 # BUILD
 WORKDIR /data/web
 RUN source ~/.nvm/nvm.sh && npm install && npm run build
+
+CMD FOR_100_YEARS=$((100*365*24*60*60));while true;do sleep $FOR_100_YEARS;done
