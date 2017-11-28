@@ -8,7 +8,7 @@ import ReqFormStep1 from './ReqFormStep1';
 import ReqFormStep2 from './ReqFormStep2';
 import ReqFormStep3 from './ReqFormStep3';
 
-import { rfNextStep, rfPrevStep, rfResetStep, submitUserApplication } from '../redux';
+import { rfNextStep, rfPrevStep, rfResetStep, updateProjectUser } from '../redux';
 import { fetchOneProject } from '../../Projects/redux';
 import { fetchOneProjectUser } from '../../ProjectUsers/redux';
 
@@ -45,11 +45,11 @@ class ReqForm extends Component {
 
   onSubmit(data) {
     const {
-      match: { params: { projectId } },
+      match: { params: { projectId, projectUserId } },
       history: { push },
-      submitUserApplication,
+      updateProjectUser,
     } = this.props;
-    submitUserApplication(projectId, data, () => push('/dashboard'));
+    updateProjectUser(projectId, projectUserId, data, () => push('/dashboard'));
   }
 
   loadProjectOrProjectUser() {
@@ -120,8 +120,8 @@ const mapDispatchToProps = dispatch => {
     formResetStep: () => dispatch(rfResetStep()),
     fetchOneProject: id => fetchOneProject(dispatch, id),
     fetchOneProjectUser: (projectId, useriId) => fetchOneProjectUser(dispatch, projectId, useriId),
-    submitUserApplication: (projectId, data, next) =>
-      submitUserApplication(dispatch, projectId, data, next),
+    updateProjectUser: (projectId, id, data, next) =>
+      updateProjectUser(dispatch, projectId, id, data, next),
     initializeForm: data => dispatch(initialize('userRequestForm', data)),
   };
 };

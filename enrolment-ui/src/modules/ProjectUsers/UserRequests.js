@@ -4,17 +4,10 @@ import { Link } from 'react-router-dom';
 import { translate, Trans } from 'react-i18next';
 import _ from 'lodash';
 
-import { fetchUserRequests, approveUserRequest, denyUserRequest } from './redux';
+import { fetchAllProjectUsers, activateProjectUser } from './redux';
 
 const UserRequests = props => {
-  const {
-    t,
-    profile,
-    userRequests,
-    fetchUserRequests,
-    approveUserRequest,
-    denyUserRequest,
-  } = props;
+  const { t, profile, projectUsers, fetchAllProjectUsers, activateProjectUser } = props;
 
   return (
     <div className="col-md-12">
@@ -36,7 +29,7 @@ const UserRequests = props => {
           </Trans>
         </thead>
         <tbody>
-          {userRequests.map(user => {
+          {projectUsers.map(user => {
             return (
               <tr key={user.id}>
                 <td>
@@ -56,14 +49,9 @@ const UserRequests = props => {
                       <div className="admin-actions">
                         <a
                           onClick={() =>
-                            approveUserRequest(user.project, user.id, fetchUserRequests)}
+                            activateProjectUser(user.project, user.id, fetchAllProjectUsers)}
                         >
                           {t('RequestTable.action.approve')}
-                        </a>
-                        <a
-                          onClick={() => denyUserRequest(user.project, user.id, fetchUserRequests)}
-                        >
-                          {t('RequestTable.action.deny')}
                         </a>
                       </div>
                     ) : null}
@@ -84,15 +72,15 @@ UserRequests.displayName = 'UserRequests';
 const mapStateToProps = state => {
   return {
     profile: state.profile.data,
-    userRequests: state.userRequests.data,
+    projectUsers: state.projectUsers.data,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchUserRequests: () => fetchUserRequests(dispatch),
-    approveUserRequest: (projectId, id, next) => approveUserRequest(dispatch, projectId, id, next),
-    denyUserRequest: (projectId, id, next) => denyUserRequest(dispatch, projectId, id, next),
+    fetchAllProjectUsers: () => fetchAllProjectUsers(dispatch),
+    activateProjectUser: (projectId, id, next) =>
+      activateProjectUser(dispatch, projectId, id, next),
   };
 };
 

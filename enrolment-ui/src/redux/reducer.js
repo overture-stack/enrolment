@@ -15,14 +15,11 @@ import {
   requestFormReducer as projectRequestForm,
 } from '../modules/Projects';
 import {
-  userRequestReducer as userRequests,
+  reducer as projectUsers,
+  projectUserReducer as projectUser,
   userEnrolmentFormReducer as userEnrolmentForm,
   userEnrolmentModalReducer as userEnrolmentModal,
   requestFormReducer as userRequestForm,
-} from '../modules/Users';
-import {
-  reducer as projectUsers,
-  projectUserReducer as projectUser,
 } from '../modules/ProjectUsers';
 import { reducer as fees } from '../modules/Fees';
 
@@ -36,7 +33,6 @@ const reducer = combineReducers({
   project,
   projectsUI,
   projectRequestForm,
-  userRequests,
   userEnrolmentForm,
   userEnrolmentModal,
   userRequestForm,

@@ -7,8 +7,8 @@ import PTUserEnrolment from './components/PTUserEnrolment';
 import PTUserDetails from './components/PTUserDetails';
 
 import { fetchOneProject, fetchProjects, uiSelectProject, uiSelectTab } from '../Projects/redux';
-import { fetchProjectUsers } from '../ProjectUsers/redux';
-import { resetEnrolmentForm } from '../Users/redux';
+import { fetchProjectUsersByProjectId } from '../ProjectUsers/redux';
+import { resetEnrolmentForm } from '../ProjectUsers/redux';
 
 import './projects.scss';
 
@@ -39,11 +39,16 @@ class Projects extends Component {
   }
 
   handleProjectSelect(event) {
-    const { uiSelectProject, resetEnrolmentForm, fetchOneProject, fetchProjectUsers } = this.props;
+    const {
+      uiSelectProject,
+      resetEnrolmentForm,
+      fetchOneProject,
+      fetchProjectUsersByProjectId,
+    } = this.props;
     const projectId = event.target.value;
 
     fetchOneProject(projectId);
-    fetchProjectUsers(projectId);
+    fetchProjectUsersByProjectId(projectId);
     uiSelectProject(projectId);
     resetEnrolmentForm();
   }
@@ -132,7 +137,7 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchOneProject: id => fetchOneProject(dispatch, id),
     fetchProjects: () => fetchProjects(dispatch),
-    fetchProjectUsers: projectId => fetchProjectUsers(dispatch, projectId),
+    fetchProjectUsersByProjectId: projectId => fetchProjectUsersByProjectId(dispatch, projectId),
     uiSelectProject: project => dispatch(uiSelectProject(project)),
     uiSelectTab: tabIdx => dispatch(uiSelectTab(tabIdx)),
     resetEnrolmentForm: () => dispatch(resetEnrolmentForm()),

@@ -1,3 +1,22 @@
-import { reducer, projectUserReducer } from './redux';
+import UserRequests from './UserRequests';
+import UserEnrolmentModal from './UserEnrolmentModal';
+import RegisterUser from './RegisterUser';
+import {
+  reducer,
+  projectUserReducer,
+  userEnrolmentModalReducer,
+  userEnrolmentFormReducer,
+  requestFormReducer,
+} from './redux';
 
-export { reducer, projectUserReducer };
+export {
+  UserRequests,
+  UserEnrolmentModal,
+  reducer,
+  projectUserReducer,
+  userEnrolmentFormReducer,
+  userEnrolmentModalReducer,
+  requestFormReducer,
+};
+
+export default RegisterUser;

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Modal } from 'react-bootstrap';
 
-import { toggleModal, enrollUsers } from './redux';
+import { toggleModal, createProjectUsers } from './redux';
 import ModalReqForm from './components/ModalReqForm';
 
 const onSubmit = enroll => {
@@ -15,14 +15,14 @@ const onSubmit = enroll => {
 };
 
 const UserEnrolmentModal = props => {
-  const { userEnrolmentModal: { show }, toggleModal, enrollUsers } = props;
+  const { userEnrolmentModal: { show }, toggleModal, createProjectUsers } = props;
 
   return (
     <Modal show={show} onHide={toggleModal}>
       <Modal.Header>
         <Modal.Title>User enrollment form</Modal.Title>
       </Modal.Header>
-      <ModalReqForm onSubmit={onSubmit(enrollUsers)} />
+      <ModalReqForm onSubmit={onSubmit(createProjectUsers)} />
     </Modal>
   );
 };
@@ -38,7 +38,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     toggleModal: () => dispatch(toggleModal()),
-    enrollUsers: data => enrollUsers(dispatch, data),
+    createProjectUsers: data => createProjectUsers(dispatch, data),
   };
 };
 

@@ -5,7 +5,7 @@ import Header from './components/Header';
 
 import { fetchProjects } from '../Projects/redux';
 import { fetchApplications } from '../Applications/redux';
-import { fetchUserRequests } from '../Users/redux';
+import { fetchAllProjectUsers } from '../ProjectUsers/redux';
 
 class Main extends Component {
   static displayName = 'Main';
@@ -21,7 +21,7 @@ class Main extends Component {
   fetchInitialData() {
     this.props.fetchProjects();
     this.props.fetchApplications();
-    this.props.fetchUserRequests();
+    this.props.fetchAllProjectUsers();
   }
 
   render() {
@@ -38,7 +38,7 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchApplications: () => fetchApplications(dispatch),
     fetchProjects: () => fetchProjects(dispatch),
-    fetchUserRequests: () => fetchUserRequests(dispatch),
+    fetchAllProjectUsers: () => fetchAllProjectUsers(dispatch),
   };
 };
 

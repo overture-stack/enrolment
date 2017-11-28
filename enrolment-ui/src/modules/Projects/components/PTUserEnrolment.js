@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import TabReqForm from '../../Users/components/TabReqForm';
-import { enrollUsers } from '../../Users/redux';
+import TabReqForm from '../../ProjectUsers/components/TabReqForm';
+import { createProjectUsers } from '../../ProjectUsers/redux';
 
 const onSubmit = enroll => {
   return data => {
@@ -13,7 +13,7 @@ const onSubmit = enroll => {
 };
 
 const PTUserEnrolment = props => {
-  const { enrollUsers } = props;
+  const { createProjectUsers } = props;
 
   return (
     <div className="container">
@@ -34,7 +34,7 @@ const PTUserEnrolment = props => {
           </div>
           <div className="row tab-req-form">
             <div className="col-md-8">
-              <TabReqForm onSubmit={onSubmit(enrollUsers)} />
+              <TabReqForm onSubmit={onSubmit(createProjectUsers)} />
             </div>
           </div>
         </div>
@@ -47,7 +47,7 @@ PTUserEnrolment.displayName = 'PTUserEnrolment';
 
 const mapDispatchToProps = dispatch => {
   return {
-    enrollUsers: data => enrollUsers(dispatch, data),
+    createProjectUsers: data => createProjectUsers(dispatch, data),
   };
 };
 

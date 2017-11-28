@@ -275,32 +275,7 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, ))
 @permission_classes((IsAuthenticated, ))
-def daco(request):
-    if request.user.is_authenticated():
-        email = request.user.email
-        daco = DacoClient(base_url=settings.ICGC_BASE_URL,
-                          client_key=settings.ICGC_CLIENT_KEY,
-                          client_secret=settings.ICGC_CLIENT_SECRET,
-                          token=settings.ICGC_TOKEN,
-                          token_secret=settings.ICGC_TOKEN_SECRET)
-
-        try:
-            response = daco.get_daco_status(email)
-            return Response(response)
-        except DacoException as err:
-            if err.status_code == 403:
-                return HttpResponseForbidden()
-            else:
-                return Response(err.message, status=status.HTTP_400_BAD_REQUEST)
-
-    else:
-        return HttpResponseForbidden()
-
-
-@api_view(['GET'])
-@authentication_classes((SessionAuthentication, ))
-@permission_classes((IsAuthenticated, ))
-def dacoAccess(request, email):
+def dacoCheck(request, email):
     if request.user.is_authenticated():
         dacoClient = DacoClient(base_url=settings.ICGC_BASE_URL,
                                 client_key=settings.ICGC_CLIENT_KEY,

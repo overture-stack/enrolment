@@ -5,7 +5,7 @@ import { Button } from 'react-bootstrap';
 import { translate } from 'react-i18next';
 import _ from 'lodash';
 
-import { toggleModal } from '../../Users/redux';
+import { toggleModal } from '../../ProjectUsers/redux';
 
 const StaffActions = props => {
   const { t, profile, projects, toggleModal } = props;

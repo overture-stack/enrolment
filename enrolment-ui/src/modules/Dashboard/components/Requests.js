@@ -7,7 +7,7 @@ import _ from 'lodash';
 import StaffActions from './StaffActions';
 import FeesSidebarWidget from '../../Fees';
 import { ApplicationRequests } from '../../Applications';
-import { UserRequests } from '../../Users';
+import { UserRequests } from '../../ProjectUsers';
 
 const Requests = props => {
   const { t, profile, projects } = props;

@@ -1,8 +1,6 @@
 {
   "Login": {
-    "title": "ICGC Enrolment",
-    "invalidUserRequest":
-      "This user request is no longer valid, please contact your PI if you believe this is an error."
+    "title": "ICGC Enrolment"
   },
   "ChangeLogin": {
     "internal": "Internal Login",
@@ -36,7 +34,9 @@
     "title": "Application Requests"
   },
   "UserRequests": {
-    "title": "User Requests"
+    "title": "User Requests",
+    "invalidUserRequest":
+      "This user request is no longer valid, please contact your PI if you believe this is an error."
   },
   "RequestTable": {
     "tableHeader":

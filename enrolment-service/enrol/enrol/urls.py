@@ -38,9 +38,8 @@ urlpatterns = [
     url(r'^api/v1/auth/social/$', views.SocialViewSet),
 
     # Daco
-    url(r'^api/v1/daco/$', views.daco),
     url(r'^api/v1/daco/(?P<email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$',
-        views.dacoAccess),
+        views.dacoCheck),
 
     # Django Rest Router + Nested Routers
     url(r'^api/v1/', include(router.urls)),

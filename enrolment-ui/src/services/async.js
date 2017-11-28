@@ -16,17 +16,6 @@ export function createAsyncs(isDevelopment = false) {
       submit: asyncServiceCreator('POST', `${apiBase}/applications/`, withDataAndCSRF),
     },
     auth: {
-      daco: () =>
-        asyncServiceCreator('GET', `${apiBase}/daco/`)().catch(error => {
-          // If DACO 403 then return custom error message in promise rejection
-          if (error.response.status === 403 || error.response.status === 400)
-            return Promise.reject(
-              new Error(`You need a DACO account to be able to use this Application. <br/>
-                          For more information, Please go to <a href="https://icgc.org/daco" target="_blank">https://icgc.org/daco</a>`),
-            );
-
-          return Promise.reject(error);
-        }),
       googleSuccess: asyncServiceCreator('POST', `${apiBase}/auth/google/`, withDataAndCSRF),
       adminLogin: data =>
         asyncServiceCreator('POST', `${apiBase}/auth/login/`, withDataAndCSRF)(
@@ -46,39 +35,35 @@ export function createAsyncs(isDevelopment = false) {
     project: {
       fetchProjects: asyncServiceCreator('GET', `${apiBase}/projects/`),
       fetchProject: id => asyncServiceCreator('GET', `${apiBase}/projects/${id}/`)(),
-      fetchProjectUsers: projectId =>
-        asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/`)(),
-      fetchProjectUser: (projectId, id) =>
-        asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/${id}/`)(),
       submit: asyncServiceCreator('POST', `${apiBase}/projects/`, withDataAndCSRF),
       update: (id, data) =>
         asyncServiceCreator('PATCH', `${apiBase}/projects/${id}/`, withDataAndCSRF)(data),
     },
-    user: {
-      dacoCheck: email =>
-        asyncServiceCreator('GET', `${apiBase}/daco/${email}/`)().catch(error => {
-          if (error)
-            return Promise.reject(
-              new Error(
-                `This email is not a valid DACO email.<br/>The user should create a DACO account before you can enroll him to the project (see <a href="https://icgc.org/daco" target="_blank">https://icgc.org/daco</a>)`,
-              ),
-            );
-        }),
-      userRequest: asyncServiceCreator('POST', `${apiBase}/request/user/`, withDataAndCSRF),
-      checkUserRequest: id => asyncServiceCreator('GET', `${apiBase}/request/user/${id}`)(),
-      fetchAllProjectUserRequests: asyncServiceCreator('GET', `${apiBase}/projects/all/users/`),
-      fetchProjectUserRequests: projectId =>
+    projectUsers: {
+      fetchAll: asyncServiceCreator('GET', `${apiBase}/projects/all/users/`),
+      fetchByProjectId: projectId =>
         asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/`)(),
-      submit: (projectId, data) =>
-        asyncServiceCreator('POST', `${apiBase}/projects/${projectId}/users/`, withDataAndCSRF)(
-          data,
-        ),
-      updateUserRequest: (projectId, id, data) =>
+      fetchOneProjectUser: (projectId, id) =>
+        asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/${id}/`)(),
+      create: asyncServiceCreator('POST', `${apiBase}/request/user/`, withDataAndCSRF),
+      update: (projectId, id, data) =>
         asyncServiceCreator(
           'PATCH',
           `${apiBase}/projects/${projectId}/users/${id}/`,
           withDataAndCSRF,
         )(data),
+    },
+    daco: {
+      check: email =>
+        asyncServiceCreator('GET', `${apiBase}/daco/${email}/`)().catch(error => {
+          if (error)
+            return Promise.reject(
+              new Error(
+                `You need a DACO account to be able to use this Application. <br/>
+                For more information, Please go to <a href="https://icgc.org/daco" target="_blank">https://icgc.org/daco</a>`,
+              ),
+            );
+        }),
     },
     billing: {
       getPrice: asyncServiceCreator('GET', `${billingBase}/price`),
@@ -89,34 +74,25 @@ export function createAsyncs(isDevelopment = false) {
   if (isDevelopment) {
     return {
       ...asyncs,
-      auth: {
-        ...asyncs.auth,
-        daco: profileObj =>
+      daco: {
+        ...asyncs.daco,
+        check: email =>
           asyncDummyCreator(
             {
               user: {
-                openid: profileObj.email,
+                openid: email,
                 csa: true,
                 userinfo: [
                   {
-                    uid: profileObj.email,
-                    name: profileObj.name,
-                    email: profileObj.email,
+                    uid: email,
+                    name: email,
+                    email: email,
                   },
                 ],
               },
             },
             250,
-          ),
-      },
-      user: {
-        ...asyncs.user,
-        dacoCheck: asyncDummyCreator(
-          {
-            success: true,
-          },
-          1000,
-        ),
+          )(),
       },
     };
   }

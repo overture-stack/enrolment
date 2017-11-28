@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 import { translate, Trans } from 'react-i18next';
 
 import Requests from './components/Requests';
-import { UserEnrolmentModal } from '../Users';
+import { UserEnrolmentModal } from '../ProjectUsers';
 
 import { fetchProjects } from '../Projects/redux';
 import { fetchApplications } from '../Applications/redux';
-import { fetchUserRequests } from '../Users/redux';
+import { fetchAllProjectUsers } from '../ProjectUsers/redux';
 
 import './dashboard.scss';
 
@@ -26,7 +26,7 @@ class Dashboard extends Component {
   fetchNewData() {
     this.props.fetchProjects();
     this.props.fetchApplications();
-    this.props.fetchUserRequests();
+    this.props.fetchAllProjectUsers();
   }
 
   render() {
@@ -64,7 +64,7 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchApplications: () => fetchApplications(dispatch),
     fetchProjects: () => fetchProjects(dispatch),
-    fetchUserRequests: () => fetchUserRequests(dispatch),
+    fetchAllProjectUsers: () => fetchAllProjectUsers(dispatch),
   };
 };
 

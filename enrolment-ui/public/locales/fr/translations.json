@@ -1,8 +1,6 @@
 {
   "Login": {
-    "title": "ICGC Inscription",
-    "invalidUserRequest":
-      "Cette demande de l'utilisateur n'est plus valide, veuillez contacter votre IP si vous pensez qu'il s'agit d'une erreur."
+    "title": "ICGC Inscription"
   },
   "ChangeLogin": {
     "internal": "Connexion Interne",
@@ -37,7 +35,9 @@
     "title": "Demandes d'application"
   },
   "UserRequests": {
-    "title": "Demandes d'utilisateurs"
+    "title": "Demandes d'utilisateurs",
+    "invalidUserRequest":
+      "Cette demande de l'utilisateur n'est plus valide, veuillez contacter votre IP si vous pensez qu'il s'agit d'une erreur."
   },
   "RequestTable": {
     "tableHeader":
