@@ -2,10 +2,17 @@ import uuid
 from django.contrib.auth.models import User
 from django.db import models
 
+
 STATUS_CHOICES = (
     (0, "Pending"),
     (1, "Approved"),
     (2, "Denied"),
+)
+
+USER_STATUS_CHOICES = (
+    (0, "Invited"),
+    (1, "Pending"),
+    (2, "Active"),
 )
 
 
@@ -77,7 +84,7 @@ class ProjectUsers(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     firstname = models.CharField(max_length=50)
     lastname = models.CharField(max_length=50)
-    agreementDate = models.DateField(auto_now_add=True, auto_now=False,)
+    agreementDate = models.DateField()
     agreementCheck = models.BooleanField()
     position = models.CharField(max_length=50)
     institution_name = models.CharField(max_length=100)
@@ -86,21 +93,8 @@ class ProjectUsers(models.Model):
     daco_email = models.EmailField()
     createdDate = models.DateField(auto_now_add=True, auto_now=False)
     updatedDate = models.DateField(auto_now=True)
-    status = models.IntegerField(choices=STATUS_CHOICES, default=0)
+    status = models.IntegerField(choices=USER_STATUS_CHOICES, default=0)
 
     class Meta:
         db_table = "project_users"
-        ordering = ['-createdDate']
-
-
-class UserRequest(models.Model):
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    project = models.ForeignKey(Projects, on_delete=models.CASCADE)
-    email = models.EmailField()
-    createdDate = models.DateField(auto_now_add=True, auto_now=False)
-    updatedDate = models.DateField(auto_now=True)
-
-    class Meta:
-        db_table = "user_requests"
         ordering = ['-createdDate']
