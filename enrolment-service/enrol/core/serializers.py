@@ -36,7 +36,7 @@ class ProjectUsersSerializer(serializers.ModelSerializer):
     institution_name = serializers.CharField(required=False, max_length=100)
     institution_email = serializers.EmailField(required=False)
     phone = serializers.CharField(required=False, max_length=50)
-    status = ChoicesField(choices=USER_STATUS_CHOICES)
+    status = ChoicesField(required=False, choices=USER_STATUS_CHOICES)
 
     class Meta:
         model = ProjectUsers
