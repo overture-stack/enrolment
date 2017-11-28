@@ -45,7 +45,10 @@ export function createAsyncs(isDevelopment = false) {
         asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/`)(),
       fetchOneProjectUser: (projectId, id) =>
         asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/${id}/`)(),
-      create: asyncServiceCreator('POST', `${apiBase}/request/user/`, withDataAndCSRF),
+      create: (projectId, data) =>
+        asyncServiceCreator('POST', `${apiBase}/projects/${projectId}/users/`, withDataAndCSRF)(
+          data,
+        ),
       update: (projectId, id, data) =>
         asyncServiceCreator(
           'PATCH',

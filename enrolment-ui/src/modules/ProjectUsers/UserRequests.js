@@ -16,12 +16,14 @@ const UserRequests = props => {
         <thead>
           <Trans
             i18nKey={
-              profile.is_staff ? 'RequestTable.tableHeaderAdmin' : 'RequestTable.tableHeader'
+              profile.is_staff
+                ? 'RequestTable.userTableHeaderAdmin'
+                : 'RequestTable.userTableHeader'
             }
             parent="tr"
           >
             <th>Request ID</th>
-            <th>Name</th>
+            <th>Name / Email</th>
             <th>Created Date</th>
             <th>Updated Date</th>
             <th>Status</th>
@@ -37,9 +39,7 @@ const UserRequests = props => {
                     {_.truncate(user.id, { length: 10, omission: '...' })}
                   </Link>
                 </td>
-                <td>
-                  {user.firstname} {user.lastname}
-                </td>
+                <td>{user.firstname ? `${user.firstname} ${user.lastname}` : user.daco_email}</td>
                 <td>{user.createdDate}</td>
                 <td>{user.updatedDate}</td>
                 <td>{user.status}</td>

@@ -110,11 +110,11 @@ export function fetchOneProjectUser(dispatch, projectId, id) {
     });
 }
 
-export function createProjectUsers(dispatch, data) {
+export function createProjectUsers(dispatch, projectId, data) {
   dispatch(createlUsersStart());
 
   return asyncServices.projectUsers
-    .create(data)
+    .create(projectId, data)
     .then(response => {
       dispatch(createlUsersSuccess(response.data));
     })
