@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
-from core.models import Projects, UserRequest
+from core.models import Projects
 from django.contrib.auth.models import User
 from core.serializers import ProjectsSerializer, ProjectSerializer
 from helpers import createUsers, createNewObjInstance
@@ -175,28 +175,6 @@ class ProjectsTest(APITestCase):
             reverse('projects-detail', args=[project.id]))
         self.assertEqual(response.status_code,
                          status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def test_retrieve_for_invited_user(self):
-        """
-        Allow get one access to invited users for a project
-        """
-
-        project = self.create_test_project()
-
-        userRequestData = {
-            'project': project,
-            'email': self.user_2.email
-        }
-
-        userRequest = UserRequest.objects.create(**userRequestData)
-
-        user = User.objects.get(username='user_2')
-        client = APIClient()
-        client.force_authenticate(user=self.user_2)
-        response = client.get(
-            reverse('projects-detail', args=[project.id]))
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_archive_project(self):
         ''''

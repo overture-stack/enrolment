@@ -1,7 +1,6 @@
 {
   "Login": {
-    "invalidUserRequest":
-      "Cette demande de l'utilisateur n'est plus valide, veuillez contacter votre IP si vous pensez qu'il s'agit d'une erreur."
+    "title": "ICGC Inscription"
   },
   "ChangeLogin": {
     "internal": "Connexion Interne",
@@ -36,13 +35,19 @@
     "title": "Demandes d'application"
   },
   "UserRequests": {
-    "title": "Demandes d'utilisateurs"
+    "title": "Demandes d'utilisateurs",
+    "invalidUserRequest":
+      "Cette demande de l'utilisateur n'est plus valide, veuillez contacter votre IP si vous pensez qu'il s'agit d'une erreur."
   },
   "RequestTable": {
     "tableHeader":
       "<0>ID de la demande</0><1>Titre du projet</1><2>Date de création</2><3>Date de mise à jour</3><4>État</4>",
     "tableHeaderAdmin":
       "<0>ID de la demande</0><1>Titre du projet</1><2>Date de création</2><3>Date de mise à jour</3><4>État</4><5>Action</5>",
+    "userTableHeader":
+      "<0>Request ID</0><1>Name/Email</1><2>Created Date</2><3>Updated Date</3><4>Status</4>",
+    "userTableHeaderAdmin":
+      "<0>Request ID</0><1>Name/Email</1><2>Created Date</2><3>Updated Date</3><4>Status</4><5>Action</5>",
     "action": {
       "approve": "Approuver",
       "deny": "Nier",

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
-from core.models import Applications, BillingContact, Projects, UserRequest, ProjectUsers, STATUS_CHOICES
+from core.models import Applications, BillingContact, Projects, ProjectUsers, STATUS_CHOICES, USER_STATUS_CHOICES
 
 UserModel = get_user_model()
 
@@ -27,21 +27,16 @@ class ChoicesField(serializers.Field):
         return self._choices[data][0]
 
 
-class UserRequestListSerializer(serializers.ListSerializer):
-    def create(self, validated_data):
-        userRequests = [UserRequest(**item) for item in validated_data]
-        return UserRequest.objects.bulk_create(userRequests)
-
-
-class UserRequestSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserRequest
-        fields = ('id', 'project', 'email')
-        list_serializer_class = UserRequestListSerializer
-
-
 class ProjectUsersSerializer(serializers.ModelSerializer):
-    status = ChoicesField(choices=STATUS_CHOICES)
+    firstname = serializers.CharField(required=False, max_length=50)
+    lastname = serializers.CharField(required=False, max_length=50)
+    agreementDate = serializers.DateField(required=False)
+    agreementCheck = serializers.BooleanField(required=False)
+    position = serializers.CharField(required=False, max_length=50)
+    institution_name = serializers.CharField(required=False, max_length=100)
+    institution_email = serializers.EmailField(required=False)
+    phone = serializers.CharField(required=False, max_length=50)
+    status = ChoicesField(required=False, choices=USER_STATUS_CHOICES)
 
     class Meta:
         model = ProjectUsers
@@ -123,14 +118,13 @@ class ProjectsSerializer(serializers.ModelSerializer):
 
 class ProjectSerializer(serializers.ModelSerializer):
     applications = ApplicationSerializer(many=True, read_only=True)
-    UserRequests = UserRequestSerializer(many=True, read_only=True)
     projectUsers = ProjectUsersSerializer(many=True, read_only=True)
     status = ChoicesField(choices=STATUS_CHOICES)
 
     class Meta:
         model = Projects
         fields = ('id', 'user', 'project_name', 'project_description', 'pi', 'status', 'createdDate', 'updatedDate',
-                  'applications', 'UserRequests', 'projectUsers')
+                  'applications', 'projectUsers')
 
 
 class UserSerializer(serializers.Serializer):

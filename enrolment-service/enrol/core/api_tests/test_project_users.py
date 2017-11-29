@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
-from core.models import ProjectUsers, Projects, UserRequest
+from core.models import ProjectUsers, Projects
 from django.contrib.auth.models import User
 from core.serializers import ProjectUsersSerializer
 from helpers import createUsers, createNewObjInstance
@@ -43,6 +43,10 @@ class ProjectUsersTest(APITestCase):
         self.newProjectUser = {
             'project': self.testProject.id,
             'user': self.user.id,
+            'daco_email': 'user_2@asd.com',
+        }
+
+        self.userUpdate = {
             'firstname': 'Firsty',
             'lastname': 'Lastington',
             'agreementDate': date.today(),
@@ -51,8 +55,7 @@ class ProjectUsersTest(APITestCase):
             'institution_name': 'Cats Inc',
             'institution_email': 'flastington@cats.inc',
             'phone': '123-123-1234',
-            'daco_email': 'fluffykins@gmail.com',
-            'status': 0,
+            'status': 1,
         }
 
         self.list_response_set = set([
@@ -101,12 +104,14 @@ class ProjectUsersTest(APITestCase):
         get_list_response = self.client.get(self.url)
         post_response = self.client.post(self.url, self.newProjectUser)
         put_response = self.client.put(self.url, self.newProjectUser)
+        patch_response = self.client.patch(self.url, self.newProjectUser)
         del_response = self.client.delete(self.url, self.newProjectUser)
 
         self.assertEqual(get_list_response.status_code,
                          status.HTTP_403_FORBIDDEN)
         self.assertEqual(post_response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(put_response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(patch_response.status_code, status.HTTP_403_FORBIDDEN)
 
         self.assertEqual(ProjectUsers.objects.count(), 0)
 
@@ -122,43 +127,41 @@ class ProjectUsersTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(ProjectUsers.objects.count(), 1)
         self.assertEqual(ProjectUsers.objects.get(
-        ).daco_email, 'fluffykins@gmail.com')
+        ).daco_email, 'user_2@asd.com')
+        self.assertEqual(ProjectUsers.objects.get(
+        ).status, 0)
 
-    def test_delete_user_request_on_projectUser_create(self):
+    def test_patch_user_to_pending(self):
         """
-        Once a project user is created, their associated user
-        request should be deleted
+        Ensure the invited user can patch and move to pending
         """
-        user = User.objects.get(username='user')
-
-        # Create user request
-        userRequestData = {
-            'project': self.testProject,
-            'email': 'user@asd.com'
-        }
-        secondUserRequest = {
-            'project': self.testProject,
-            'email': 'user_2@asd.com'
-        }
-        thirdUserRequest = {
-            'project': self.secondProject,
-            'email': 'user_2@asd.com'
-        }
-        UserRequest.objects.create(**userRequestData)
-        UserRequest.objects.create(**secondUserRequest)
-        UserRequest.objects.create(**thirdUserRequest)
-
-        # Create new instance
+        projectUser = self.create_test_projectUser(
+            projectUser={'project': self.testProject})
         client = APIClient()
-        client.force_authenticate(user=self.user)
-        response = client.post(self.url, self.newProjectUser)
+        client.force_authenticate(user=self.user_2)
 
-        # Test that there is no user application with the combination
-        # of projectId and email
-        no_user_request = UserRequest.objects.filter(
-            email="user@asd.com", project=self.testProject.id)
-        self.assertEqual(len(no_user_request), 0)
-        self.assertEqual(UserRequest.objects.count(), 2)
+        response = client.patch(
+            reverse('project-users-detail', args=[self.testProject.id, projectUser.id]), self.userUpdate)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(ProjectUsers.objects.get(
+        ).status, 1)
+
+    def test_patch_user_to_active_by_admin(self):
+        """
+        Ensure the invited user can patch and move to pending
+        """
+        projectUser = self.create_test_projectUser(
+            projectUser={'project': self.testProject, **self.userUpdate})
+        client = APIClient()
+        client.force_authenticate(user=self.admin_user)
+
+        response = client.patch(
+            reverse('project-users-detail', args=[self.testProject.id, projectUser.id]), {'status': 2})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(ProjectUsers.objects.get(
+        ).status, 2)
 
     def test_get_projectUsers_list(self):
         """
@@ -168,7 +171,6 @@ class ProjectUsersTest(APITestCase):
             projectUser={'project': self.testProject})
         projectUser_2 = self.create_test_projectUser(
             projectUser={'firstname': 'Secundo', 'project': self.testProject})
-        user = User.objects.get(username='user')
         client = APIClient()
         client.force_authenticate(user=self.user)
         response = client.get(self.url)
@@ -245,30 +247,6 @@ class ProjectUsersTest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response_404.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_put_only_for_admin(self):
-        '''
-        Ensure only a superuser can update a projectUser
-        '''
-        projectUser = self.create_test_projectUser(
-            projectUser={'project': self.testProject})
-
-        updated_projectUser = {
-            **self.newProjectUser,
-            'status': 1
-        }
-
-        user = User.objects.get(username='user')
-        client = APIClient()
-        client.force_authenticate(user=self.user)
-        response = client.put(
-            reverse('project-users-detail', args=[self.testProject.id, projectUser.id]), updated_projectUser)
-        client.force_authenticate(user=self.admin_user)
-        admin_response = client.put(
-            reverse('project-users-detail', args=[self.testProject.id, projectUser.id]), updated_projectUser)
-        client.force_authenticate(user=self.admin_user)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(admin_response.status_code, status.HTTP_200_OK)
 
     def test_no_delete(self):
         """

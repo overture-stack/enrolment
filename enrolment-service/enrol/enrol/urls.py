@@ -22,7 +22,6 @@ from core import views
 router = routers.SimpleRouter()
 router.register(r'projects', views.ProjectsViewSet, 'projects')
 router.register(r'applications', views.ApplicationsViewSet, 'applications')
-router.register(r'request/user', views.UserRequestViewSet, 'requests-user')
 
 projects_router = routers.NestedSimpleRouter(
     router, r'projects', lookup='project')
@@ -39,9 +38,8 @@ urlpatterns = [
     url(r'^api/v1/auth/social/$', views.SocialViewSet),
 
     # Daco
-    url(r'^api/v1/daco/$', views.daco),
     url(r'^api/v1/daco/(?P<email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$',
-        views.dacoAccess),
+        views.dacoCheck),
 
     # Django Rest Router + Nested Routers
     url(r'^api/v1/', include(router.urls)),

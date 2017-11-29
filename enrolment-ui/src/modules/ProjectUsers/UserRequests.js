@@ -4,17 +4,10 @@ import { Link } from 'react-router-dom';
 import { translate, Trans } from 'react-i18next';
 import _ from 'lodash';
 
-import { fetchUserRequests, approveUserRequest, denyUserRequest } from './redux';
+import { fetchAllProjectUsers, activateProjectUser } from './redux';
 
 const UserRequests = props => {
-  const {
-    t,
-    profile,
-    userRequests,
-    fetchUserRequests,
-    approveUserRequest,
-    denyUserRequest,
-  } = props;
+  const { t, profile, projectUsers, fetchAllProjectUsers, activateProjectUser } = props;
 
   return (
     <div className="col-md-12">
@@ -23,12 +16,14 @@ const UserRequests = props => {
         <thead>
           <Trans
             i18nKey={
-              profile.is_staff ? 'RequestTable.tableHeaderAdmin' : 'RequestTable.tableHeader'
+              profile.is_staff
+                ? 'RequestTable.userTableHeaderAdmin'
+                : 'RequestTable.userTableHeader'
             }
             parent="tr"
           >
             <th>Request ID</th>
-            <th>Name</th>
+            <th>Name / Email</th>
             <th>Created Date</th>
             <th>Updated Date</th>
             <th>Status</th>
@@ -36,17 +31,15 @@ const UserRequests = props => {
           </Trans>
         </thead>
         <tbody>
-          {userRequests.map(user => {
+          {projectUsers.map(user => {
             return (
               <tr key={user.id}>
                 <td>
-                  <Link to={`/view/project-user-application/${user.project}/${user.id}/`}>
+                  <Link to={`/view/project-user/${user.project}/${user.id}/`}>
                     {_.truncate(user.id, { length: 10, omission: '...' })}
                   </Link>
                 </td>
-                <td>
-                  {user.firstname} {user.lastname}
-                </td>
+                <td>{user.firstname ? `${user.firstname} ${user.lastname}` : user.daco_email}</td>
                 <td>{user.createdDate}</td>
                 <td>{user.updatedDate}</td>
                 <td>{user.status}</td>
@@ -56,14 +49,9 @@ const UserRequests = props => {
                       <div className="admin-actions">
                         <a
                           onClick={() =>
-                            approveUserRequest(user.project, user.id, fetchUserRequests)}
+                            activateProjectUser(user.project, user.id, fetchAllProjectUsers)}
                         >
                           {t('RequestTable.action.approve')}
-                        </a>
-                        <a
-                          onClick={() => denyUserRequest(user.project, user.id, fetchUserRequests)}
-                        >
-                          {t('RequestTable.action.deny')}
                         </a>
                       </div>
                     ) : null}
@@ -84,15 +72,15 @@ UserRequests.displayName = 'UserRequests';
 const mapStateToProps = state => {
   return {
     profile: state.profile.data,
-    userRequests: state.userRequests.data,
+    projectUsers: state.projectUsers.data,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchUserRequests: () => fetchUserRequests(dispatch),
-    approveUserRequest: (projectId, id, next) => approveUserRequest(dispatch, projectId, id, next),
-    denyUserRequest: (projectId, id, next) => denyUserRequest(dispatch, projectId, id, next),
+    fetchAllProjectUsers: () => fetchAllProjectUsers(dispatch),
+    activateProjectUser: (projectId, id, next) =>
+      activateProjectUser(dispatch, projectId, id, next),
   };
 };
 

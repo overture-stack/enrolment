@@ -44,13 +44,16 @@ const ApplicationRequests = props => {
           </Trans>
         </thead>
         <tbody>
-          {applications.results.map(application => {
-            const project = _.find(projects.results, { id: application.project });
+          {projects.results.map(project => {
+            const application = _.find(applications.results, { project: project.id });
+
+            // In case there is an oprhaned project with no application
+            if (!application) return false;
 
             return (
               <tr key={application.id}>
                 <td>
-                  <Link to={`/view/project-application/${application.id}`}>
+                  <Link to={`/view/project/${application.id}`}>
                     {_.truncate(application.id, { length: 10, omission: '...' })}
                   </Link>
                 </td>

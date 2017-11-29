@@ -1,7 +1,6 @@
 {
   "Login": {
-    "invalidUserRequest":
-      "This user request is no longer valid, please contact your PI if you believe this is an error."
+    "title": "ICGC Enrolment"
   },
   "ChangeLogin": {
     "internal": "Internal Login",
@@ -35,13 +34,19 @@
     "title": "Application Requests"
   },
   "UserRequests": {
-    "title": "User Requests"
+    "title": "User Requests",
+    "invalidUserRequest":
+      "This user request is no longer valid, please contact your PI if you believe this is an error."
   },
   "RequestTable": {
     "tableHeader":
       "<0>Request ID</0><1>Project Title</1><2>Created Date</2><3>Updated Date</3><4>Status</4>",
     "tableHeaderAdmin":
       "<0>Request ID</0><1>Project Title</1><2>Created Date</2><3>Updated Date</3><4>Status</4><5>Action</5>",
+    "userTableHeader":
+      "<0>Request ID</0><1>Name / Email</1><2>Created Date</2><3>Updated Date</3><4>Status</4>",
+    "userTableHeaderAdmin":
+      "<0>Request ID</0><1>Name / Email</1><2>Created Date</2><3>Updated Date</3><4>Status</4><5>Action</5>",
     "action": {
       "approve": "Approve",
       "deny": "Deny",

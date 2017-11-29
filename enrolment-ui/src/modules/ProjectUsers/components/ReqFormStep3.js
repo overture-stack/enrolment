@@ -5,7 +5,6 @@ import { RFConsent, rules } from '../../ReduxForm';
 
 const ReqFormStep3 = props => {
   const { handleSubmit, previousPage, submitting, pristine, invalid, disabled } = props;
-
   return (
     <form onSubmit={handleSubmit} className="agreement">
       <div className="row">

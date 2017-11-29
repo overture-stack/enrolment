@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { initialize } from 'redux-form';
+import { translate } from 'react-i18next';
 
 import RequestProgressBar from '../../Common/RequestProgressBar';
 import ReqFormStep1 from './ReqFormStep1';
 import ReqFormStep2 from './ReqFormStep2';
 import ReqFormStep3 from './ReqFormStep3';
 
-import { rfNextStep, rfPrevStep, rfResetStep, submitUserApplication } from '../redux';
+import { rfNextStep, rfPrevStep, rfResetStep, updateProjectUser } from '../redux';
 import { fetchOneProject } from '../../Projects/redux';
 import { fetchOneProjectUser } from '../../ProjectUsers/redux';
 
@@ -20,7 +21,7 @@ class ReqForm extends Component {
     this.onSubmit = this.onSubmit.bind(this);
 
     // Load either the project or complete project user if available
-    this.loadProjectOrProjectUser();
+    this.loadProjectAndProjectUser();
 
     // Init form
     this.InititiateForm();
@@ -45,26 +46,28 @@ class ReqForm extends Component {
 
   onSubmit(data) {
     const {
-      match: { params: { projectId } },
+      match: { params: { projectId, userId } },
       history: { push },
-      submitUserApplication,
+      updateProjectUser,
     } = this.props;
-    submitUserApplication(projectId, data, () => push('/dashboard'));
+
+    const d = new Date();
+    const agreementDate = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+
+    const dateTaggedData = {
+      ...data,
+      agreementDate,
+    };
+
+    updateProjectUser(projectId, userId, dateTaggedData, () => push('/dashboard'));
   }
 
-  loadProjectOrProjectUser() {
-    const path = this.props.match.path;
+  loadProjectAndProjectUser() {
     const projectId = this.props.match.params.projectId;
     const userId = this.props.match.params.userId;
 
-    if (path.indexOf('view' !== -1)) {
-      // On view-only load application
-      this.props.fetchOneProjectUser(projectId, userId);
-      this.props.fetchOneProject(projectId);
-    } else {
-      // or project user id
-      this.props.fetchOneProject(projectId);
-    }
+    this.props.fetchOneProjectUser(projectId, userId);
+    this.props.fetchOneProject(projectId);
   }
 
   InititiateForm(newData = false) {
@@ -84,12 +87,31 @@ class ReqForm extends Component {
     this.props.formResetStep();
   }
 
+  renderAlreadyRegistered() {
+    const { t } = this.props;
+
+    return (
+      <div className="project">
+        <div className="alert alert-danger">{t('UserRequests.invalidUserRequest')}</div>
+      </div>
+    );
+  }
+
   render() {
-    const { userRequestForm: { step }, formNextStep, formPrevStep } = this.props;
+    const { userRequestForm: { step }, formNextStep, formPrevStep, projectUser } = this.props;
 
     const steps = ['Personal Information', 'Collaboratory Project', 'Acceptance & Signature'];
 
-    const disabled = this.props.match.path.indexOf('view') !== -1;
+    const path = this.props.match.path;
+
+    const disabled = path.indexOf('view') !== -1;
+
+    if (
+      projectUser.hasFetched &&
+      projectUser.data.status !== 'Invited' &&
+      path.indexOf('register') !== -1
+    )
+      return this.renderAlreadyRegistered();
 
     return (
       <div className="project">
@@ -120,10 +142,10 @@ const mapDispatchToProps = dispatch => {
     formResetStep: () => dispatch(rfResetStep()),
     fetchOneProject: id => fetchOneProject(dispatch, id),
     fetchOneProjectUser: (projectId, useriId) => fetchOneProjectUser(dispatch, projectId, useriId),
-    submitUserApplication: (projectId, data, next) =>
-      submitUserApplication(dispatch, projectId, data, next),
+    updateProjectUser: (projectId, id, data, next) =>
+      updateProjectUser(dispatch, projectId, id, data, next),
     initializeForm: data => dispatch(initialize('userRequestForm', data)),
   };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ReqForm));
+export default translate()(withRouter(connect(mapStateToProps, mapDispatchToProps)(ReqForm)));

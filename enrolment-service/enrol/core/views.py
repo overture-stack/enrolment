@@ -1,7 +1,8 @@
 import os
 import json
-from core.models import Applications, Projects, UserRequest, ProjectUsers
+from core.models import Applications, Projects, ProjectUsers
 from django.conf import settings
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from jinja2 import Environment
 from django.http.response import Http404, HttpResponseForbidden
@@ -14,7 +15,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from email.mime.text import MIMEText
-from core.serializers import ProjectsSerializer, ProjectSerializer, ApplicationSerializer, ProjectUsersSerializer, UserRequestSerializer, UserDetailsSerializer
+from core.serializers import ProjectsSerializer, ProjectSerializer, ApplicationSerializer, ProjectUsersSerializer, UserDetailsSerializer
 from core.client.daco import DacoClient, DacoException
 import smtplib
 
@@ -98,6 +99,24 @@ class IsOwnerOrAdmin(permissions.BasePermission):
         return obj.user == request.user
 
 
+class IsOwnerOrAdminOrDacoWithUpdate(permissions.BasePermission):
+    """
+    Custom permissions that allow admin, owner, or daco_email holder access
+    """
+
+    def has_object_permission(self, request, view, obj):
+        # If superuser allow
+        if request.user.is_superuser:
+            return True
+
+        # If Daco Email in resource, allow email holder access
+        if request.user.email == obj.daco_email:
+            return True
+
+        # Instance must have an attribute named `user`.
+        return obj.user == request.user
+
+
 class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
     """
     Handles the Projects entity for the API
@@ -140,11 +159,11 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
             serializer = ProjectSerializer(project)
             return Response(serializer.data)
 
-        # Special case for requested user's
-        user_request_on_project = UserRequest.objects.filter(
-            email=user.email, project=pk)
-        is_user_requested = len(user_request_on_project) > 0
-        if is_user_requested:
+        # Special case for invited user's
+        user_invite_for_project = ProjectUsers.objects.filter(
+            daco_email=user.email, project=pk)
+        is_user_invited = len(user_invite_for_project) > 0
+        if is_user_invited:
             serializer = ProjectSerializer(project)
             return Response(serializer.data)
 
@@ -176,18 +195,27 @@ class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
     def perform_create(self, serializer):
         # Save the data
         application = serializer.save()
+        project = Projects.objects.get(pk=application.project.id)
+
+        data = {
+            **serializer.data,
+            'Project Name': project.project_name,
+            'Project Description': project.project_description
+        }
 
         # Send email to request admin review
         msg = MIMEText(
             Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/resource_request.html')).read()).render(
                 resource_type="Project Application",
-                data=serializer.data.items(),
+                data=data.items(),
                 link='view/project-application/{}'.format(
                     application.id)
             ), "html"
         )
-        msg['Subject'] = 'Collaboratory - New Project Application'
+        msg['Subject'] = 'Collab - New Project from {} {}: {}'.format(
+            application.firstname, application.lastname, project.project_name)
         msg['To'] = RESOURCE_ADMIN_EMAIL
+        msg['Cc'] = application.daco_email
         msg['From'] = SMTP_FROM
 
         SMTP_SERVER.send_message(msg)
@@ -201,7 +229,7 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
         'default': ProjectUsersSerializer,
     }
     authentication_classes = (SessionAuthentication, )
-    permission_classes = (IsAuthenticated, IsOwnerOrAdmin)
+    permission_classes = (IsAuthenticated, IsOwnerOrAdminOrDacoWithUpdate)
 
     def get_queryset(self):
         """
@@ -219,9 +247,9 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
 
         # on "all" do not filter by project
         if (project_pk == 'all'):
-            return ProjectUsers.objects.filter(user=user)
+            return ProjectUsers.objects.filter(Q(user=user) | Q(daco_email=user.email))
 
-        return ProjectUsers.objects.filter(user=user, project=project_pk)
+        return ProjectUsers.objects.filter(Q(project=project_pk), Q(user=user) | Q(daco_email=user.email))
 
     def list(self, request, project_pk=None):
         queryset = self.get_queryset()
@@ -233,41 +261,6 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
         serializer = ProjectUsersSerializer(project_user)
         return Response(serializer.data)
 
-    def perform_create(self, serializer):
-        # Save the data
-        project_user = serializer.save()
-
-        # Send email to request admin review
-        msg = MIMEText(
-            Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/resource_request.html')).read()).render(
-                resource_type="Project User Application",
-                data=serializer.data.items(),
-                link='view/project-user-application/{}'.format(
-                    project_user.id)
-            ), "html"
-        )
-        msg['Subject'] = 'Collaboratory - New Project User Request'
-        msg['To'] = RESOURCE_ADMIN_EMAIL
-        msg['From'] = SMTP_FROM
-
-        # Delete existing user application
-        UserRequest.objects.filter(
-            email=self.request.user.email, project=project_user.project).delete()
-
-        SMTP_SERVER.send_message(msg)
-
-
-class UserRequestViewSet(CreateRetrieveViewSet):
-    """
-    Handles the Projects entity for the API
-    """
-    serializers = {
-        'default': UserRequestSerializer
-    }
-    authentication_classes = (SessionAuthentication, )
-    permission_classes = (IsAuthenticated, )
-    queryset = UserRequest.objects.all()
-
     def create(self, request, *args, **kwargs):
         many = isinstance(request.data, list)
         serializer = self.get_serializer(data=request.data, many=many)
@@ -276,14 +269,16 @@ class UserRequestViewSet(CreateRetrieveViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def perform_create(self, serializer):
-        user_requests = serializer.save()
+        # Save the data
+        project_users = serializer.save()
 
-        for user_request in user_requests:
-            project = user_request.project
+        # Send email to invited users
+        for project_user in project_users:
+            project = project_user.project
 
             msg = MIMEText(
                 Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/user_request.html')).read()).render(
-                    id=user_request.id,
+                    id=project_user.id,
                     name=project.project_name,
                     project_id=project.id,
                     pi=project.pi
@@ -291,7 +286,7 @@ class UserRequestViewSet(CreateRetrieveViewSet):
             )
             msg['Subject'] = 'Collaboratory - Enrollment to project ' + \
                 project.project_name
-            msg['To'] = user_request.email
+            msg['To'] = project_user.daco_email
             msg['From'] = SMTP_FROM
             SMTP_SERVER.send_message(msg)
 
@@ -299,32 +294,7 @@ class UserRequestViewSet(CreateRetrieveViewSet):
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, ))
 @permission_classes((IsAuthenticated, ))
-def daco(request):
-    if request.user.is_authenticated():
-        email = request.user.email
-        daco = DacoClient(base_url=settings.ICGC_BASE_URL,
-                          client_key=settings.ICGC_CLIENT_KEY,
-                          client_secret=settings.ICGC_CLIENT_SECRET,
-                          token=settings.ICGC_TOKEN,
-                          token_secret=settings.ICGC_TOKEN_SECRET)
-
-        try:
-            response = daco.get_daco_status(email)
-            return Response(response)
-        except DacoException as err:
-            if err.status_code == 403:
-                return HttpResponseForbidden()
-            else:
-                return Response(err.message, status=status.HTTP_400_BAD_REQUEST)
-
-    else:
-        return HttpResponseForbidden()
-
-
-@api_view(['GET'])
-@authentication_classes((SessionAuthentication, ))
-@permission_classes((IsAuthenticated, ))
-def dacoAccess(request, email):
+def dacoCheck(request, email):
     if request.user.is_authenticated():
         dacoClient = DacoClient(base_url=settings.ICGC_BASE_URL,
                                 client_key=settings.ICGC_CLIENT_KEY,

@@ -19,6 +19,12 @@ RUN source ~/.nvm/nvm.sh && nvm install 6.11.4 && npm install -g npm
 RUN mkdir -p /data/web
 COPY . /data/web/
 
+# COPY CONFIG OVER
+COPY ./docker-assets-config/config/config.js /data/web/src/config
+
+# OVERWRITE ASSETS
+COPY ./docker-assets-config/assets /data/web/src/assets
+
 # BUILD
 WORKDIR /data/web
 RUN source ~/.nvm/nvm.sh && npm install && npm run build
