@@ -195,21 +195,30 @@ class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
     def perform_create(self, serializer):
         # Save the data
         application = serializer.save()
+        project = Projects.objects.get(pk=application.project.id)
 
-        # # Send email to request admin review
-        # msg = MIMEText(
-        #     Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/resource_request.html')).read()).render(
-        #         resource_type="Project Application",
-        #         data=serializer.data.items(),
-        #         link='view/project-application/{}'.format(
-        #             application.id)
-        #     ), "html"
-        # )
-        # msg['Subject'] = 'Collaboratory - New Project Application'
-        # msg['To'] = RESOURCE_ADMIN_EMAIL
-        # msg['From'] = SMTP_FROM
+        data = {
+            **serializer.data,
+            'Project Name': project.project_name,
+            'Project Description': project.project_description
+        }
 
-        # SMTP_SERVER.send_message(msg)
+        # Send email to request admin review
+        msg = MIMEText(
+            Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/resource_request.html')).read()).render(
+                resource_type="Project Application",
+                data=data.items(),
+                link='view/project-application/{}'.format(
+                    application.id)
+            ), "html"
+        )
+        msg['Subject'] = 'Collab - New Project from {} {}: {}'.format(
+            application.firstname, application.lastname, project.project_name)
+        msg['To'] = RESOURCE_ADMIN_EMAIL
+        msg['Cc'] = application.daco_email
+        msg['From'] = SMTP_FROM
+
+        SMTP_SERVER.send_message(msg)
 
 
 class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
