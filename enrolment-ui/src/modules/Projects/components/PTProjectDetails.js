@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 const PTProjectDetails = props => {
-  const { project_description = '', pi = '' } = props.project;
+  const { project_description = '', pi = '' } = props.project.data || {};
 
   return (
     <div className="container">
@@ -39,7 +39,7 @@ PTProjectDetails.displayName = 'PTProjectDetails';
 
 const mapStateToProps = state => {
   return {
-    project: state.project.data,
+    project: state.project,
   };
 };
 
