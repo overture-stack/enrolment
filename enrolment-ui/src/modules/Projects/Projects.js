@@ -47,8 +47,11 @@ class Projects extends Component {
     } = this.props;
     const projectId = event.target.value;
 
-    fetchOneProject(projectId);
-    fetchProjectUsersByProjectId(projectId);
+    if (projectId) {
+      fetchOneProject(projectId);
+      fetchProjectUsersByProjectId(projectId);
+    }
+
     uiSelectProject(projectId);
     resetEnrolmentForm();
   }

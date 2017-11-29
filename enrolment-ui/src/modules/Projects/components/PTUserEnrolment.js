@@ -1,19 +1,23 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import TabReqForm from '../../ProjectUsers/components/TabReqForm';
-import { createProjectUsers } from '../../ProjectUsers/redux';
+import { createProjectUsers, fetchAllProjectUsers } from '../../ProjectUsers/redux';
 
-const onSubmit = enroll => {
+const onSubmit = (createUsers, user, projectId, next) => {
   return data => {
     // Process data for submission
-    const proccessedData = data.email.emails.map(email => ({ project: data.project, email }));
+    const proccessedData = data.email.emails.map(email => ({
+      project: projectId,
+      daco_email: email,
+      user,
+    }));
 
-    enroll(proccessedData);
+    createUsers(projectId, proccessedData, next);
   };
 };
 
 const PTUserEnrolment = props => {
-  const { createProjectUsers } = props;
+  const { createProjectUsers, profile: { pk }, project, fetchAllProjectUsers } = props;
 
   return (
     <div className="container">
@@ -34,7 +38,9 @@ const PTUserEnrolment = props => {
           </div>
           <div className="row tab-req-form">
             <div className="col-md-8">
-              <TabReqForm onSubmit={onSubmit(createProjectUsers)} />
+              <TabReqForm
+                onSubmit={onSubmit(createProjectUsers, pk, project.id, fetchAllProjectUsers)}
+              />
             </div>
           </div>
         </div>
@@ -45,10 +51,19 @@ const PTUserEnrolment = props => {
 
 PTUserEnrolment.displayName = 'PTUserEnrolment';
 
-const mapDispatchToProps = dispatch => {
+const mapStateToProps = state => {
   return {
-    createProjectUsers: data => createProjectUsers(dispatch, data),
+    profile: state.profile.data,
+    project: state.project.data,
   };
 };
 
-export default connect(null, mapDispatchToProps)(PTUserEnrolment);
+const mapDispatchToProps = dispatch => {
+  return {
+    createProjectUsers: (projectId, data, next) =>
+      createProjectUsers(dispatch, projectId, data, next),
+    fetchAllProjectUsers: () => fetchAllProjectUsers(dispatch),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PTUserEnrolment);
