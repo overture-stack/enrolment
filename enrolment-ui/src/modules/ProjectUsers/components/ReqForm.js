@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { initialize } from 'redux-form';
+import { translate } from 'react-i18next';
 
 import RequestProgressBar from '../../Common/RequestProgressBar';
 import ReqFormStep1 from './ReqFormStep1';
@@ -19,8 +20,10 @@ class ReqForm extends Component {
     super(props);
     this.onSubmit = this.onSubmit.bind(this);
 
+    // Check if
+
     // Load either the project or complete project user if available
-    this.loadProjectOrProjectUser();
+    this.loadProjectAndProjectUser();
 
     // Init form
     this.InititiateForm();
@@ -45,26 +48,29 @@ class ReqForm extends Component {
 
   onSubmit(data) {
     const {
-      match: { params: { projectId, projectUserId } },
+      match: { params: { projectId, userId } },
       history: { push },
       updateProjectUser,
     } = this.props;
-    updateProjectUser(projectId, projectUserId, data, () => push('/dashboard'));
+
+    const d = new Date();
+    const agreementDate = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+
+    const dateTaggedData = {
+      ...data,
+      agreementDate,
+    };
+
+    updateProjectUser(projectId, userId, dateTaggedData, () => push('/dashboard'));
   }
 
-  loadProjectOrProjectUser() {
+  loadProjectAndProjectUser() {
     const path = this.props.match.path;
     const projectId = this.props.match.params.projectId;
     const userId = this.props.match.params.userId;
 
-    if (path.indexOf('view' !== -1)) {
-      // On view-only load application
-      this.props.fetchOneProjectUser(projectId, userId);
-      this.props.fetchOneProject(projectId);
-    } else {
-      // or project user id
-      this.props.fetchOneProject(projectId);
-    }
+    this.props.fetchOneProjectUser(projectId, userId);
+    this.props.fetchOneProject(projectId);
   }
 
   InititiateForm(newData = false) {
@@ -84,12 +90,27 @@ class ReqForm extends Component {
     this.props.formResetStep();
   }
 
+  renderAlreadyRegistered() {
+    const { t } = this.props;
+
+    return (
+      <div className="project">
+        <div className="alert alert-danger">{t('UserRequests.invalidUserRequest')}</div>
+      </div>
+    );
+  }
+
   render() {
-    const { userRequestForm: { step }, formNextStep, formPrevStep } = this.props;
+    const { userRequestForm: { step }, formNextStep, formPrevStep, projectUser } = this.props;
 
     const steps = ['Personal Information', 'Collaboratory Project', 'Acceptance & Signature'];
 
-    const disabled = this.props.match.path.indexOf('view') !== -1;
+    const path = this.props.match.path;
+
+    const disabled = path.indexOf('view') !== -1;
+
+    if (projectUser.data.status == 'Pending' && path.indexOf('register') !== -1)
+      return this.renderAlreadyRegistered();
 
     return (
       <div className="project">
@@ -126,4 +147,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ReqForm));
+export default translate()(withRouter(connect(mapStateToProps, mapDispatchToProps)(ReqForm)));

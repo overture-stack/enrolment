@@ -20,9 +20,9 @@ from core.client.daco import DacoClient, DacoException
 import smtplib
 
 schema_view = get_swagger_view(title='Enrol API')
-# SMTP_SERVER = smtplib.SMTP(settings.SMTP_URL, 25)
-# SMTP_FROM = settings.SMTP_FROM
-# RESOURCE_ADMIN_EMAIL = settings.RESOURCE_ADMIN_EMAIL
+SMTP_SERVER = smtplib.SMTP(settings.SMTP_URL, 25)
+SMTP_FROM = settings.SMTP_FROM
+RESOURCE_ADMIN_EMAIL = settings.RESOURCE_ADMIN_EMAIL
 
 
 class CreateRetrieveViewSet(mixins.CreateModelMixin,
@@ -261,22 +261,25 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
 
     def perform_create(self, serializer):
         # Save the data
-        project_user = serializer.save()
+        project_users = serializer.save()
 
-        # # Send email to request admin review
-        # msg = MIMEText(
-        #     Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/resource_request.html')).read()).render(
-        #         resource_type="Project User Application",
-        #         data=serializer.data.items(),
-        #         link='view/project-user-application/{}'.format(
-        #             project_user.id)
-        #     ), "html"
-        # )
-        # msg['Subject'] = 'Collaboratory - New Project User Request'
-        # msg['To'] = RESOURCE_ADMIN_EMAIL
-        # msg['From'] = SMTP_FROM
+        # Send email to invited users
+        for project_user in project_users:
+            project = project_user.project
 
-        # SMTP_SERVER.send_message(msg)
+            msg = MIMEText(
+                Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/user_request.html')).read()).render(
+                    id=project_user.id,
+                    name=project.project_name,
+                    project_id=project.id,
+                    pi=project.pi
+                ), "html"
+            )
+            msg['Subject'] = 'Collaboratory - Enrollment to project ' + \
+                project.project_name
+            msg['To'] = project_user.daco_email
+            msg['From'] = SMTP_FROM
+            SMTP_SERVER.send_message(msg)
 
 
 @api_view(['GET'])
