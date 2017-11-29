@@ -2,10 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Modal } from 'react-bootstrap';
 
-import { toggleModal, createProjectUsers } from './redux';
+import { toggleModal, createProjectUsers, fetchAllProjectUsers } from './redux';
 import ModalReqForm from './components/ModalReqForm';
 
-const onSubmit = (createUsers, user) => {
+const onSubmit = (createUsers, user, next) => {
   return data => {
     // Process data for submission
     const proccessedData = data.email.emails.map(email => ({
@@ -14,19 +14,25 @@ const onSubmit = (createUsers, user) => {
       user,
     }));
 
-    createUsers(data.project, proccessedData);
+    createUsers(data.project, proccessedData, next);
   };
 };
 
 const UserEnrolmentModal = props => {
-  const { userEnrolmentModal: { show }, toggleModal, createProjectUsers, profile: { pk } } = props;
+  const {
+    userEnrolmentModal: { show },
+    toggleModal,
+    createProjectUsers,
+    profile: { pk },
+    fetchAllProjectUsers,
+  } = props;
 
   return (
     <Modal show={show} onHide={toggleModal}>
       <Modal.Header>
         <Modal.Title>User enrollment form</Modal.Title>
       </Modal.Header>
-      <ModalReqForm onSubmit={onSubmit(createProjectUsers, pk)} />
+      <ModalReqForm onSubmit={onSubmit(createProjectUsers, pk, fetchAllProjectUsers)} />
     </Modal>
   );
 };
@@ -43,7 +49,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     toggleModal: () => dispatch(toggleModal()),
-    createProjectUsers: (projectId, data) => createProjectUsers(dispatch, projectId, data),
+    createProjectUsers: (projectId, data, next) =>
+      createProjectUsers(dispatch, projectId, data, next),
+    fetchAllProjectUsers: () => fetchAllProjectUsers(dispatch),
   };
 };
 
