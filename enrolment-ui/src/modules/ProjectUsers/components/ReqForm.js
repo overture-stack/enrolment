@@ -20,8 +20,6 @@ class ReqForm extends Component {
     super(props);
     this.onSubmit = this.onSubmit.bind(this);
 
-    // Check if
-
     // Load either the project or complete project user if available
     this.loadProjectAndProjectUser();
 
@@ -65,7 +63,6 @@ class ReqForm extends Component {
   }
 
   loadProjectAndProjectUser() {
-    const path = this.props.match.path;
     const projectId = this.props.match.params.projectId;
     const userId = this.props.match.params.userId;
 
@@ -109,7 +106,11 @@ class ReqForm extends Component {
 
     const disabled = path.indexOf('view') !== -1;
 
-    if (projectUser.data.status == 'Pending' && path.indexOf('register') !== -1)
+    if (
+      projectUser.hasFetched &&
+      projectUser.data.status !== 'Invited' &&
+      path.indexOf('register') !== -1
+    )
       return this.renderAlreadyRegistered();
 
     return (
