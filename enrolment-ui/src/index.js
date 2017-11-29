@@ -39,11 +39,7 @@ render(
             <Switch>
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
               <PrivateRoute exact path="/register/project" component={RegisterProject} />
-              <PrivateRoute
-                exact
-                path="/view/project-application/:id"
-                component={RegisterProject}
-              />
+              <PrivateRoute exact path="/view/project/:id" component={RegisterProject} />
               <PrivateRoute
                 exact
                 path="/register/user/:projectId/:userId"
@@ -51,7 +47,7 @@ render(
               />
               <PrivateRoute
                 exact
-                path="/view/project-user-application/:projectId/:userId"
+                path="/view/project-user/:projectId/:userId"
                 component={RegisterUser}
               />
               <PrivateRoute exact path="/projects" component={Projects} />
