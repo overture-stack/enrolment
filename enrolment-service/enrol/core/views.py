@@ -1,6 +1,7 @@
 import os
 import json
 from core.models import Applications, Projects, ProjectUsers
+from django.contrib.auth.models import User
 from django.conf import settings
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
@@ -268,6 +269,35 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
         self.perform_create(serializer)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    def perform_update(self, serializer):
+        # Save the data
+        project_user = serializer.save()
+        project = Projects.objects.get(pk=project_user.project.id)
+
+        # Send Notification
+        if project_user.status == 1:
+            email = {
+                'to': RESOURCE_ADMIN_EMAIL,
+                'cc': project.user.email,
+                'data': project_user,
+                'subject': 'Project User Registration Recieved from {} {}'.format(
+                    project_user.firstname, project_user.lastname),
+                'message': '{} {} has completed their registration and is ready to be activated by IT'.format(
+                    project_user.firstname, project_user.lastname)
+            }
+            self.send_update_notification(email)
+        elif project_user.status == 2:
+            email = {
+                'to': project_user.daco_email,
+                'cc': project.user.email,
+                'data': project_user,
+                'subject': 'Project User {} {} has been activated'.format(
+                    project_user.firstname, project_user.lastname),
+                'message': '{} {} has been activated by IT and is ready to use Collab'.format(
+                    project_user.firstname, project_user.lastname)
+            }
+            self.send_update_notification(email)
+
     def perform_create(self, serializer):
         # Save the data
         project_users = serializer.save()
@@ -289,6 +319,18 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
             msg['To'] = project_user.daco_email
             msg['From'] = SMTP_FROM
             SMTP_SERVER.send_message(msg)
+
+    def send_update_notification(self, email):
+        msg = MIMEText(
+            Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/notification.html')).read()).render(
+                message=email['message']
+            ), "html"
+        )
+        msg['Subject'] = email['subject']
+        msg['To'] = email['to']
+        msg['Cc'] = email['cc']
+        msg['From'] = SMTP_FROM
+        SMTP_SERVER.send_message(msg)
 
 
 @api_view(['GET'])
