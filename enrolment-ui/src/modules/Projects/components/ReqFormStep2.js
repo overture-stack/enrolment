@@ -10,8 +10,8 @@ const ReqFormStep2 = props => {
         <div className="col-md-12">
           <h2 className="fs-title">Collaboratory Project</h2>
           <h3 className="fs-subtitle">
-            Please provide a name and short description of the research project you are requesting
-            Collaboratory’s compute resources for. Maximum 250 characters.
+            Please provide a title and brief description of the cancer research project you are
+            requesting Collaboratory’s compute resources and data access for. Maximum 250 words.
           </h3>
         </div>
       </div>
