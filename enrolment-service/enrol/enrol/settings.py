@@ -26,6 +26,7 @@ SECRET_KEY = '9bqg!2qdxnpy#@&i7m5p3@3002drp-v^gbled@8oz%nc7jxb(^'
 DEBUG = os.environ.get('DEBUG', False)
 
 ALLOWED_HOSTS = [
+    'enrolment.cancercollaboratory.org',
     'local.enrol.cancercollaboratory.org',
     'django',
     'localhost',
