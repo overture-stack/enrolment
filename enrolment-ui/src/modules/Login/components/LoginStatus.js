@@ -11,7 +11,7 @@ const LoginStatus = props => {
       {error && (
         <div
           className="alert alert-danger"
-          dangerouslySetInnerHTML={{ __html: error.detail || error }}
+          dangerouslySetInnerHTML={{ __html: error.details || error }}
         />
       )}
     </div>
