@@ -23,7 +23,7 @@ class Login extends Component {
     };
 
     return (
-      <div className="login">
+      <div className="login container">
         <div className="login-logo-container">
           <img src={logo} className="login-logo" alt="logo" />
         </div>
