@@ -93,7 +93,7 @@ export function createGoogleLoginFunctions(dispatch) {
 * Reducer
 */
 const _defaultState = {
-  loading: false,
+  loading: true,
   isLoggedIn: false,
   error: null,
 };

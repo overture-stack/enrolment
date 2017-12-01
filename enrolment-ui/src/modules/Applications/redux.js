@@ -92,7 +92,7 @@ export function submitApplication(dispatch, data, next = () => null) {
 
 // Applications
 const _defaultState = {
-  loading: false,
+  loading: true,
   hasApplications: false,
   data: [],
   error: null,
@@ -126,7 +126,7 @@ export const reducer = (state = _defaultState, action) => {
 
 // Single Application
 const _defaultApplicationState = {
-  loading: false,
+  loading: true,
   data: null,
   error: null,
   hasFetched: false,

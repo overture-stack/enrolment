@@ -186,7 +186,7 @@ export function denyProject(dispatch, id, next = () => null) {
 
 // Projects
 const _defaultState = {
-  loading: false,
+  loading: true,
   hasProjects: false,
   data: [],
   error: null,
@@ -221,7 +221,7 @@ export const reducer = (state = _defaultState, action) => {
 
 // Single Project
 const _defaultProjectState = {
-  loading: false,
+  loading: true,
   data: null,
   error: null,
   hasFetched: false,

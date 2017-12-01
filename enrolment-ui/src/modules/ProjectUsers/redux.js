@@ -176,7 +176,7 @@ export function dacoCheck(dispatch, email) {
 
 // Project Users
 const _defaultState = {
-  loading: false,
+  loading: true,
   hasProjectUsers: false,
   data: [],
   error: null,
@@ -208,7 +208,7 @@ export const reducer = (state = _defaultState, action) => {
 
 // Single Project Users
 const _defaultSingleState = {
-  loading: false,
+  loading: true,
   data: {},
   error: null,
   hasFetched: false,

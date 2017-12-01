@@ -87,7 +87,7 @@ export function fetchProfile(dispatch, isAdmin, next = () => null) {
 * Reducer
 */
 const _defaultState = {
-  loading: false,
+  loading: true,
   hasProfile: false,
   data: null,
   error: null,
