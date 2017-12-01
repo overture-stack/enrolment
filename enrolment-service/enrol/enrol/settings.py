@@ -186,6 +186,24 @@ ICGC_TOKEN = os.environ.get('ICGC_TOKEN', '')
 ICGC_TOKEN_SECRET = os.environ.get('ICGC_TOKEN_SECRET', '')
 
 # SMTP
-SMTP_URL = os.environ.get('SMTP_URL', '')
-SMTP_FROM = os.environ.get('SMTP_FROM', '')
+EMAIL_HOST = os.environ.get('SMTP_URL', '')
+DEFAULT_FROM_EMAIL = os.environ.get('SMTP_FROM', '')
 RESOURCE_ADMIN_EMAIL = os.environ.get('RESOURCE_ADMIN_EMAIL', '')
+
+
+# LOGGING
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+        },
+    },
+}

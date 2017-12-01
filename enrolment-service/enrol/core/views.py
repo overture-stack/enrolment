@@ -1,5 +1,6 @@
 import os
 import json
+import logging
 from core.models import Applications, Projects, ProjectUsers
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -18,12 +19,14 @@ from rest_framework.viewsets import ModelViewSet
 from email.mime.text import MIMEText
 from core.serializers import ProjectsSerializer, ProjectSerializer, ApplicationSerializer, ProjectUsersSerializer, UserDetailsSerializer
 from core.client.daco import DacoClient, DacoException
-import smtplib
+from django.core.mail import EmailMultiAlternatives
+from smtplib import SMTPException
 
 schema_view = get_swagger_view(title='Enrol API')
-SMTP_SERVER = smtplib.SMTP(settings.SMTP_URL, 25)
-SMTP_FROM = settings.SMTP_FROM
 RESOURCE_ADMIN_EMAIL = settings.RESOURCE_ADMIN_EMAIL
+
+# Get an instance of a logger
+logger = logging.getLogger('django')
 
 
 class CreateRetrieveViewSet(mixins.CreateModelMixin,
@@ -204,22 +207,28 @@ class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
             'Project Description': project.project_description
         }
 
-        # Send email to request admin review
-        msg = MIMEText(
-            Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/resource_request.html')).read()).render(
-                resource_type="Project Application",
-                data=data.items(),
-                link='view/project-application/{}'.format(
-                    application.id)
-            ), "html"
+        html_msg = Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/resource_request.html')).read()).render(
+            resource_type="Project Application",
+            data=data.items(),
+            link='view/project-application/{}'.format(
+                application.id)
         )
-        msg['Subject'] = 'Collab - New Project from {} {}: {}'.format(
-            application.firstname, application.lastname, project.project_name)
-        msg['To'] = RESOURCE_ADMIN_EMAIL
-        msg['Cc'] = application.daco_email
-        msg['From'] = SMTP_FROM
 
-        SMTP_SERVER.send_message(msg)
+        text_msg = 'A new Project Application has been recieved from {} {} for the project titled: {}'.format(
+            application.firstname, application.lastname, project.project_name)
+
+        # Send email to request admin review and cc applicant
+        email_message = EmailMultiAlternatives(
+            subject='Collab - New Project from {} {}: {}'.format(
+                application.firstname, application.lastname, project.project_name),
+            body=text_msg,
+            to=[RESOURCE_ADMIN_EMAIL, ],
+            cc=[application.daco_email, ],
+        )
+
+        email_message.attach_alternative(html_msg, "text/html")
+
+        send_email(email_message)
 
 
 class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
@@ -306,31 +315,48 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
         for project_user in project_users:
             project = project_user.project
 
-            msg = MIMEText(
-                Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/user_request.html')).read()).render(
-                    id=project_user.id,
-                    name=project.project_name,
-                    project_id=project.id,
-                    pi=project.pi
-                ), "html"
+            text_msg = 'Your Principal Investigator {pi} has requested to enroll you to the Collaboratory'\
+                ' project {name}. Please complete the online form after signing in with your DACO account:' \
+                ' http://local.enrol.cancercollaboratory.org:3000/register-user/{project_id}/{id}/'.format(id=project_user.id,
+                                                                                                           name=project.project_name,
+                                                                                                           project_id=project.id,
+                                                                                                           pi=project.pi)
+
+            html_msg = Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/user_request.html')).read()).render(
+                id=project_user.id,
+                name=project.project_name,
+                project_id=project.id,
+                pi=project.pi
             )
-            msg['Subject'] = 'Collaboratory - Enrollment to project ' + \
-                project.project_name
-            msg['To'] = project_user.daco_email
-            msg['From'] = SMTP_FROM
-            SMTP_SERVER.send_message(msg)
+
+            email_message = EmailMultiAlternatives(
+                subject='Collaboratory - Enrollment to project {}'.format(
+                    project.project_name),
+                body=text_msg,
+                to=[project_user.daco_email, ],
+            )
+
+            email_message.attach_alternative(html_msg, "text/html")
+
+            send_email(email_message)
 
     def send_update_notification(self, email):
-        msg = MIMEText(
-            Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/notification.html')).read()).render(
-                message=email['message']
-            ), "html"
+        html_msg = Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/notification.html')).read()).render(
+            message=email['message']
         )
-        msg['Subject'] = email['subject']
-        msg['To'] = email['to']
-        msg['Cc'] = email['cc']
-        msg['From'] = SMTP_FROM
-        SMTP_SERVER.send_message(msg)
+
+        text_msg = email['message']
+
+        email_message = EmailMultiAlternatives(
+            subject=email['subject'],
+            body=text_msg,
+            to=[email['to'], ],
+            cc=[email['cc'], ],
+        )
+
+        email_message.attach_alternative(html_msg, "text/html")
+
+        send_email(email_message)
 
 
 @api_view(['GET'])
@@ -369,3 +395,11 @@ def SocialViewSet(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
     except ProjectUsers.DoesNotExist:
         raise Http404("No Users matches the given query.")
+
+
+def send_email(email_message):
+    logger.debug(email_message)
+    try:
+        email_message.send()
+    except Exception as e:
+        logger.error('Error: Unable to send email: ' + str(e))
