@@ -2,7 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 const PTProjectDetails = props => {
-  const { project_description = '', pi = '' } = props.project.data || {};
+  const { project: { loading, data } } = props;
+
+  if (loading) return false;
+
+  const { project_description = '', pi = '' } = data;
 
   return (
     <div className="container">

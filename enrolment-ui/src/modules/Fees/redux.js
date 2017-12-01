@@ -33,7 +33,7 @@ export function getFees(dispatch) {
 * Reducer
 */
 const _defaultState = {
-  loading: false,
+  loading: true,
   data: null,
   error: null,
 };

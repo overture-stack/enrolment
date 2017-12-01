@@ -12,7 +12,9 @@ import { UserRequests } from '../../ProjectUsers';
 const Requests = props => {
   const { t, profile, projects } = props;
 
-  const hasApprovedProjects = !!_.find(projects.results, project =>
+  if (projects.loading) return false;
+
+  const hasApprovedProjects = !!_.find(projects.data.results, project =>
     _.includes(project.status, 'Approved'),
   );
 
@@ -54,7 +56,7 @@ Requests.displayName = 'Requests';
 const mapStateToProps = state => {
   return {
     profile: state.profile,
-    projects: state.projects.data,
+    projects: state.projects,
   };
 };
 
