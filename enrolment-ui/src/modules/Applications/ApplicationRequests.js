@@ -44,43 +44,45 @@ const ApplicationRequests = props => {
           </Trans>
         </thead>
         <tbody>
-          {projects.results.map(project => {
-            const application = _.find(applications.results, { project: project.id });
+          {projects.results
+            ? projects.results.map(project => {
+                const application = _.find(applications.results, { project: project.id });
 
-            // In case there is an oprhaned project with no application
-            if (!application) return false;
+                // In case there is an oprhaned project with no application
+                if (!application) return false;
 
-            return (
-              <tr key={application.id}>
-                <td>
-                  <Link to={`/view/project/${application.id}`}>
-                    {_.truncate(application.id, { length: 10, omission: '...' })}
-                  </Link>
-                </td>
-                <td>{project.project_name}</td>
-                <td>{project.createdDate}</td>
-                <td>{project.updatedDate}</td>
-                <td>{project.status}</td>
-                {profile.is_staff ? (
-                  <td>
-                    {project.status === 'Pending' && (
-                      <div className="admin-actions">
-                        <a onClick={() => approveProject(project.id, fetchNewData)}>
-                          {t('RequestTable.action.approve')}
-                        </a>
-                        <a onClick={() => denyProject(project.id, fetchNewData)}>
-                          {t('RequestTable.action.deny')}
-                        </a>
-                      </div>
-                    )}
-                    {project.status !== 'Pending' ? (
-                      <span>{t('RequestTable.action.none')}</span>
+                return (
+                  <tr key={application.id}>
+                    <td>
+                      <Link to={`/view/project/${application.id}`}>
+                        {_.truncate(application.id, { length: 10, omission: '...' })}
+                      </Link>
+                    </td>
+                    <td>{project.project_name}</td>
+                    <td>{project.createdDate}</td>
+                    <td>{project.updatedDate}</td>
+                    <td>{project.status}</td>
+                    {profile.is_staff ? (
+                      <td>
+                        {project.status === 'Pending' && (
+                          <div className="admin-actions">
+                            <a onClick={() => approveProject(project.id, fetchNewData)}>
+                              {t('RequestTable.action.approve')}
+                            </a>
+                            <a onClick={() => denyProject(project.id, fetchNewData)}>
+                              {t('RequestTable.action.deny')}
+                            </a>
+                          </div>
+                        )}
+                        {project.status !== 'Pending' ? (
+                          <span>{t('RequestTable.action.none')}</span>
+                        ) : null}
+                      </td>
                     ) : null}
-                  </td>
-                ) : null}
-              </tr>
-            );
-          })}
+                  </tr>
+                );
+              })
+            : null}
         </tbody>
       </table>
     </div>
