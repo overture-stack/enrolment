@@ -44,9 +44,10 @@ const ApplicationRequests = props => {
           </Trans>
         </thead>
         <tbody>
-          {projects.results
-            ? projects.results.map(project => {
-                const application = _.find(applications.results, { project: project.id });
+          {projects.loading || applications.loading
+            ? null
+            : projects.data.results.map(project => {
+                const application = _.find(applications.data.results, { project: project.id });
 
                 // In case there is an oprhaned project with no application
                 if (!application) return false;
@@ -81,8 +82,7 @@ const ApplicationRequests = props => {
                     ) : null}
                   </tr>
                 );
-              })
-            : null}
+              })}
         </tbody>
       </table>
     </div>
@@ -93,9 +93,9 @@ ApplicationRequests.displayName = 'ApplicationRequests';
 
 const mapStateToProps = state => {
   return {
-    applications: state.applications.data,
+    applications: state.applications,
     profile: state.profile.data,
-    projects: state.projects.data,
+    projects: state.projects,
   };
 };
 

@@ -19,6 +19,8 @@ const onSubmit = (createUsers, user, projectId, next) => {
 const PTUserEnrolment = props => {
   const { createProjectUsers, profile: { pk }, project, fetchAllProjectUsers } = props;
 
+  if (project.loading) return false;
+
   return (
     <div className="container">
       <div className="inner">
@@ -39,7 +41,7 @@ const PTUserEnrolment = props => {
           <div className="row tab-req-form">
             <div className="col-md-8">
               <TabReqForm
-                onSubmit={onSubmit(createProjectUsers, pk, project.id, fetchAllProjectUsers)}
+                onSubmit={onSubmit(createProjectUsers, pk, project.data.id, fetchAllProjectUsers)}
               />
             </div>
           </div>
@@ -54,7 +56,7 @@ PTUserEnrolment.displayName = 'PTUserEnrolment';
 const mapStateToProps = state => {
   return {
     profile: state.profile.data,
-    project: state.project.data,
+    project: state.project,
   };
 };
 

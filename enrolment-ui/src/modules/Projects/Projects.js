@@ -82,13 +82,15 @@ class Projects extends Component {
                   onChange={this.handleProjectSelect}
                 >
                   <option value="">Select a Project</option>
-                  {projects.data.results
-                    .filter(project => project.status === 'Approved')
-                    .map(project => (
-                      <option value={project.id} key={project.id}>
-                        {project.project_name}
-                      </option>
-                    ))}
+                  {projects.loading
+                    ? null
+                    : projects.data.results
+                        .filter(project => project.status === 'Approved')
+                        .map(project => (
+                          <option value={project.id} key={project.id}>
+                            {project.project_name}
+                          </option>
+                        ))}
                 </select>
               </div>
             </div>
