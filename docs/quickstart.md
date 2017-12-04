@@ -114,7 +114,7 @@ As mentioned at the top of this doc, Google API credentials need to be setup in 
 ### Register Authorized JavaScript origins
 
 1. Go to your Google Cloud console credentials page and click your application link
-2. Add your domain information under Authorized JavaScript origins, in our case for this demo you would simply add http://localhost
+2. Add your domain information under Authorized JavaScript origins, in our case for this demo you would simply add `http://localhost`
 
 ## Step 4 - Run
 
