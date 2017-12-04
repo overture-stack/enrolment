@@ -27,7 +27,7 @@ const PTUserEnrolment = props => {
         <div className="container">
           <div className="row">
             <div className="col-md-12">
-              <h2>User Enrollment</h2>
+              <h2>User Enrolment</h2>
             </div>
           </div>
           <div className="row">
