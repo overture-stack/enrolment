@@ -202,10 +202,33 @@ class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
         project = Projects.objects.get(pk=application.project.id)
 
         data = {
-            **serializer.data,
+            'First Name': application.firstname,
+            'Last Name': application.lastname,
+            'Position': application.position,
+            'Institution': application.institution_name,
+            'Institution Email': application.institution_email,
+            'Phone Number': application.phone,
+            'Address': application.street_address,
+            'City': application.city,
+            'Province/State': application.region,
+            'Zip/Postal Code': application.postal_code,
+            'Country': application.country,
+            'DACO email': application.daco_email,
+            'Application Date': application.createdDate,
             'Project Name': project.project_name,
             'Project Description': project.project_description
         }
+
+        if (application.billing_contact):
+            data = {
+                **data,
+                'Billing Contact': application.billing_contact.contact_name,
+                'Billing Address': application.billing_contact.street_address,
+                'Billing City': application.billing_contact.city,
+                'Billing Province/State': application.billing_contact.region,
+                'Billing Country': application.billing_contact.country,
+                'Billing Zip/Postal Code': application.billing_contact.postal_code
+            }
 
         html_msg = Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/resource_request.html')).read()).render(
             resource_type="Project Application",
