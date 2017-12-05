@@ -28,7 +28,7 @@ const RegisterUser = props => {
   );
 
   const modalText = {
-    title: 'User Enrollment Request',
+    title: 'User Enrolment Request',
     body:
       'Thanks! Your application has been received. A notification has been sent to your PI updating them as well as our IT department alerting them to activate your user account.',
   };
