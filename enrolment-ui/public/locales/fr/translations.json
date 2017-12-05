@@ -29,7 +29,7 @@
   },
   "StaffActions": {
     "register": "Enregistrer le projet",
-    "enroll": "Inscription des utilisateurs"
+    "enrol": "Inscription des utilisateurs"
   },
   "ApplicationRequests": {
     "title": "Demandes d'application"

@@ -21,7 +21,7 @@ const StaffActions = props => {
       </Link>
       {hasApprovedProjects && !profile.is_staff ? (
         <Button href="#" onClick={toggleModal}>
-          {t('StaffActions.enroll')}
+          {t('StaffActions.enrol')}
         </Button>
       ) : null}
     </div>

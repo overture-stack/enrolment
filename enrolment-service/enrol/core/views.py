@@ -315,7 +315,7 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
         for project_user in project_users:
             project = project_user.project
 
-            text_msg = 'Your Principal Investigator {pi} has requested to enroll you to the Collaboratory'\
+            text_msg = 'Your Principal Investigator {pi} has requested to enrol you to the Collaboratory'\
                 ' project {name}. Please complete the online form after signing in with your DACO account:' \
                 ' http://local.enrol.cancercollaboratory.org:3000/register-user/{project_id}/{id}/'.format(id=project_user.id,
                                                                                                            name=project.project_name,
@@ -330,7 +330,7 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
             )
 
             email_message = EmailMultiAlternatives(
-                subject='Collaboratory - Enrollment to project {}'.format(
+                subject='Collaboratory - Enrolment to project {}'.format(
                     project.project_name),
                 body=text_msg,
                 to=[project_user.daco_email, ],
