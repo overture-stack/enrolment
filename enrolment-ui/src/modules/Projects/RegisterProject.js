@@ -29,7 +29,7 @@ const RegisterProject = props => {
   const modalText = {
     title: 'Application',
     body:
-      'Thanks! Your Application has been received. A confirmation email was sent to your provided email. We will contact you shortly with the results of your application.',
+      'Thanks! Your Application has been received. A confirmation email was sent to your DACO email. We will contact you shortly with the results of your application.',
   };
 
   return (
