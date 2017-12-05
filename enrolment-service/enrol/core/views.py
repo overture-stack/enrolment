@@ -219,7 +219,7 @@ class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
 
         # Send email to request admin review and cc applicant
         email_message = EmailMultiAlternatives(
-            subject='Collab - New Project from {} {}: {}'.format(
+            subject='Collaboratory - New Project from {} {}: {}'.format(
                 application.firstname, application.lastname, project.project_name),
             body=text_msg,
             to=[RESOURCE_ADMIN_EMAIL, ],
