@@ -1,13 +1,33 @@
 import React from 'react';
 import { translate } from 'react-i18next';
+import { getOneConfig } from '../../../config';
 
 const TopBar = props => {
   const { i18n } = props;
+  const { multiLingual } = getOneConfig('multiLingual');
 
-  const activeLanguageClass = (currentLang, button) => {
-    if (currentLang === button) return 'btn btn-primary btn-toggles active';
+  const renderLanguagePicker = () => {
+    const activeLanguageClass = (currentLang, button) => {
+      if (currentLang === button) return 'btn btn-primary btn-toggles active';
+      return 'btn btn-primary btn-toggles';
+    };
 
-    return 'btn btn-primary btn-toggles';
+    return (
+      <div className="lang-toggle">
+        <button
+          className={activeLanguageClass(i18n.language, 'en')}
+          onClick={() => i18n.changeLanguage('en')}
+        >
+          EN
+        </button>
+        <button
+          className={activeLanguageClass(i18n.language, 'fr')}
+          onClick={() => i18n.changeLanguage('fr')}
+        >
+          FR
+        </button>
+      </div>
+    );
   };
 
   return (
@@ -31,20 +51,7 @@ const TopBar = props => {
           Collaboratory Console
         </a>
       </div>
-      <div className="lang-toggle">
-        <button
-          className={activeLanguageClass(i18n.language, 'en')}
-          onClick={() => i18n.changeLanguage('en')}
-        >
-          EN
-        </button>
-        <button
-          className={activeLanguageClass(i18n.language, 'fr')}
-          onClick={() => i18n.changeLanguage('fr')}
-        >
-          FR
-        </button>
-      </div>
+      {multiLingual ? renderLanguagePicker() : null}
     </div>
   );
 };
