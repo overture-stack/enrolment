@@ -33,7 +33,7 @@ const PTUserEnrolment = props => {
           <div className="row">
             <div className="col-md-12">
               <p>
-                In order to enroll a user to your Collaboratory project, the user should have a DACO
+                In order to enrol a user to your Collaboratory project, the user should have a DACO
                 account
               </p>
             </div>

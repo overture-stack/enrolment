@@ -30,7 +30,7 @@ const UserEnrolmentModal = props => {
   return (
     <Modal show={show} onHide={toggleModal}>
       <Modal.Header>
-        <Modal.Title>User enrollment form</Modal.Title>
+        <Modal.Title>Enrol Users</Modal.Title>
       </Modal.Header>
       <ModalReqForm onSubmit={onSubmit(createProjectUsers, pk, fetchAllProjectUsers)} />
     </Modal>

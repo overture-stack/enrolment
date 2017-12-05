@@ -13,10 +13,10 @@ const SuccessMessage = props => {
 };
 
 const ErrorMessage = props => {
-  const { message } = props;
+  const { error } = props;
   return (
     <div className="error">
-      <div className="alert alert-danger">{message}</div>
+      <div className="alert alert-danger" dangerouslySetInnerHTML={{ __html: error }} />
     </div>
   );
 };
@@ -36,7 +36,7 @@ const TabReqForm = props => {
           validate={rules.required}
         />
       )}
-      {error ? <ErrorMessage message={error.response.statusText} /> : null}
+      {error ? <ErrorMessage error={error} /> : null}
       {!submitSuccess ? (
         <button type="submit" className="action-button" disabled={pristine || invalid}>
           Submit

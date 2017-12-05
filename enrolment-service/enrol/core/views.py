@@ -202,10 +202,33 @@ class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
         project = Projects.objects.get(pk=application.project.id)
 
         data = {
-            **serializer.data,
+            'First Name': application.firstname,
+            'Last Name': application.lastname,
+            'Position': application.position,
+            'Institution': application.institution_name,
+            'Institution Email': application.institution_email,
+            'Phone Number': application.phone,
+            'Address': application.street_address,
+            'City': application.city,
+            'Province/State': application.region,
+            'Zip/Postal Code': application.postal_code,
+            'Country': application.country,
+            'DACO email': application.daco_email,
+            'Application Date': application.createdDate,
             'Project Name': project.project_name,
             'Project Description': project.project_description
         }
+
+        if (application.billing_contact):
+            data = {
+                **data,
+                'Billing Contact': application.billing_contact.contact_name,
+                'Billing Address': application.billing_contact.street_address,
+                'Billing City': application.billing_contact.city,
+                'Billing Province/State': application.billing_contact.region,
+                'Billing Country': application.billing_contact.country,
+                'Billing Zip/Postal Code': application.billing_contact.postal_code
+            }
 
         html_msg = Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/resource_request.html')).read()).render(
             resource_type="Project Application",
@@ -219,7 +242,7 @@ class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
 
         # Send email to request admin review and cc applicant
         email_message = EmailMultiAlternatives(
-            subject='Collab - New Project from {} {}: {}'.format(
+            subject='Collaboratory - New Project from {} {}: {}'.format(
                 application.firstname, application.lastname, project.project_name),
             body=text_msg,
             to=[RESOURCE_ADMIN_EMAIL, ],
@@ -315,7 +338,7 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
         for project_user in project_users:
             project = project_user.project
 
-            text_msg = 'Your Principal Investigator {pi} has requested to enroll you to the Collaboratory'\
+            text_msg = 'Your Principal Investigator {pi} has requested to enrol you to the Collaboratory'\
                 ' project {name}. Please complete the online form after signing in with your DACO account:' \
                 ' http://local.enrol.cancercollaboratory.org:3000/register-user/{project_id}/{id}/'.format(id=project_user.id,
                                                                                                            name=project.project_name,
@@ -330,7 +353,7 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
             )
 
             email_message = EmailMultiAlternatives(
-                subject='Collaboratory - Enrollment to project {}'.format(
+                subject='Collaboratory - Enrolment to project {}'.format(
                     project.project_name),
                 body=text_msg,
                 to=[project_user.daco_email, ],
