@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  Simple UI and workflow to manage projects and users enrolment for your cloud environment
+  Simple UI and workflow to manage projects and users enrolment for any cloud environment
 </p>
 
 
