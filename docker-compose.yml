@@ -17,6 +17,7 @@ services:
       - "8000"
     volumes: 
       - api-data:/data/api
+      - ./presisted_data/logs/django:/var/log/gunicorn
     env_file: .env
     entrypoint: /entrypoint.sh 
     depends_on:
@@ -38,6 +39,7 @@ services:
         source: api-data
         target: /data/api
         read_only: true
+      - ./presisted_data/logs/nginx:/var/log/nginx
     depends_on:
       - web
       - api

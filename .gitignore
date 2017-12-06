@@ -111,3 +111,6 @@ notes-*.txt
 
 # Docker presistent store
 presisted_data
+
+# DB Dumps
+postgres/dumps
