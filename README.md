@@ -14,7 +14,7 @@
 
 - [Introduction](#introduction)
 - [Features](#features)
-- [Tech Stack](#techstack)
+- [Tech Stack](#tech-stack)
 - [Quick Start](#quickstart)
   - [Step 1 - Config Files](#step-1---config-files)
   - [Step 2 - Docker Compose](#step-2---docker-compose)
