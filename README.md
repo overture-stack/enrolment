@@ -10,6 +10,10 @@
 - [Features](#features)
 - [Tech Stack](#techstack)
 - [Quick Start](#quickstart)
+  - [Step 1 - Config Files](#step-1---config-files)
+  - [Step 2 - Docker Compose](#step-2---docker-compose)
+  - [Step 3 - Social Application Config (Django Admin)](#step-3---social-application-config-django-admin)
+  - [Step 4 - Run](#step-4---run)
 
 ## Introduction
 
