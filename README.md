@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  Simple UI and workflow to manage projects and users enrolment for any cloud environment
+  Simple UI and workflow to manage projects and users enrolment for any cloud environment.
 </p>
 
 
@@ -25,7 +25,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-The app was created too replace PDF forms were previously sent to request projects (tenants) and users creation to our OpenStack cloud. It was designed to be simple and seamlessly connect to our existing ticketing system. To prevent security challenges and ensure all applications go through a documented approval workflows, the system does not actually create projects and users directly into OpenStack but create tickets processed by our team. This allow for greater customization (such as variations from default quotas) and provide us with the ability to ask more questions if necessary.
+Designed to be simple and seamlessly connect to our existing workflow, the app was created to replace PDF forms previously used to request projects (tenants) and users creation into our OpenStack cloud. To prevent security challenges and ensure all applications go through a documented approval workflows, the system does not actually create projects and users directly into OpenStack but create tickets processed by our team. This allow for greater customization (such as variations from default quotas) and provide us with the ability to ask more questions if necessary.
 
 The system can be connected to [DACO](http://icgc.org/daco) to enforce permissions before project and users can be created, this verification step is optional since it is very specific to our domain.
 
