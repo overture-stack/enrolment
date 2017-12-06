@@ -1,8 +1,14 @@
 <h1 align="center"> Enrolment </h1> <br>
 
 <p align="center">
+    <img alt="GitPoint" title="GitPoint" src="https://github.com/overture-stack/enrolment/raw/feature/readme/docs/screenshot-register-project.png" width="480">
+</p>
+
+<p align="center">
   Simple UI and workflow to manage projects and users enrolment for your cloud environment
 </p>
+
+
 
 ## Table of Contents
 
