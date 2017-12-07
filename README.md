@@ -1,7 +1,7 @@
 <h1 align="center"> Enrolment </h1> <br>
 
 <p align="center">
-    <img alt="GitPoint" title="GitPoint" src="https://github.com/overture-stack/enrolment/raw/feature/readme/docs/screenshot-register-project.png" width="480">
+    <img alt="GitPoint" title="GitPoint" src="https://github.com/overture-stack/enrolment/blob/develop/docs/screenshot-register-project.png?raw=true" width="480">
 </p>
 
 <p align="center">
