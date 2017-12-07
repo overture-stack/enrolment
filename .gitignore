@@ -114,3 +114,7 @@ presisted_data
 
 # DB Dumps
 postgres/dumps
+
+# SSL
+*.cert
+*.key

@@ -39,6 +39,7 @@ services:
         target: /data/api
         read_only: true
       - ./presisted_data/logs/nginx:/var/log/nginx
+      - ./nginx/ssl:/etc/ssl
     depends_on:
       - web
       - api

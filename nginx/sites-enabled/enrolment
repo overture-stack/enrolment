@@ -8,6 +8,12 @@ server {
     listen 8080;
     listen [::]:8080;
 
+    ssl on;
+    ssl_certificate     /etc/ssl/domain.cert;
+    ssl_certificate_key /etc/ssl/domain.key;
+
+    server_name enrolment.cancercollaboratory.org;
+
     root /data/web/build;
     index index.html;
 
