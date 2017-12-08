@@ -11,8 +11,6 @@
   },
   "Dashboard": {
     "title": "Inscription Collaboratoire",
-    "intro":
-      "Bienvenue sur Collaboratory en ligne Projet / application d'inscription des utilisateurs.",
     "register": "Please click here to <1>Register a project</1>. FRENCH",
     "noRequests": "There are currently no Requests for you to view. FRENCH"
   },

@@ -36,7 +36,6 @@ class Dashboard extends Component {
       <div className="wrapper">
         <div className="inner">
           <h1>{t('Dashboard.title')}</h1>
-          <p>{t('Dashboard.intro')}</p>
           {!applications.hasApplications && !profile.is_staff ? (
             <Trans i18nKey="Dashboard.register" parent={'p'}>
               Please click here to <Link to="register/project">Register a project</Link>.
