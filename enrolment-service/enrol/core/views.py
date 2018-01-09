@@ -340,7 +340,7 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
 
             text_msg = 'Your Principal Investigator {pi} has requested to enrol you to the Collaboratory'\
                 ' project {name}. Please complete the online form after signing in with your DACO account:' \
-                ' http://local.enrol.cancercollaboratory.org:3000/register-user/{project_id}/{id}/'.format(id=project_user.id,
+                ' https://enrolment.cancercollaboratory.org/register-user/{project_id}/{id}/'.format(id=project_user.id,
                                                                                                            name=project.project_name,
                                                                                                            project_id=project.id,
                                                                                                            pi=project.pi)
