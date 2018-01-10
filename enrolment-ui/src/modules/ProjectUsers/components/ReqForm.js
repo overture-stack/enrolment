@@ -52,7 +52,10 @@ class ReqForm extends Component {
     } = this.props;
 
     const d = new Date();
-    const agreementDate = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    const dateNumFormat = n => (n < 10 ? '0' + n : '' + n);
+    const agreementDate = `${d.getFullYear()}-${dateNumFormat(d.getMonth() + 1)}-${dateNumFormat(
+      d.getDate(),
+    )}`;
 
     const dateTaggedData = {
       ...data,
