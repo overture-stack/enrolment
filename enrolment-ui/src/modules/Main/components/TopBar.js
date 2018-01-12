@@ -44,7 +44,7 @@ const TopBar = props => {
         <span className="links"> | </span>
         <a
           className="links"
-          href="https://console.cancercollaboratory.org/horizon/auth/login/?next=/"
+          href="https://console.cancercollaboratory.org"
           target="_blank"
           rel="noopener noreferrer"
         >
