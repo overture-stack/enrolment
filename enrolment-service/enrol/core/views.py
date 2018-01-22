@@ -23,6 +23,7 @@ from django.core.mail import EmailMultiAlternatives
 from smtplib import SMTPException
 
 schema_view = get_swagger_view(title='Enrol API')
+SITE_URL = settings.SITE_URL
 RESOURCE_ADMIN_EMAIL = settings.RESOURCE_ADMIN_EMAIL
 
 # Get an instance of a logger
@@ -340,16 +341,18 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
 
             text_msg = 'Your Principal Investigator {pi} has requested to enrol you to the Collaboratory'\
                 ' project {name}. Please complete the online form after signing in with your DACO account:' \
-                ' https://enrolment.cancercollaboratory.org/register-user/{project_id}/{id}/'.format(id=project_user.id,
-                                                                                                           name=project.project_name,
-                                                                                                           project_id=project.id,
-                                                                                                           pi=project.pi)
+                ' https://{url}/register-user/{project_id}/{id}/'.format(id=project_user.id,
+                                                                         name=project.project_name,
+                                                                         url=SITE_URL,
+                                                                         project_id=project.id,
+                                                                         pi=project.pi)
 
             html_msg = Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/user_request.html')).read()).render(
                 id=project_user.id,
                 name=project.project_name,
                 project_id=project.id,
-                pi=project.pi
+                pi=project.pi,
+                url=SITE_URL
             )
 
             email_message = EmailMultiAlternatives(

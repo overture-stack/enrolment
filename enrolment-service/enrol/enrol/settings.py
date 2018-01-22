@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
@@ -25,8 +24,12 @@ SECRET_KEY = '9bqg!2qdxnpy#@&i7m5p3@3002drp-v^gbled@8oz%nc7jxb(^'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', False)
 
+# Site URL (used in allowed_hosts, emails, etc) - setting here to allow
+# being set in env
+SITE_URL = os.environ.get('SITE_URL', 'enrolment.cancercollaboratory.org')
+
 ALLOWED_HOSTS = [
-    'enrolment.cancercollaboratory.org',
+    SITE_URL,
     'local.enrol.cancercollaboratory.org',
     'django',
     'localhost',
@@ -176,7 +179,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 SITE_ID = 1
-
 
 # DACO (set these in env or however you prefer)
 ICGC_BASE_URL = os.environ.get('ICGC_BASE_URL', '')
