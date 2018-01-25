@@ -31,9 +31,8 @@ const ModalReqForm = props => {
     invalid,
     toggleModal,
     userEnrolmentForm: { submitSuccess, error },
-    projects
+    projects,
   } = props;
-
 
   const projectOptions = projects.results
     .filter(project => project.status === 'Approved')
@@ -49,30 +48,50 @@ const ModalReqForm = props => {
     toggleModal();
   };
 
-  return <form onSubmit={handleSubmit}>
-      {submitSuccess ? <Modal.Body>
+  return (
+    <form onSubmit={handleSubmit}>
+      {submitSuccess ? (
+        <Modal.Body>
           <SuccessMessage />
-        </Modal.Body> : <Modal.Body>
+        </Modal.Body>
+      ) : (
+        <Modal.Body>
           <div className="form-group row">
             <div className="col-md-4">
               <label htmlFor="projectSelector">Project</label>
             </div>
-            <Field name="project" component={RFSelect} bootstrapClass="col-md-6" options={projectOptions} defaultOption="Select a Project" validate={rules.required} />
+            <Field
+              name="project"
+              component={RFSelect}
+              bootstrapClass="col-md-6"
+              options={projectOptions}
+              defaultOption="Select a Project"
+              validate={rules.required}
+            />
           </div>
-          {pristine ? null :
-          <Field component={EmailList} label="Users' Daco Email" name="email" validate={rules.required} />
-          }
+          {pristine ? null : (
+            <Field
+              component={EmailList}
+              label="Users' Daco Email"
+              name="email"
+              validate={rules.required}
+            />
+          )}
           {error ? <ErrorMessage error={error} /> : null}
-        </Modal.Body>}
+        </Modal.Body>
+      )}
       <Modal.Footer>
         <button className="action-button" onClick={closeModal}>
           Close
         </button>
-        {!submitSuccess ? <button type="submit" className="action-button" disabled={pristine || invalid}>
+        {!submitSuccess ? (
+          <button type="submit" className="action-button" disabled={pristine || invalid}>
             Submit
-          </button> : null}
+          </button>
+        ) : null}
       </Modal.Footer>
-    </form>;
+    </form>
+  );
 };
 
 const mapStateToProps = state => {
