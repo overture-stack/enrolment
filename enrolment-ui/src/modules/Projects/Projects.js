@@ -19,8 +19,8 @@ class Projects extends Component {
     super(props);
 
     // Get initial data
-    this.fetchNewData = this.fetchNewData.bind(this);
-    this.fetchNewData();
+    this.resetAndFetchNewData = this.resetAndFetchNewData.bind(this);
+    this.resetAndFetchNewData();
 
     // Bind class methods
     this.handleProjectSelect = this.handleProjectSelect.bind(this);
@@ -34,7 +34,9 @@ class Projects extends Component {
     }
   }
 
-  fetchNewData() {
+  resetAndFetchNewData() {
+    this.props.uiSelectProject('');
+    this.props.uiSelectTab(1);
     this.props.fetchProjects();
   }
 
