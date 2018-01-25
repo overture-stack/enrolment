@@ -69,12 +69,14 @@ const ModalReqForm = props => {
               validate={rules.required}
             />
           </div>
-          <Field
-            component={EmailList}
-            label="Users' Daco Email"
-            name="email"
-            validate={rules.required}
-          />
+          {pristine ? null : (
+            <Field
+              component={EmailList}
+              label="Users' Daco Email"
+              name="email"
+              validate={rules.required}
+            />
+          )}
           {error ? <ErrorMessage error={error} /> : null}
         </Modal.Body>
       )}

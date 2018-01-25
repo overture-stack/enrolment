@@ -8,9 +8,7 @@ The goal of this quick start is to get a working application quickly up and runn
 
 3. Both config files (details below) need to be configured before running the initial `docker-compse` build command
 
-
 ---
-
 
 ## Step 1 - Config Files
 
@@ -28,7 +26,12 @@ There are two config template that need to be copied and completed. The first is
 
 #### Required Fields
 
+##### Site
+
+* `SITE_URL` - Setting used for allowed_hosts, email links, etc.
+
 ##### Database
+
 * `DB_NAME` - Setting used to setup Postgres Container
 * `DB_USER` - Setting used to setup Postgres Container
 * `DB_PASS` - Setting used to setup Postgres Container
@@ -36,11 +39,13 @@ There are two config template that need to be copied and completed. The first is
 * `DB_PORT` - Setting used to setup Postgres Container
 
 ##### Django Admin User
+
 * `DJANGO_SUPER_USER` - Django admin user name
 * `DJANGO_SUPER_MAIL` - Django admin user's email address
 * `DJANGO_SUPER_PASS` - Password (recommend you delete this after initial setup)
 
 ##### ICGC DACO Credentials
+
 * `ICGC_CLIENT_KEY` - Needed to interact with DACO Service
 * `ICGC_CLIENT_SECRET` - Needed to interact with DACO Service
 * `ICGC_TOKEN` - Needed to interact with DACO Service
@@ -48,39 +53,40 @@ There are two config template that need to be copied and completed. The first is
 * `ICGC_BASE_URL` - Needed to interact with DACO Service
 
 ##### SMPT Setup
+
 * `SMTP_URL` - DNS Server IP or DNS
 * `SMTP_FROM` - Email address to be used as sender for all notifications
 * `RESOURCE_ADMIN_EMAIL` - Email to receive admin notifications (ex. new project created)
 
-
 #### Optional Fields
 
 ##### Debug/Logs
+
 * `DEBUG` - Whether or not to run Django in debug mode
-* `DJANGO_LOG_LEVEL` - Controls the log level coming from Django: 
+* `DJANGO_LOG_LEVEL` - Controls the log level coming from Django:
   * DEBUG: Low level system information for debugging purposes
   * INFO: General system information
   * WARNING: Information describing a minor problem that has occurred.
-  * ERROR: Information describing a major problem that has  occurred.
+  * ERROR: Information describing a major problem that has occurred.
   * CRITICAL: Information describing a critical problem that has occurred.
 
 ### config.template.js –> config.js
+
     enrolment-service/
     enrolment-ui/
-		|__ config/
-	   		|__ docker-assets-config/
-	   	  		|__ assets/
+    	|__ config/
+       		|__ docker-assets-config/
+       	  		|__ assets/
     	      	|__ config/
-	             	|__ config.template.js
+                 	|__ config.template.js
     	         	|__ config.js
     ...
-    
+
 #### Required
 
 * `clientId` - OAuth 2.0 client ID from https://console.cloud.google.com/apis/credentials?project=__YOUR_PROJECT_NAME__
 * `multiLingual` - Enable/Disable language toggle in Application
 * `peFullTerms` - Link to Project Enrolment terms and conditions (shown on last step of application)
-
 
 ## Step 2 - Docker Compose
 
@@ -91,7 +97,6 @@ With the config files completed you are ready to run docker-compose commands to 
 `sudo docker-compose build`
 
 `sudo docker-compose up`
-
 
 ## Step 3 - Social Application Config (Django Admin)
 
@@ -104,11 +109,11 @@ As mentioned at the top of this doc, Google API credentials need to be setup in 
 3. Click the [Social applications](http://localhost:8000/admin/socialaccount/socialapp/) link at the bottom of the screen
 4. Click the `ADD SOCIAL APPLICATION +` button
 5. Complete the fields:
-	* **Provider** - Google
-	* **Name** - Any name you want to give this
-	* **Client id** - From [google credentials](https://console.cloud.google.com/apis/credentials?project=__YOUR_PROJECT_NAME__)
-	* **Secret key** - From [google credentials](https://console.cloud.google.com/apis/credentials?project=__YOUR_PROJECT_NAME__)
-	* **Sites** - Select the only site there and click the arrow that places it into chosen
+   * **Provider** - Google
+   * **Name** - Any name you want to give this
+   * **Client id** - From [google credentials](https://console.cloud.google.com/apis/credentials?project=__YOUR_PROJECT_NAME__)
+   * **Secret key** - From [google credentials](https://console.cloud.google.com/apis/credentials?project=__YOUR_PROJECT_NAME__)
+   * **Sites** - Select the only site there and click the arrow that places it into chosen
 6. `Save`
 
 ### Register Authorized JavaScript origins

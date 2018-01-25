@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
-import { RFInput, rules } from '../../ReduxForm';
+import { Field, reduxForm, change, formValueSelector } from 'redux-form';
+import { RFInput, RFSelectFlat, rules } from '../../ReduxForm';
 
-import { toggleBillingFields } from '../redux';
+import { toggleBillingFields, changeCountry, changeBillingCountry } from '../redux';
 
 class ReqFormStep1 extends Component {
-  renderBillingFields(disabled) {
+  renderBillingFields(disabled, countryRegion, changeBillingCountry, selectedBillingRegion) {
     return (
       <div className="billing-fields">
         <div className="row">
@@ -30,19 +30,20 @@ class ReqFormStep1 extends Component {
         </div>
         <div className="row">
           <Field
-            type="text"
-            name="billing_city"
-            placeholder="Billing City"
-            component={RFInput}
+            name="billing_country"
+            defaultOption="Billing Country"
+            component={RFSelectFlat}
+            options={countryRegion.countries}
             bootstrapClass="col-md-6"
+            onChange={event => changeBillingCountry(event.target.value)}
             validate={rules.required}
             disabled={disabled}
           />
           <Field
-            type="text"
             name="billing_region"
-            placeholder="Billing Province / State"
-            component={RFInput}
+            defaultOption={disabled ? selectedBillingRegion : 'Billing Province / State'}
+            component={RFSelectFlat}
+            options={countryRegion.billingRegionOptions}
             bootstrapClass="col-md-6"
             validate={rules.required}
             disabled={disabled}
@@ -51,8 +52,8 @@ class ReqFormStep1 extends Component {
         <div className="row">
           <Field
             type="text"
-            name="billing_country"
-            placeholder="Billing Country"
+            name="billing_city"
+            placeholder="Billing City"
             component={RFInput}
             bootstrapClass="col-md-6"
             validate={rules.required}
@@ -77,8 +78,12 @@ class ReqFormStep1 extends Component {
       handleSubmit,
       invalid,
       disabled,
-      projectRequestForm: { showBillingFields },
+      projectRequestForm: { showBillingFields, countryRegion },
       toggleBillingFields,
+      changeCountry,
+      changeBillingCountry,
+      selectedRegion,
+      selectedBillingRegion,
     } = this.props;
 
     return (
@@ -164,19 +169,20 @@ class ReqFormStep1 extends Component {
         </div>
         <div className="row">
           <Field
-            type="text"
-            name="city"
-            placeholder="City"
-            component={RFInput}
+            name="country"
+            defaultOption="Country"
+            component={RFSelectFlat}
+            options={countryRegion.countries}
             bootstrapClass="col-md-6"
+            onChange={event => changeCountry(event.target.value)}
             validate={rules.required}
             disabled={disabled}
           />
           <Field
-            type="text"
             name="region"
-            placeholder="Province / State"
-            component={RFInput}
+            defaultOption={disabled ? selectedRegion : 'Province / State'}
+            component={RFSelectFlat}
+            options={countryRegion.regionOptions}
             bootstrapClass="col-md-6"
             validate={rules.required}
             disabled={disabled}
@@ -185,8 +191,8 @@ class ReqFormStep1 extends Component {
         <div className="row">
           <Field
             type="text"
-            name="country"
-            placeholder="Country"
+            name="city"
+            placeholder="City"
             component={RFInput}
             bootstrapClass="col-md-6"
             validate={rules.required}
@@ -210,7 +216,14 @@ class ReqFormStep1 extends Component {
           </div>
         </div>
 
-        {showBillingFields ? this.renderBillingFields(disabled) : null}
+        {showBillingFields
+          ? this.renderBillingFields(
+              disabled,
+              countryRegion,
+              changeBillingCountry,
+              selectedBillingRegion,
+            )
+          : null}
 
         <div className="row">
           <Field
@@ -235,14 +248,27 @@ class ReqFormStep1 extends Component {
   }
 }
 
+const selector = formValueSelector('projectRequestForm');
 const mapStateToProps = state => {
   return {
     projectRequestForm: state.projectRequestForm,
+    selectedRegion: selector(state, 'region'),
+    selectedBillingRegion: selector(state, 'billing_region'),
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
+    changeCountry: country => {
+      // Reset region on country change
+      dispatch(change('projectRequestForm', 'region', ''));
+      dispatch(changeCountry(country));
+    },
+    changeBillingCountry: country => {
+      // Reset region on country change
+      dispatch(change('projectRequestForm', 'billing_region', ''));
+      dispatch(changeBillingCountry(country));
+    },
     toggleBillingFields: () => dispatch(toggleBillingFields()),
   };
 };

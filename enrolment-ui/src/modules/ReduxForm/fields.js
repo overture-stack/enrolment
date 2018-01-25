@@ -101,3 +101,29 @@ export const RFSelect = ({
         (warning && <span className="warning">{warning}</span>))}
   </div>
 );
+
+export const RFSelectFlat = ({
+  name,
+  defaultOption,
+  options,
+  input,
+  bootstrapClass = 'col-md-12',
+  meta: { touched, error, warning },
+  disabled,
+}) => {
+  return (
+    <div className={bootstrapClass}>
+      <select className="form-control" id={name} {...input} disabled={disabled}>
+        <option value="">{defaultOption}</option>
+        {options.map((option, idx) => (
+          <option key={idx} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+      {touched &&
+        ((error && <span className="error">{error}</span>) ||
+          (warning && <span className="warning">{warning}</span>))}
+    </div>
+  );
+};

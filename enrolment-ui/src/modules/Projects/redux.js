@@ -1,3 +1,5 @@
+import countryRegionData from 'country-region-data';
+
 import { emptyActionGenerator, payloadActionGenerator } from '../../redux/helpers';
 import asyncServices from '../../services';
 
@@ -32,6 +34,8 @@ const RESET_FORM = 'projectRequestForm/RESET_FORM';
 const TOGGLE_MODAL = 'projectRequestForm/TOGGLE_MODAL';
 const TOGGLE_BILLING_FIELDS = 'projectRequestForm/TOGGLE_BILLING_FIELDS';
 const SHOW_BILLING_FIELDS = 'projectRequestForm/SHOW_BILLING_FIELDS';
+const CHANGE_COUNTRY = 'projectRequestForm/CHANGE_COUNTRY';
+const CHANGE_BILLING_COUNTRY = 'projectRequestForm/CHANGE_BILLING_COUNTRY';
 
 const fetchProjectsStart = emptyActionGenerator(FETCH_PROJECTS_REQUEST);
 const fetchProjectsSuccess = payloadActionGenerator(FETCH_PROJECTS_SUCCESS);
@@ -63,6 +67,8 @@ export const formReset = emptyActionGenerator(RESET_FORM);
 export const toggleFormModal = emptyActionGenerator(TOGGLE_MODAL);
 export const toggleBillingFields = emptyActionGenerator(TOGGLE_BILLING_FIELDS);
 export const showBillingFields = emptyActionGenerator(SHOW_BILLING_FIELDS);
+export const changeCountry = payloadActionGenerator(CHANGE_COUNTRY);
+export const changeBillingCountry = payloadActionGenerator(CHANGE_BILLING_COUNTRY);
 
 /*
 * Public async thunk actions (mapped to component props)
@@ -292,6 +298,11 @@ const _defaultRequestFormState = {
   step: 1,
   showModal: false,
   showBillingFields: false,
+  countryRegion: {
+    countries: countryRegionData.map(country => country.countryName),
+    regionOptions: [],
+    billingRegionOptions: [],
+  },
 };
 
 export const requestFormReducer = (state = _defaultRequestFormState, action) => {
@@ -308,6 +319,26 @@ export const requestFormReducer = (state = _defaultRequestFormState, action) => 
       return { ...state, showBillingFields: !state.showBillingFields };
     case SHOW_BILLING_FIELDS:
       return { ...state, showBillingFields: true };
+    case CHANGE_COUNTRY:
+      return {
+        ...state,
+        countryRegion: {
+          ...state.countryRegion,
+          regionOptions: countryRegionData
+            .filter(country => country.countryName === action.payload)[0]
+            .regions.map(region => region.name),
+        },
+      };
+    case CHANGE_BILLING_COUNTRY:
+      return {
+        ...state,
+        countryRegion: {
+          ...state.countryRegion,
+          billingRegionOptions: countryRegionData
+            .filter(country => country.countryName === action.payload)[0]
+            .regions.map(region => region.name),
+        },
+      };
     default:
       return state;
   }
