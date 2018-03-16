@@ -17,7 +17,7 @@ services:
       - "8000"
     volumes: 
       - api-data:/data/api
-      - ./presisted_data/logs/django:/var/log/gunicorn
+      - ./persistent_data/logs/django:/var/log/gunicorn
     env_file: .env
     entrypoint: /entrypoint.sh 
     depends_on:
@@ -38,8 +38,9 @@ services:
         source: api-data
         target: /data/api
         read_only: true
-      - ./presisted_data/logs/nginx:/var/log/nginx
-      - ./nginx/ssl:/etc/ssl
+      - ./persistent_data/logs/nginx:/var/log/nginx
+      - /etc/ssl/certs/cancercollaboratory.org.crt:/etc/ssl/domain.cert
+      - /etc/ssl/private/cancercollaboratory.org.key:/etc/ssl/domain.key      
     depends_on:
       - web
       - api
@@ -49,7 +50,7 @@ services:
     image: postgres:10.1
     volumes:
       - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-      - ./presisted_data/postgresql:/var/lib/postgresql/data
+      - ./persistent_data/postgresql:/var/lib/postgresql/data
     env_file: .env
     expose:
       - "5432"
