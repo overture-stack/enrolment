@@ -118,3 +118,10 @@ postgres/dumps
 # SSL
 *.cert
 *.key
+
+# Editor
+.vscode
+
+# Configs
+enrolment-ui/src/config/config.js
+enrolment-ui/docker-assets-config/config/config.js
