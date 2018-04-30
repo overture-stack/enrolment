@@ -39,6 +39,10 @@
   .inner {
     padding: 20px;
 
+    h2 {
+      margin-bottom: 1em;
+    }
+
     textarea {
       width: 400px;
       height: 170px;
@@ -91,4 +95,8 @@
   button {
     float: right;
   }
+}
+
+.project-detail {
+  margin-bottom: 3em;
 }
