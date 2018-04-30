@@ -7,6 +7,8 @@ STATUS_CHOICES = (
     (0, "Pending"),
     (1, "Approved"),
     (2, "Denied"),
+    (3, "Termination Requested"),
+    (4, "Retired"),
 )
 
 USER_STATUS_CHOICES = (

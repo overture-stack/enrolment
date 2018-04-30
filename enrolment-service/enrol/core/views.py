@@ -104,6 +104,21 @@ class IsOwnerOrAdmin(permissions.BasePermission):
         return obj.user == request.user
 
 
+class IsOwnerOrAdminAll(permissions.BasePermission):
+    """
+    Custom permissions that allow admin or owner
+    permission to object on ALL HTTP verbs
+    """
+
+    def has_object_permission(self, request, view, obj):
+        # If superuser allow
+        if request.user.is_superuser:
+            return True
+
+        # Instance must have an attribute named `user`.
+        return obj.user == request.user
+
+
 class IsOwnerOrAdminOrDacoWithUpdate(permissions.BasePermission):
     """
     Custom permissions that allow admin, owner, or daco_email holder access
@@ -131,7 +146,7 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
         'list':  ProjectsSerializer,
     }
     authentication_classes = (SessionAuthentication, )
-    permission_classes = (IsAuthenticated, IsOwnerOrAdmin)
+    permission_classes = (IsAuthenticated, IsOwnerOrAdminAll)
 
     def get_queryset(self):
         """
@@ -175,6 +190,33 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
         # Otherwise return 404
         return Response(status=status.HTTP_404_NOT_FOUND)
 
+    def perform_update(self, serializer):
+        # Save the data
+        project = serializer.save()
+
+        # If Termination Reqeust
+        if project.status == 3:
+            projectUsers = list(ProjectUsers.objects.filter(project=project.id).values())
+            email = {
+                'to': RESOURCE_ADMIN_EMAIL,
+                'cc': project.user.email,
+                'subject': 'Project Termination Request from {} for project "{}"'.format(
+                    project.user.email, project.project_name),
+                'message': 'A request from DACO email {} to terminate project "{}" has been initated. The following project users are associated with this project: {}'.format(
+                    project.user.email, project.project_name, projectUsers)
+            }
+            # self.send_update_notification(email)
+        elif project.status == 4:
+            email = {
+                'to': project.user.email,
+                'cc': RESOURCE_ADMIN_EMAIL,
+                'subject': 'Project Termination Request complete for project "{}"'.format(
+                    project.project_name),
+                'message': 'The request from DACO email {} to terminate project "{}" is now complete.'.format(
+                    project.user.email, project.project_name)
+            }
+            print(email)
+            # self.send_update_notification(email)
 
 class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
     """
