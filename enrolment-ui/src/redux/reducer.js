@@ -13,6 +13,7 @@ import {
   projectReducer as project,
   projectsUIReducer as projectsUI,
   requestFormReducer as projectRequestForm,
+  projectTerminationReducer as projectTerminationModal,
 } from '../modules/Projects';
 import {
   reducer as projectUsers,
@@ -33,6 +34,7 @@ const reducer = combineReducers({
   project,
   projectsUI,
   projectRequestForm,
+  projectTerminationModal,
   userEnrolmentForm,
   userEnrolmentModal,
   userRequestForm,

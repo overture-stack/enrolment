@@ -5,7 +5,7 @@ import { Button } from 'react-bootstrap';
 import { translate } from 'react-i18next';
 import _ from 'lodash';
 
-import { toggleModal } from '../../ProjectUsers/redux';
+import { toggleProjectTerminationModal } from '../../Projects/redux';
 
 const StaffActions = props => {
   const { t, profile, projects, toggleModal } = props;
@@ -21,7 +21,7 @@ const StaffActions = props => {
       </Link>
       {hasApprovedProjects && !profile.is_staff ? (
         <Button href="#" onClick={toggleModal}>
-          {t('StaffActions.enrol')}
+          {t('StaffActions.terminate')}
         </Button>
       ) : null}
     </div>
@@ -39,7 +39,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    toggleModal: () => dispatch(toggleModal()),
+    toggleModal: () => dispatch(toggleProjectTerminationModal()),
   };
 };
 

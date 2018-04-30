@@ -37,6 +37,8 @@ const SHOW_BILLING_FIELDS = 'projectRequestForm/SHOW_BILLING_FIELDS';
 const CHANGE_COUNTRY = 'projectRequestForm/CHANGE_COUNTRY';
 const CHANGE_BILLING_COUNTRY = 'projectRequestForm/CHANGE_BILLING_COUNTRY';
 
+const PT_TOGGLE_MODAL = 'projectTermination/TOGGLE_MODAL';
+
 const fetchProjectsStart = emptyActionGenerator(FETCH_PROJECTS_REQUEST);
 const fetchProjectsSuccess = payloadActionGenerator(FETCH_PROJECTS_SUCCESS);
 const fetchProjectsError = payloadActionGenerator(FETCH_PROJECTS_FAILURE);
@@ -69,6 +71,8 @@ export const toggleBillingFields = emptyActionGenerator(TOGGLE_BILLING_FIELDS);
 export const showBillingFields = emptyActionGenerator(SHOW_BILLING_FIELDS);
 export const changeCountry = payloadActionGenerator(CHANGE_COUNTRY);
 export const changeBillingCountry = payloadActionGenerator(CHANGE_BILLING_COUNTRY);
+
+export const toggleProjectTerminationModal = emptyActionGenerator(PT_TOGGLE_MODAL);
 
 /*
 * Public async thunk actions (mapped to component props)
@@ -339,6 +343,20 @@ export const requestFormReducer = (state = _defaultRequestFormState, action) => 
             .regions.map(region => region.name),
         },
       };
+    default:
+      return state;
+  }
+};
+
+// Project Termination UI
+const _defaultProjectTerminationState = {
+  showModal: false,
+};
+
+export const projectTerminationReducer = (state = _defaultProjectTerminationState, action) => {
+  switch (action.type) {
+    case PT_TOGGLE_MODAL:
+      return { ...state, showModal: !state.showModal };
     default:
       return state;
   }

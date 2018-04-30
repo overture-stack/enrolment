@@ -27,7 +27,7 @@
   },
   "StaffActions": {
     "register": "Register Project",
-    "enrol": "Enrol Users"
+    "terminate": "Terminate Project"
   },
   "ApplicationRequests": {
     "title": "Application Requests"
