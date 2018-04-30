@@ -3,16 +3,16 @@ import { connect } from 'react-redux';
 import { Modal } from 'react-bootstrap';
 
 import { toggleProjectTerminationModal } from './redux';
+import ModalTerminationForm from './components/ModalTerminationForm';
 
-const onSubmit = () => {
-  return data => {};
+const onSubmit = data => {
+  console.log(data);
 };
 
 const ProjectTerminationModal = props => {
   const {
     projectTerminationModal: { showModal },
     toggleModal,
-    profile: { pk },
   } = props;
 
   return (
@@ -20,7 +20,7 @@ const ProjectTerminationModal = props => {
       <Modal.Header>
         <Modal.Title>Project Termination</Modal.Title>
       </Modal.Header>
-      Terminate the Project
+      <ModalTerminationForm  onSubmit={onSubmit}  />
     </Modal>
   );
 };

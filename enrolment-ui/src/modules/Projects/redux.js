@@ -351,6 +351,9 @@ export const requestFormReducer = (state = _defaultRequestFormState, action) => 
 // Project Termination UI
 const _defaultProjectTerminationState = {
   showModal: false,
+  isFetching: false,
+  submitSuccess: false,
+  error: null,
 };
 
 export const projectTerminationReducer = (state = _defaultProjectTerminationState, action) => {
