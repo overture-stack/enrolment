@@ -205,7 +205,7 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
                 'message': 'A request from DACO email {} to terminate project "{}" has been initated. The following project users are associated with this project: {}'.format(
                     project.user.email, project.project_name, projectUsers)
             }
-            # self.send_update_notification(email)
+            self.send_update_notification(email)
         elif project.status == 4:
             email = {
                 'to': project.user.email,
@@ -215,8 +215,7 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
                 'message': 'The request from DACO email {} to terminate project "{}" is now complete.'.format(
                     project.user.email, project.project_name)
             }
-            print(email)
-            # self.send_update_notification(email)
+            self.send_update_notification(email)
 
 class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
     """
