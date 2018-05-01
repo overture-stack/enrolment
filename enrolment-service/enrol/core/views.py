@@ -196,16 +196,18 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
 
         # If Termination Reqeust
         if project.status == 3:
-            projectUsers = list(ProjectUsers.objects.filter(project=project.id).values())
+            project_users = list(ProjectUsers.objects.filter(project=project.id).values())
             email = {
                 'to': RESOURCE_ADMIN_EMAIL,
                 'cc': project.user.email,
                 'subject': 'Project Termination Request from {} for project "{}"'.format(
                     project.user.email, project.project_name),
-                'message': 'A request from DACO email {} to terminate project "{}" has been initated. The following project users are associated with this project: {}'.format(
-                    project.user.email, project.project_name, projectUsers)
+                'message': 'A request from DACO email {} to terminate project "{}" has been initated. {}'.format(
+                    project.user.email, project.project_name, project_user_email_text(project_users))
             }
             send_update_notification(email)
+            # print(email) # for testing
+
         elif project.status == 4:
             email = {
                 'to': project.user.email,
@@ -216,6 +218,7 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
                     project.user.email, project.project_name)
             }
             send_update_notification(email)
+            # print(email) # for testing
 
 class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
     """
@@ -470,3 +473,10 @@ def send_update_notification(email):
     email_message.attach_alternative(html_msg, "text/html")
 
     send_email(email_message)
+
+def project_user_email_text(project_users):
+    if len(project_users) == 0:
+        return "There are no project users associated with this project."
+
+    user_list = [ '<li>{} {} - {}</li>'.format(user['firstname'], user['lastname'], user['institution_email']) for user in project_users ]
+    return 'Below are the associated users for this project:<br><br><ul>{}</ul>'.format(''.join(user_list))

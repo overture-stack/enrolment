@@ -160,12 +160,15 @@ class ProjectsTest(APITestCase):
         }
 
         # Create Project Users to test notification emails
-        test_project_user = {
-            'project': project,
-            'user': self.user.id,
-            'daco_email': 'user@asd.com',
-        }
-        self.create_project_user(test_project_user)
+        # test_project_user = {
+        #     'project': project,
+        #     'user': self.user.id,
+        #     'daco_email': 'user@asd.com',
+        #     'firstname': 'Firsty',
+        #     'lastname': 'Lastington',
+        #     'institution_email': 'institute@email.com',
+        # }
+        # self.create_project_user(test_project_user)
 
         user = User.objects.get(username='user')
         client = APIClient()
