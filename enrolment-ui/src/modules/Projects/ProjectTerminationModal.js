@@ -5,15 +5,27 @@ import { Modal } from 'react-bootstrap';
 import { toggleProjectTerminationModal } from './redux';
 import ModalTerminationForm from './components/ModalTerminationForm';
 
-const onSubmit = data => {
-  console.log(data);
-};
+import { fetchProjects, terminateProjectRequest } from '../Projects/redux';
+import { fetchApplications } from '../Applications/redux';
 
 const ProjectTerminationModal = props => {
   const {
     projectTerminationModal: { showModal },
     toggleModal,
+    fetchApplications,
+    fetchProjects,
+    terminateProjectRequest
   } = props;
+
+  const onSuccess = () => {
+    fetchApplications();
+    fetchProjects();
+    toggleModal();
+  };
+  
+  const onSubmit = data => {
+    terminateProjectRequest(data.project, onSuccess);
+  };
 
   return (
     <Modal show={showModal} onHide={toggleModal}>
@@ -36,7 +48,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    fetchApplications: () => fetchApplications(dispatch),
+    fetchProjects: () => fetchProjects(dispatch),
     toggleModal: () => dispatch(toggleProjectTerminationModal()),
+    terminateProjectRequest: (id, next) => terminateProjectRequest(dispatch, id, next)
   };
 };
 

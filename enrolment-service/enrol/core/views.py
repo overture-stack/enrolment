@@ -205,7 +205,7 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
                 'message': 'A request from DACO email {} to terminate project "{}" has been initated. The following project users are associated with this project: {}'.format(
                     project.user.email, project.project_name, projectUsers)
             }
-            self.send_update_notification(email)
+            send_update_notification(email)
         elif project.status == 4:
             email = {
                 'to': project.user.email,
@@ -215,7 +215,7 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
                 'message': 'The request from DACO email {} to terminate project "{}" is now complete.'.format(
                     project.user.email, project.project_name)
             }
-            self.send_update_notification(email)
+            send_update_notification(email)
 
 class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
     """
@@ -359,7 +359,7 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
                 'message': '{} {} has completed their registration and is ready to be activated by IT'.format(
                     project_user.firstname, project_user.lastname)
             }
-            self.send_update_notification(email)
+            send_update_notification(email)
         elif project_user.status == 2:
             email = {
                 'to': project_user.daco_email,
@@ -370,7 +370,7 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
                 'message': '{} {} has been activated by IT and is ready to use Collab'.format(
                     project_user.firstname, project_user.lastname)
             }
-            self.send_update_notification(email)
+            send_update_notification(email)
 
     def perform_create(self, serializer):
         # Save the data
@@ -406,24 +406,6 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
             email_message.attach_alternative(html_msg, "text/html")
 
             send_email(email_message)
-
-    def send_update_notification(self, email):
-        html_msg = Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/notification.html')).read()).render(
-            message=email['message']
-        )
-
-        text_msg = email['message']
-
-        email_message = EmailMultiAlternatives(
-            subject=email['subject'],
-            body=text_msg,
-            to=[email['to'], ],
-            cc=[email['cc'], ],
-        )
-
-        email_message.attach_alternative(html_msg, "text/html")
-
-        send_email(email_message)
 
 
 @api_view(['GET'])
@@ -470,3 +452,21 @@ def send_email(email_message):
         email_message.send()
     except Exception as e:
         logger.error('Error: Unable to send email: ' + str(e))
+
+def send_update_notification(email):
+    html_msg = Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/notification.html')).read()).render(
+        message=email['message']
+    )
+
+    text_msg = email['message']
+
+    email_message = EmailMultiAlternatives(
+        subject=email['subject'],
+        body=text_msg,
+        to=[email['to'], ],
+        cc=[email['cc'], ],
+    )
+
+    email_message.attach_alternative(html_msg, "text/html")
+
+    send_email(email_message)

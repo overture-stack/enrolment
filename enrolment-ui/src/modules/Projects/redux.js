@@ -190,6 +190,34 @@ export function denyProject(dispatch, id, next = () => null) {
     });
 }
 
+export function terminateProjectRequest(dispatch, id, next = () => null) {
+  dispatch(updateProjectStart('Terminate Project Request'));
+
+  return asyncServices.project
+    .update(id, { status: 3 })
+    .then(response => {
+      dispatch(updateProjectSuccess('Project Termination Requested'));
+      next();
+    })
+    .catch(error => {
+      dispatch(updateProjectError(error));
+    });
+}
+
+export function projectTerminated(dispatch, id, next = () => null) {
+  dispatch(updateProjectStart('Project Termination Confirmed'));
+
+  return asyncServices.project
+    .update(id, { status: 4 })
+    .then(response => {
+      dispatch(updateProjectSuccess('Project Terminated'));
+      next();
+    })
+    .catch(error => {
+      dispatch(updateProjectError(error));
+    });
+}
+
 /*
 * Reducers
 */

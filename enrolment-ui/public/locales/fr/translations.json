@@ -49,6 +49,8 @@
     "action": {
       "approve": "Approuver",
       "deny": "Nier",
+      "terminate": "Terminate Project",
+      "retire": "Retire Project",
       "none": "Pas d'action requise"
     }
   }

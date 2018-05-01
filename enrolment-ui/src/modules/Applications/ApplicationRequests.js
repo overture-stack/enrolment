@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { translate, Trans } from 'react-i18next';
 import _ from 'lodash';
 
-import { fetchProjects, approveProject, denyProject } from '../Projects/redux';
+import { fetchProjects, approveProject, denyProject, projectTerminated } from '../Projects/redux';
 import { fetchApplications } from '../Applications/redux';
 
 const ApplicationRequests = props => {
@@ -17,6 +17,7 @@ const ApplicationRequests = props => {
     fetchProjects,
     approveProject,
     denyProject,
+    projectTerminated
   } = props;
 
   const fetchNewData = () => {
@@ -75,7 +76,12 @@ const ApplicationRequests = props => {
                             </a>
                           </div>
                         )}
-                        {project.status !== 'Pending' ? (
+                        {project.status === 'Termination Requested' ? (
+                          <a onClick={() => projectTerminated(project.id, fetchNewData)}>
+                          {t('RequestTable.action.retire')}
+                        </a>
+                        ) : null}
+                        {(project.status === 'Approved' || project.status === 'Retired') ? (
                           <span>{t('RequestTable.action.none')}</span>
                         ) : null}
                       </td>
@@ -105,6 +111,7 @@ const mapDispatchToProps = dispatch => {
     fetchProjects: () => fetchProjects(dispatch),
     approveProject: (id, next) => approveProject(dispatch, id, next),
     denyProject: (id, next) => denyProject(dispatch, id, next),
+    projectTerminated: (id, next) => projectTerminated(dispatch, id, next)
   };
 };
 

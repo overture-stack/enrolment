@@ -19,7 +19,7 @@ const StaffActions = props => {
       <Link to="register/project" className="btn btn-default">
         {t('StaffActions.register')}
       </Link>
-      {hasApprovedProjects && !profile.is_staff ? (
+      {hasApprovedProjects ? (
         <Button href="#" onClick={toggleModal}>
           {t('StaffActions.terminate')}
         </Button>
