@@ -66,7 +66,7 @@ const ApplicationRequests = props => {
                     <td>{project.status}</td>
                     {profile.is_staff ? (
                       <td>
-                        {project.status === 'Pending' && (
+                        {project.status === 'Pending' ? (
                           <div className="admin-actions">
                             <a onClick={() => approveProject(project.id, fetchNewData)}>
                               {t('RequestTable.action.approve')}
@@ -75,7 +75,7 @@ const ApplicationRequests = props => {
                               {t('RequestTable.action.deny')}
                             </a>
                           </div>
-                        )}
+                        ) : null}
                         {project.status === 'Termination Requested' ? (
                           <a onClick={() => projectTerminated(project.id, fetchNewData)}>
                           {t('RequestTable.action.retire')}
