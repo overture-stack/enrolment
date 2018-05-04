@@ -41,6 +41,10 @@ urlpatterns = [
     url(r'^api/v1/daco/(?P<email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$',
         views.dacoCheck),
 
+    # Unique Project User Check
+    url(r'^api/v1/unique-project-user-check/(?P<project>[\w-]+)/(?P<email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$',
+        views.uniqueProjectUserCheck, name='unique_project_user_check'),
+
     # Django Rest Router + Nested Routers
     url(r'^api/v1/', include(router.urls)),
     url(r'^api/v1/', include(projects_router.urls)),

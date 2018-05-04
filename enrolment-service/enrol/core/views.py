@@ -196,7 +196,8 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
 
         # If Termination Reqeust
         if project.status == 3:
-            project_users = list(ProjectUsers.objects.filter(project=project.id).values())
+            project_users = list(ProjectUsers.objects.filter(
+                project=project.id).values())
             email = {
                 'to': RESOURCE_ADMIN_EMAIL,
                 'cc': project.user.email,
@@ -453,12 +454,33 @@ def SocialViewSet(request):
         raise Http404("No Users matches the given query.")
 
 
+@api_view(['GET'])
+@authentication_classes((SessionAuthentication, ))
+@permission_classes((IsAuthenticated, ))
+def uniqueProjectUserCheck(request, project, email):
+    if request.user.is_authenticated():
+        project = Projects.objects.get(pk=project)
+        existingProjectUsers = ProjectUsers.objects.filter(daco_email=email)
+        
+        isSameUser = project.user.email == email
+        isAlreadyProjectUser = len(existingProjectUsers) > 0
+
+        if (isSameUser or isAlreadyProjectUser):
+            return Response('Duplicate User Error', status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response('User OK', status=status.HTTP_200_OK)
+
+    else:
+        return HttpResponseForbidden()
+
+
 def send_email(email_message):
     logger.debug(email_message)
     try:
         email_message.send()
     except Exception as e:
         logger.error('Error: Unable to send email: ' + str(e))
+
 
 def send_update_notification(email):
     html_msg = Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/notification.html')).read()).render(
@@ -478,9 +500,11 @@ def send_update_notification(email):
 
     send_email(email_message)
 
+
 def project_user_email_text(project_users):
     if len(project_users) == 0:
         return "There are no project users associated with this project."
 
-    user_list = [ '<li>{} {} - {}</li>'.format(user['firstname'], user['lastname'], user['institution_email']) for user in project_users ]
+    user_list = ['<li>{} {} - {}</li>'.format(
+        user['firstname'], user['lastname'], user['institution_email']) for user in project_users]
     return 'Below are the associated users for this project:<br/><ul>{}</ul>'.format(''.join(user_list))

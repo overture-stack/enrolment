@@ -277,6 +277,28 @@ class ProjectUsersTest(APITestCase):
         response = client.post(self.url, self.newProjectUser)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_unique_project_user_check(self):
+        users = User.objects.get(username='user')
+        client = APIClient()
+        client.force_authenticate(user=self.user)
+
+        # Post the first project user
+        client.post(self.url, self.newProjectUser)
+
+        # Check if we the same email address is unique (should fail)
+        user_ok_check_url = reverse('unique_project_user_check', kwargs={'project': self.testProject.id.urn[9:], 'email': 'test@test.com'})
+        duplicate_project_user_url = reverse('unique_project_user_check', kwargs={'project': self.testProject.id.urn[9:], 'email': 'user_2@asd.com'})
+        same_pi_url = reverse('unique_project_user_check', kwargs={'project': self.testProject.id.urn[9:], 'email': 'user@asd.com'})
+
+        ok_response = client.get(user_ok_check_url)
+        dup_response = client.get(duplicate_project_user_url)
+        pi_response = client.get(same_pi_url)
+        
+        self.assertEqual(ok_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(dup_response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(pi_response.status_code, status.HTTP_400_BAD_REQUEST)
+
     
     def test_archive_projectUser(self):
         ''''
