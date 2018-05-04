@@ -202,7 +202,7 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
                 'cc': project.user.email,
                 'subject': 'Project Termination Request from {} for project "{}"'.format(
                     project.user.email, project.project_name),
-                'message': 'A request from DACO email {} to terminate project "{}" has been initated. {}'.format(
+                'message': 'A request from DACO email <strong>{}</strong> to terminate project <strong>"{}"</strong> has been initated. {}'.format(
                     project.user.email, project.project_name, project_user_email_text(project_users))
             }
             send_update_notification(email)
@@ -214,7 +214,7 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
                 'cc': RESOURCE_ADMIN_EMAIL,
                 'subject': 'Project Termination Request complete for project "{}"'.format(
                     project.project_name),
-                'message': 'The request from DACO email {} to terminate project "{}" is now complete.'.format(
+                'message': 'The request from DACO email <strong>{}</strong> to terminate project <strong>"{}"</strong> is now complete.'.format(
                     project.user.email, project.project_name)
             }
             send_update_notification(email)
@@ -479,4 +479,4 @@ def project_user_email_text(project_users):
         return "There are no project users associated with this project."
 
     user_list = [ '<li>{} {} - {}</li>'.format(user['firstname'], user['lastname'], user['institution_email']) for user in project_users ]
-    return 'Below are the associated users for this project:<br><br><ul>{}</ul>'.format(''.join(user_list))
+    return 'Below are the associated users for this project:<br/><ul>{}</ul>'.format(''.join(user_list))
