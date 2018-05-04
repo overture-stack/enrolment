@@ -22,9 +22,9 @@ const FETCH_ONE_REQUEST = 'projectUsers/FETCH_ONE_REQUEST';
 const FETCH_ONE_SUCCESS = 'projectUsers/FETCH_ONE_SUCCESS';
 const FETCH_ONE_FAILURE = 'projectUsers/FETCH_ONE_FAILURE';
 
-const DACO_CHECK_REQUEST = 'projectUsers/DACO_CHECK_REQUEST';
-const DACO_CHECK_SUCCESS = 'projectUsers/DACO_CHECK_SUCCESS';
-const DACO_CHECK_FAILURE = 'projectUsers/DACO_CHECK_FAILURE';
+const EMAIL_CHECK_REQUEST = 'projectUsers/EMAIL_CHECK_REQUEST';
+const EMAIL_CHECK_SUCCESS = 'projectUsers/EMAIL_CHECK_SUCCESS';
+const EMAIL_CHECK_FAILURE = 'projectUsers/EMAIL_CHECK_FAILURE';
 const REMOVE_EMAIL = 'projectUsers/REMOVE_EMAIL';
 const TOGGLE_MODAL = 'projectUsers/TOGGLE_MODAL';
 const RESET_ENROLMENT_FORM = 'projectUsers/RESET_ENROLMENT_FORM';
@@ -42,9 +42,9 @@ const fetchOneUserStart = emptyActionGenerator(FETCH_ONE_REQUEST);
 const fetchOneUserSuccess = payloadActionGenerator(FETCH_ONE_SUCCESS);
 const fetchOneUserError = payloadActionGenerator(FETCH_ONE_FAILURE);
 
-const dacoCheckStart = emptyActionGenerator(DACO_CHECK_REQUEST);
-const dacoCheckSuccess = payloadActionGenerator(DACO_CHECK_SUCCESS);
-const dacoCheckError = payloadActionGenerator(DACO_CHECK_FAILURE);
+const emailCheckStart = emptyActionGenerator(EMAIL_CHECK_REQUEST);
+const emailCheckSuccess = payloadActionGenerator(EMAIL_CHECK_SUCCESS);
+const emailCheckError = payloadActionGenerator(EMAIL_CHECK_FAILURE);
 
 const createlUsersStart = emptyActionGenerator(CREATE_USERS_REQUEST);
 const createlUsersSuccess = payloadActionGenerator(CREATE_USERS_SUCCESS);
@@ -157,16 +157,21 @@ export function activateProjectUser(dispatch, projectId, id, next = () => null) 
     });
 }
 
-export function dacoCheck(dispatch, email) {
-  dispatch(dacoCheckStart());
+export function emailCheck(dispatch, project, email) {
+  dispatch(emailCheckStart());
 
-  return asyncServices.daco
-    .check(email)
+  // We first check to ensure that the email is not already in use,
+  // then we check that it's a valid daco email
+  return asyncServices.uniqueProjectUser
+    .check(project, email)
+    .then(() => {
+      return asyncServices.daco.check(email)
+    })
     .then(response => {
-      dispatch(dacoCheckSuccess(email));
+      dispatch(emailCheckSuccess(email));
     })
     .catch(error => {
-      dispatch(dacoCheckError(error));
+      dispatch(emailCheckError(error));
     });
 }
 
@@ -252,20 +257,20 @@ const _defaultUserEnrolmentFormState = {
 
 export const userEnrolmentFormReducer = (state = _defaultUserEnrolmentFormState, action) => {
   switch (action.type) {
-    case DACO_CHECK_REQUEST:
+    case EMAIL_CHECK_REQUEST:
     case CREATE_USERS_REQUEST:
       return {
         ...state,
         isFetching: true,
       };
-    case DACO_CHECK_SUCCESS:
+    case EMAIL_CHECK_SUCCESS:
       return {
         ...state,
         isFetching: false,
         users: [...state.users, action.payload],
         error: null,
       };
-    case DACO_CHECK_FAILURE:
+    case EMAIL_CHECK_FAILURE:
     case CREATE_USERS_FAILURE:
       return {
         ...state,

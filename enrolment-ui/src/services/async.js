@@ -68,6 +68,17 @@ export function createAsyncs(isDevelopment = false) {
             );
         }),
     },
+    uniqueProjectUser: {
+      check: (project, email) => 
+        asyncServiceCreator('GET', `${apiBase}/unique-project-user-check/${project}/${email}/`)().catch(error => {
+          if (error)
+            return Promise.reject(
+              new Error(
+                'The email you have entered is either already in use by an existing project user or is invalid.',
+              ),
+            );
+        }),
+    },
     billing: {
       getPrice: asyncServiceCreator('GET', `${billingBase}/price`),
     },
