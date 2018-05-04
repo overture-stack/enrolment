@@ -262,12 +262,21 @@ class ProjectUsersTest(APITestCase):
         self.assertEqual(response.status_code,
                          status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    
     def test_no_duplicate_project_users(self):
-        ''''
-        Ensure only a superuser can archive a projectUser
-        '''
-        pass
+        """
+        Ensure that project user daco email is unique per project
+        """
+        users = User.objects.get(username='user')
+        client = APIClient()
+        client.force_authenticate(user=self.user)
+
+        # Post the first project user
+        client.post(self.url, self.newProjectUser)
+
+        # Post the same user again
+        response = client.post(self.url, self.newProjectUser)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
     
     def test_archive_projectUser(self):
         ''''

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from core.models import Applications, BillingContact, Projects, ProjectUsers, STATUS_CHOICES, USER_STATUS_CHOICES
@@ -42,6 +43,12 @@ class ProjectUsersSerializer(serializers.ModelSerializer):
         model = ProjectUsers
         fields = ('id', 'project', 'user', 'firstname', 'lastname', 'agreementDate', 'agreementCheck', 'position',
                   'institution_name', 'institution_email', 'phone', 'daco_email', 'status', 'createdDate', 'updatedDate')
+        validators = [
+            UniqueTogetherValidator(
+                queryset=ProjectUsers.objects.all(),
+                fields=('project', 'daco_email')
+            )
+        ]
 
 
 class BillingContactSerializer(serializers.ModelSerializer):

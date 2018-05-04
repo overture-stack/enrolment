@@ -220,6 +220,7 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
             send_update_notification(email)
             # print(email) # for testing
 
+
 class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
     """
     Handles the Projects entity for the API
