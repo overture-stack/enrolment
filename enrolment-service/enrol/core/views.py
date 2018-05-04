@@ -379,7 +379,10 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
         # Save the data
         project_users = serializer.save()
 
-        # Send email to invited users
+        # Send email to invited users (can be single or mutliple project users)
+        if not isinstance(project_users, list):
+            project_users = [project_users]
+
         for project_user in project_users:
             project = project_user.project
 
