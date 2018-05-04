@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Tabs, Tab } from 'react-bootstrap';
+import { Tabs, Tab, Button } from 'react-bootstrap';
+import { translate } from 'react-i18next';
+import _ from 'lodash';
 
 import PTProjectDetails from './components/PTProjectDetails';
 import PTUserEnrolment from './components/PTUserEnrolment';
 import PTUserDetails from './components/PTUserDetails';
+import ProjectTerminationModal from './ProjectTerminationModal';
 
-import { fetchOneProject, fetchProjects, uiSelectProject, uiSelectTab } from '../Projects/redux';
+import {
+  fetchOneProject,
+  fetchProjects,
+  uiSelectProject,
+  uiSelectTab,
+  toggleProjectTerminationModal,
+} from '../Projects/redux';
 import { fetchProjectUsersByProjectId } from '../ProjectUsers/redux';
 import { resetEnrolmentForm } from '../ProjectUsers/redux';
 
@@ -63,9 +72,19 @@ class Projects extends Component {
   }
 
   render() {
-    const { projects, projectsUI: { selectedProject, activeTab }, uiSelectTab } = this.props;
+    const {
+      t,
+      projects,
+      projectsUI: { selectedProject, activeTab },
+      uiSelectTab,
+      toggleModal,
+    } = this.props;
 
     const projectIsSelected = selectedProject.length > 0;
+
+    const hasApprovedProjects = !!_.find(projects.data.results, project =>
+      _.includes(project.status, 'Approved'),
+    );
 
     return (
       <div className="wrapper">
@@ -76,7 +95,7 @@ class Projects extends Component {
               <div className="col-md-2">
                 <h4>Select Project</h4>
               </div>
-              <div className="col-md-3">
+              <div className="col-xs-6 col-md-3">
                 <select
                   className="form-control"
                   value={selectedProject}
@@ -95,6 +114,13 @@ class Projects extends Component {
                         ))}
                 </select>
               </div>
+              {hasApprovedProjects ? (
+                <div className="col-xs-6 col-md-3 col-md-push-4 project-terminate-button-col">
+                  <Button href="#" onClick={toggleModal}>
+                    {t('StaffActions.terminate')}
+                  </Button>
+                </div>
+              ) : null}
             </div>
             <div className="nav">
               <Tabs
@@ -128,6 +154,7 @@ class Projects extends Component {
             </div>
           </div>
         </div>
+        <ProjectTerminationModal />
       </div>
     );
   }
@@ -148,7 +175,8 @@ const mapDispatchToProps = dispatch => {
     uiSelectProject: project => dispatch(uiSelectProject(project)),
     uiSelectTab: tabIdx => dispatch(uiSelectTab(tabIdx)),
     resetEnrolmentForm: () => dispatch(resetEnrolmentForm()),
+    toggleModal: () => dispatch(toggleProjectTerminationModal()),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Projects);
+export default translate()(connect(mapStateToProps, mapDispatchToProps)(Projects));

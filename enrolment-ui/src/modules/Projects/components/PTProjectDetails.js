@@ -33,6 +33,12 @@ const PTProjectDetails = props => {
                 <textarea disabled={true} value={project_description} />
               </div>
             </div>
+            {/* 
+
+            ... Maybe one day we will allow projects
+            of various status's to be displayed here ...
+            and integrate with biling ... but not yet ...
+
             <div className="col-md-6">
               <div className="project-detail">
                 <h4>Project Status</h4>
@@ -42,7 +48,9 @@ const PTProjectDetails = props => {
                 <h4>Billing Status</h4>
                 <span>{billing_status}</span>
               </div>
-            </div>
+            </div> 
+            
+            */}
           </div>
         </div>
       </div>
