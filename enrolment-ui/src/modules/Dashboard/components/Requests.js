@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { translate } from 'react-i18next';
-import _ from 'lodash';
 
 import StaffActions from './StaffActions';
 import FeesSidebarWidget from '../../Fees';
@@ -14,9 +13,8 @@ const Requests = props => {
 
   if (projects.loading) return false;
 
-  const hasApprovedProjects = !!_.find(projects.data.results, project =>
-    _.includes(project.status, 'Approved'),
-  );
+  const hasApprovedProjects =
+    projects.data.results.filter(project => project.status === 'Approved').length > 0;
 
   return (
     <div className="row dashboard">

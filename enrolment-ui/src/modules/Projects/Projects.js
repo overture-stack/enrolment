@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Tabs, Tab, Button } from 'react-bootstrap';
 import { translate } from 'react-i18next';
-import _ from 'lodash';
 
 import PTProjectDetails from './components/PTProjectDetails';
 import PTUserEnrolment from './components/PTUserEnrolment';
@@ -82,9 +81,8 @@ class Projects extends Component {
 
     const projectIsSelected = selectedProject.length > 0;
 
-    const hasApprovedProjects = !!_.find(projects.data.results, project =>
-      _.includes(project.status, 'Approved'),
-    );
+    const hasApprovedProjects =
+      projects.data.results.filter(project => project.status === 'Approved').length > 0;
 
     return (
       <div className="wrapper">
