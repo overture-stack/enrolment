@@ -164,9 +164,7 @@ export function emailCheck(dispatch, project, email) {
   // then we check that it's a valid daco email
   return asyncServices.uniqueProjectUser
     .check(project, email)
-    .then(() => {
-      return asyncServices.daco.check(email)
-    })
+    .then(() => asyncServices.daco.check(email))
     .then(response => {
       dispatch(emailCheckSuccess(email));
     })
