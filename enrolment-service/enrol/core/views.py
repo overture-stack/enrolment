@@ -459,10 +459,10 @@ def SocialViewSet(request):
 @permission_classes((IsAuthenticated, ))
 def uniqueProjectUserCheck(request, project, email):
     if request.user.is_authenticated():
-        project = Projects.objects.get(pk=project)
-        existingProjectUsers = ProjectUsers.objects.filter(daco_email=email)
+        project_obj = Projects.objects.get(pk=project)
+        existingProjectUsers = ProjectUsers.objects.filter(daco_email=email, project=project)
         
-        isSameUser = project.user.email == email
+        isSameUser = project_obj.user.email == email
         isAlreadyProjectUser = len(existingProjectUsers) > 0
 
         if (isSameUser or isAlreadyProjectUser):
