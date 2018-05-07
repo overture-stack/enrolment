@@ -196,20 +196,24 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
 
         # If Termination Reqeust
         if project.status == 3:
-            project_users = list(ProjectUsers.objects.filter(
-                project=project.id).values())
+            project_users = ProjectUsers.objects.filter(project=project.id)
+            project_users.update(status=3)
+            project_user_list = list(project_users.values())
+
             email = {
                 'to': RESOURCE_ADMIN_EMAIL,
                 'cc': project.user.email,
                 'subject': 'Project Termination Request from {} for project "{}"'.format(
                     project.user.email, project.project_name),
                 'message': 'A request from DACO email <strong>{}</strong> to terminate project <strong>"{}"</strong> has been initated. {}'.format(
-                    project.user.email, project.project_name, project_user_email_text(project_users))
+                    project.user.email, project.project_name, project_user_email_text(project_user_list))
             }
             send_update_notification(email)
             # print(email) # for testing
 
         elif project.status == 4:
+            project_users = ProjectUsers.objects.filter(project=project.id)
+            project_users.update(status=4)
             email = {
                 'to': project.user.email,
                 'cc': RESOURCE_ADMIN_EMAIL,

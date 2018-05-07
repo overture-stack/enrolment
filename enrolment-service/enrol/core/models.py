@@ -15,6 +15,8 @@ USER_STATUS_CHOICES = (
     (0, "Invited"),
     (1, "Pending"),
     (2, "Active"),
+    (3, "Project Termination Requested"),
+    (4, "Project Retired"),
 )
 
 
