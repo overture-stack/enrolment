@@ -7,6 +7,7 @@ import ModalTerminationForm from './components/ModalTerminationForm';
 
 import { fetchProjects, terminateProjectRequest } from '../Projects/redux';
 import { fetchApplications } from '../Applications/redux';
+import { fetchAllProjectUsers } from '../ProjectUsers/redux';
 
 const ProjectTerminationModal = props => {
   const {
@@ -14,15 +15,17 @@ const ProjectTerminationModal = props => {
     toggleModal,
     fetchApplications,
     fetchProjects,
-    terminateProjectRequest
+    fetchAllProjectUsers,
+    terminateProjectRequest,
   } = props;
 
   const onSuccess = () => {
     fetchApplications();
     fetchProjects();
+    fetchAllProjectUsers();
     toggleModal();
   };
-  
+
   const onSubmit = data => {
     terminateProjectRequest(data.project, onSuccess);
   };
@@ -32,7 +35,7 @@ const ProjectTerminationModal = props => {
       <Modal.Header>
         <Modal.Title>Project Termination</Modal.Title>
       </Modal.Header>
-      <ModalTerminationForm  onSubmit={onSubmit}  />
+      <ModalTerminationForm onSubmit={onSubmit} />
     </Modal>
   );
 };
@@ -50,8 +53,9 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchApplications: () => fetchApplications(dispatch),
     fetchProjects: () => fetchProjects(dispatch),
+    fetchAllProjectUsers: () => fetchAllProjectUsers(dispatch),
     toggleModal: () => dispatch(toggleProjectTerminationModal()),
-    terminateProjectRequest: (id, next) => terminateProjectRequest(dispatch, id, next)
+    terminateProjectRequest: (id, next) => terminateProjectRequest(dispatch, id, next),
   };
 };
 
