@@ -7,7 +7,7 @@ import EmailList from './EmailList';
 const SuccessMessage = props => {
   return (
     <div className="success">
-      <div className="alert alert-success">The Enrolment Request was send Successfully!</div>
+      <div className="alert alert-success">The Enrolment Request was sent Successfully!</div>
     </div>
   );
 };
