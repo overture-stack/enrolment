@@ -27,6 +27,7 @@ const UPDATE_PROJECT_FAILURE = 'project/UPDATE_PROJECT_FAILURE';
 const UI_SELECT_PROJECT = 'projectUI/SELECT_PROJECT';
 const UI_SELECT_TAB = 'projectUI/SELECT_TAB';
 const UI_RESET_TAB = 'projectUI/UI_RESET_TAB';
+const UI_RESET_PROJECT_TABS = 'projectUI/UI_RESET_PROJECT_TABS';
 
 const NEXT_STEP = 'projectRequestForm/NEXT_STEP';
 const PREVIOUS_STEP = 'projectRequestForm/PREVIOUS_STEP';
@@ -62,6 +63,7 @@ const updateProjectError = payloadActionGenerator(UPDATE_PROJECT_FAILURE);
 export const uiSelectProject = payloadActionGenerator(UI_SELECT_PROJECT);
 export const uiSelectTab = payloadActionGenerator(UI_SELECT_TAB);
 export const uiResetTab = payloadActionGenerator(UI_RESET_TAB);
+export const uiResetProjectsTab = payloadActionGenerator(UI_RESET_PROJECT_TABS);
 
 export const formNextStep = emptyActionGenerator(NEXT_STEP);
 export const formPrevStep = emptyActionGenerator(PREVIOUS_STEP);
@@ -319,6 +321,11 @@ export const projectsUIReducer = (state = _defaultProjectsUIState, action) => {
       return {
         ...state,
         activeTab: 1,
+      };
+    case UI_RESET_PROJECT_TABS:
+      return {
+        ...state,
+        ..._defaultProjectsUIState,
       };
     default:
       return state;

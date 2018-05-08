@@ -1,11 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Modal } from 'react-bootstrap';
+import { withRouter } from 'react-router-dom';
 
 import { toggleProjectTerminationModal } from './redux';
 import ModalTerminationForm from './components/ModalTerminationForm';
 
-import { fetchProjects, terminateProjectRequest } from '../Projects/redux';
+import { fetchProjects, terminateProjectRequest, uiResetProjectsTab } from '../Projects/redux';
 import { fetchApplications } from '../Applications/redux';
 import { fetchAllProjectUsers } from '../ProjectUsers/redux';
 
@@ -16,14 +17,25 @@ const ProjectTerminationModal = props => {
     fetchApplications,
     fetchProjects,
     fetchAllProjectUsers,
+    resetProjectsTabUi,
     terminateProjectRequest,
+    location: { pathname }
   } = props;
 
   const onSuccess = () => {
     fetchApplications();
     fetchProjects();
-    fetchAllProjectUsers();
     toggleModal();
+
+    // If we're on dashboard, reload the project users as well
+    if (pathname === "/dashboard") {
+      fetchAllProjectUsers();
+    }
+
+    // If we're on the project tab, deselect the project
+    if (pathname === "/projects") {
+      resetProjectsTabUi();
+    }
   };
 
   const onSubmit = data => {
@@ -54,9 +66,10 @@ const mapDispatchToProps = dispatch => {
     fetchApplications: () => fetchApplications(dispatch),
     fetchProjects: () => fetchProjects(dispatch),
     fetchAllProjectUsers: () => fetchAllProjectUsers(dispatch),
+    resetProjectsTabUi: () => dispatch(uiResetProjectsTab()),
     toggleModal: () => dispatch(toggleProjectTerminationModal()),
     terminateProjectRequest: (id, next) => terminateProjectRequest(dispatch, id, next),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectTerminationModal);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProjectTerminationModal));

@@ -22,6 +22,8 @@ const FETCH_ONE_REQUEST = 'projectUsers/FETCH_ONE_REQUEST';
 const FETCH_ONE_SUCCESS = 'projectUsers/FETCH_ONE_SUCCESS';
 const FETCH_ONE_FAILURE = 'projectUsers/FETCH_ONE_FAILURE';
 
+const CLEAR_PROJECT_USERS = 'projectUsers/CLEAR_PROJECT_USERS';
+
 const EMAIL_CHECK_REQUEST = 'projectUsers/EMAIL_CHECK_REQUEST';
 const EMAIL_CHECK_SUCCESS = 'projectUsers/EMAIL_CHECK_SUCCESS';
 const EMAIL_CHECK_FAILURE = 'projectUsers/EMAIL_CHECK_FAILURE';
@@ -61,6 +63,7 @@ const updateProjectUserError = payloadActionGenerator(UPDATE_REQUEST_FAILURE);
 export const toggleModal = emptyActionGenerator(TOGGLE_MODAL);
 export const removeEmail = payloadActionGenerator(REMOVE_EMAIL);
 export const resetEnrolmentForm = emptyActionGenerator(RESET_ENROLMENT_FORM);
+export const clearProjectUsers = emptyActionGenerator(CLEAR_PROJECT_USERS);
 
 export const rfNextStep = emptyActionGenerator(RF_NEXT_STEP);
 export const rfPrevStep = emptyActionGenerator(RF_PREVIOUS_STEP);
@@ -203,6 +206,14 @@ export const reducer = (state = _defaultState, action) => {
         loading: false,
         hasProjectUsers: false,
         error: action.payload,
+      };
+    case CLEAR_PROJECT_USERS:
+      return {
+        ...state,
+        loading: false,
+        hasProjectUsers: false,
+        data: [],
+        error: null,
       };
     default:
       return state;

@@ -15,7 +15,7 @@ import {
   uiSelectTab,
   toggleProjectTerminationModal,
 } from '../Projects/redux';
-import { fetchProjectUsersByProjectId } from '../ProjectUsers/redux';
+import { fetchProjectUsersByProjectId, clearProjectUsers } from '../ProjectUsers/redux';
 import { resetEnrolmentForm } from '../ProjectUsers/redux';
 
 import './projects.scss';
@@ -45,6 +45,7 @@ class Projects extends Component {
   resetAndFetchNewData() {
     this.props.uiSelectProject('');
     this.props.uiSelectTab(1);
+    this.props.clearProjectUsers();
     this.props.fetchProjects();
   }
 
@@ -55,6 +56,7 @@ class Projects extends Component {
       fetchOneProject,
       fetchProjectUsersByProjectId,
     } = this.props;
+    
     const projectId = event.target.value;
 
     if (projectId) {
@@ -75,6 +77,8 @@ class Projects extends Component {
       t,
       projects,
       projectsUI: { selectedProject, activeTab },
+      fetchProjectUsersByProjectId,
+      clearProjectUsers,
       uiSelectTab,
       toggleModal,
     } = this.props;
@@ -83,6 +87,19 @@ class Projects extends Component {
 
     const hasApprovedProjects =
       projects.data.results.filter(project => project.status === 'Approved').length > 0;
+
+    const selectTab = tabIdx => {
+      // Reload Project Users if selected else clear
+      if (tabIdx === 3) {
+        if (projectIsSelected) {
+          fetchProjectUsersByProjectId(selectedProject);
+        } else {
+          clearProjectUsers();
+        }
+      }
+
+      uiSelectTab(tabIdx);
+    }
 
     return (
       <div className="wrapper">
@@ -124,7 +141,7 @@ class Projects extends Component {
               <Tabs
                 id="projectsNavigation"
                 activeKey={activeTab}
-                onSelect={uiSelectTab}
+                onSelect={selectTab}
                 className={`tabs ${projectIsSelected ? 'selected' : ''}`}
               >
                 <Tab
@@ -170,6 +187,7 @@ const mapDispatchToProps = dispatch => {
     fetchOneProject: id => fetchOneProject(dispatch, id),
     fetchProjects: () => fetchProjects(dispatch),
     fetchProjectUsersByProjectId: projectId => fetchProjectUsersByProjectId(dispatch, projectId),
+    clearProjectUsers: () => dispatch(clearProjectUsers()),
     uiSelectProject: project => dispatch(uiSelectProject(project)),
     uiSelectTab: tabIdx => dispatch(uiSelectTab(tabIdx)),
     resetEnrolmentForm: () => dispatch(resetEnrolmentForm()),
