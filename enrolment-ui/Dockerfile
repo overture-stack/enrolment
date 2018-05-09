@@ -12,8 +12,8 @@ RUN \
   apt-get install -y curl git man vim wget
 
 # NODE & NPM
-RUN wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.4/install.sh | bash
-RUN source ~/.nvm/nvm.sh && nvm install 6.11.4 && npm install -g npm
+RUN wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+RUN source ~/.nvm/nvm.sh && nvm install 8.9.4 && npm install -g npm
 
 # PREPARE
 RUN mkdir -p /data/web
