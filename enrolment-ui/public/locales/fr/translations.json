@@ -50,7 +50,7 @@
       "approve": "Approuver",
       "deny": "Nier",
       "terminate": "Terminate Project",
-      "terminate": "Terminate Project",
+      "confirmTermination": "Confirm Termination",
       "none": "Pas d'action requise"
     }
   }
