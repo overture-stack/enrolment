@@ -81,10 +81,10 @@ const ApplicationRequests = props => {
                         ) : null}
                         {project.status === 'Termination Requested' ? (
                           <a onClick={() => projectTerminated(project.id, fetchNewData)}>
-                          {t('RequestTable.action.retire')}
+                          {t('RequestTable.action.terminate')}
                         </a>
                         ) : null}
-                        {(project.status === 'Approved' || project.status === 'Retired') ? (
+                        {(project.status === 'Approved' || project.status === 'Terminated') ? (
                           <span>{t('RequestTable.action.none')}</span>
                         ) : null}
                       </td>

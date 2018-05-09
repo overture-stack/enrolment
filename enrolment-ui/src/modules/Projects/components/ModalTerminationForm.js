@@ -58,7 +58,7 @@ const ModalTerminationForm = props => {
       ) : (
         <Modal.Body>
           <p style={{marginTop: '1em'}}>
-            A request will be sent to terminate this project. During project retirement, <strong>all</strong> project resources are shut down. Please ensure that:
+            A request will be sent to terminate this project. During project termination, <strong>all</strong> project resources are shut down. Please ensure that:
           </p>
           <ul>
             <li>you have paid any remaining invoices</li>

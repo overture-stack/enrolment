@@ -8,7 +8,7 @@ STATUS_CHOICES = (
     (1, "Approved"),
     (2, "Denied"),
     (3, "Termination Requested"),
-    (4, "Retired"),
+    (4, "Terminated"),
 )
 
 USER_STATUS_CHOICES = (
@@ -16,7 +16,7 @@ USER_STATUS_CHOICES = (
     (1, "Pending"),
     (2, "Active"),
     (3, "Project Termination Requested"),
-    (4, "Project Retired"),
+    (4, "Project Terminated"),
 )
 
 
