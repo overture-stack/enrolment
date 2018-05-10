@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { dacoCheck, removeEmail } from '../redux';
+import { emailCheck, removeEmail } from '../redux';
 
 import './emailList.scss';
 import spinner from '../../../assets/img/spinner.svg';
@@ -34,6 +34,7 @@ class EmailList extends Component {
 
     const email = this.state.emailField;
     const users = this.props.userEnrolmentForm.users;
+    const project =  this.props.project.data.id;
 
     if (users.indexOf(email) !== -1)
       return this.setState({
@@ -42,7 +43,7 @@ class EmailList extends Component {
         emailFieldError: '',
       });
 
-    this.props.dacoCheck(email);
+    this.props.emailCheck(project, email);
 
     const newState = {
       ...this.state,
@@ -142,13 +143,14 @@ class EmailList extends Component {
 
 const mapStateToProps = state => {
   return {
+    project: state.project,
     userEnrolmentForm: state.userEnrolmentForm,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    dacoCheck: email => dacoCheck(dispatch, email),
+    emailCheck: (project, email) => emailCheck(dispatch, project, email),
     removeEmail: email => dispatch(removeEmail(email)),
   };
 };

@@ -5,8 +5,13 @@ const PTProjectDetails = props => {
   const { project: { loading, data } } = props;
 
   if (loading) return false;
-
-  const { project_description = '', pi = '' } = data;
+  // TODO - billing_status
+  const {
+    project_description = '',
+    pi = '',
+    status = '',
+    billing_status = 'Outstanding Invoice or Usage',
+  } = data;
 
   return (
     <div className="container">
@@ -18,20 +23,34 @@ const PTProjectDetails = props => {
             </div>
           </div>
           <div className="row">
-            <div className="col-md-12">
-              <h4>Principal Investigator</h4>
-              <span>{pi}</span>
+            <div className="col-md-6">
+              <div className="project-detail">
+                <h4>Principal Investigator</h4>
+                <span>{pi}</span>
+              </div>
+              <div className="project-detail">
+                <h4>Project Description</h4>
+                <textarea disabled={true} value={project_description} />
+              </div>
             </div>
-          </div>
-          <div className="row">
-            <div className="col-md-12">
-              <h4>Project Description</h4>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-12">
-              <textarea disabled={true} value={project_description} />
-            </div>
+            {/* 
+
+            ... Maybe one day we will allow projects
+            of various status's to be displayed here ...
+            and integrate with biling ... but not yet ...
+
+            <div className="col-md-6">
+              <div className="project-detail">
+                <h4>Project Status</h4>
+                <span>{status}</span>
+              </div>
+              <div className="project-detail">
+                <h4>Billing Status</h4>
+                <span>{billing_status}</span>
+              </div>
+            </div> 
+            
+            */}
           </div>
         </div>
       </div>

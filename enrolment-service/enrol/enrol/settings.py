@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '9bqg!2qdxnpy#@&i7m5p3@3002drp-v^gbled@8oz%nc7jxb(^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', False)
+DEBUG = os.environ.get('DEBUG', False) == 'True'
 
 # Site URL (used in allowed_hosts, emails, etc) - setting here to allow
 # being set in env

@@ -23,7 +23,9 @@
     }
     .admin-actions {
       display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
+      align-items: flex-start;
+      min-width: 110px;
     }
 
     .projects-links {

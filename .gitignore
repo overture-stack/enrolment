@@ -118,3 +118,6 @@ postgres/dumps
 # SSL
 *.cert
 *.key
+
+# Editor
+.vscode

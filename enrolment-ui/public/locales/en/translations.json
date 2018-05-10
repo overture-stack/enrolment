@@ -27,7 +27,7 @@
   },
   "StaffActions": {
     "register": "Register Project",
-    "enrol": "Enrol Users"
+    "terminate": "Terminate Project"
   },
   "ApplicationRequests": {
     "title": "Application Requests"
@@ -49,6 +49,8 @@
     "action": {
       "approve": "Approve",
       "deny": "Deny",
+      "terminate": "Terminate Project",
+      "confirmTermination": "Confirm Termination",
       "none": "No Action Needed"
     }
   },

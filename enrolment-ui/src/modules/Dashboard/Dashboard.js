@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { translate, Trans } from 'react-i18next';
 
 import Requests from './components/Requests';
-import { UserEnrolmentModal } from '../ProjectUsers';
+import { ProjectTerminationModal } from '../Projects';
 
 import { fetchProjects } from '../Projects/redux';
 import { fetchApplications } from '../Applications/redux';
@@ -46,7 +46,7 @@ class Dashboard extends Component {
           ) : null}
           {applications.hasApplications ? <Requests /> : null}
         </div>
-        <UserEnrolmentModal />
+        <ProjectTerminationModal />
       </div>
     );
   }

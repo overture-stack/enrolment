@@ -27,6 +27,7 @@ const UPDATE_PROJECT_FAILURE = 'project/UPDATE_PROJECT_FAILURE';
 const UI_SELECT_PROJECT = 'projectUI/SELECT_PROJECT';
 const UI_SELECT_TAB = 'projectUI/SELECT_TAB';
 const UI_RESET_TAB = 'projectUI/UI_RESET_TAB';
+const UI_RESET_PROJECT_TABS = 'projectUI/UI_RESET_PROJECT_TABS';
 
 const NEXT_STEP = 'projectRequestForm/NEXT_STEP';
 const PREVIOUS_STEP = 'projectRequestForm/PREVIOUS_STEP';
@@ -36,6 +37,8 @@ const TOGGLE_BILLING_FIELDS = 'projectRequestForm/TOGGLE_BILLING_FIELDS';
 const SHOW_BILLING_FIELDS = 'projectRequestForm/SHOW_BILLING_FIELDS';
 const CHANGE_COUNTRY = 'projectRequestForm/CHANGE_COUNTRY';
 const CHANGE_BILLING_COUNTRY = 'projectRequestForm/CHANGE_BILLING_COUNTRY';
+
+const PT_TOGGLE_MODAL = 'projectTermination/TOGGLE_MODAL';
 
 const fetchProjectsStart = emptyActionGenerator(FETCH_PROJECTS_REQUEST);
 const fetchProjectsSuccess = payloadActionGenerator(FETCH_PROJECTS_SUCCESS);
@@ -60,6 +63,7 @@ const updateProjectError = payloadActionGenerator(UPDATE_PROJECT_FAILURE);
 export const uiSelectProject = payloadActionGenerator(UI_SELECT_PROJECT);
 export const uiSelectTab = payloadActionGenerator(UI_SELECT_TAB);
 export const uiResetTab = payloadActionGenerator(UI_RESET_TAB);
+export const uiResetProjectsTab = payloadActionGenerator(UI_RESET_PROJECT_TABS);
 
 export const formNextStep = emptyActionGenerator(NEXT_STEP);
 export const formPrevStep = emptyActionGenerator(PREVIOUS_STEP);
@@ -69,6 +73,8 @@ export const toggleBillingFields = emptyActionGenerator(TOGGLE_BILLING_FIELDS);
 export const showBillingFields = emptyActionGenerator(SHOW_BILLING_FIELDS);
 export const changeCountry = payloadActionGenerator(CHANGE_COUNTRY);
 export const changeBillingCountry = payloadActionGenerator(CHANGE_BILLING_COUNTRY);
+
+export const toggleProjectTerminationModal = emptyActionGenerator(PT_TOGGLE_MODAL);
 
 /*
 * Public async thunk actions (mapped to component props)
@@ -186,6 +192,34 @@ export function denyProject(dispatch, id, next = () => null) {
     });
 }
 
+export function terminateProjectRequest(dispatch, id, next = () => null) {
+  dispatch(updateProjectStart('Terminate Project Request'));
+
+  return asyncServices.project
+    .update(id, { status: 3 })
+    .then(response => {
+      dispatch(updateProjectSuccess('Project Termination Requested'));
+      next();
+    })
+    .catch(error => {
+      dispatch(updateProjectError(error));
+    });
+}
+
+export function projectTerminated(dispatch, id, next = () => null) {
+  dispatch(updateProjectStart('Project Termination Confirmed'));
+
+  return asyncServices.project
+    .update(id, { status: 4 })
+    .then(response => {
+      dispatch(updateProjectSuccess('Project Terminated'));
+      next();
+    })
+    .catch(error => {
+      dispatch(updateProjectError(error));
+    });
+}
+
 /*
 * Reducers
 */
@@ -288,6 +322,11 @@ export const projectsUIReducer = (state = _defaultProjectsUIState, action) => {
         ...state,
         activeTab: 1,
       };
+    case UI_RESET_PROJECT_TABS:
+      return {
+        ...state,
+        ..._defaultProjectsUIState,
+      };
     default:
       return state;
   }
@@ -339,6 +378,23 @@ export const requestFormReducer = (state = _defaultRequestFormState, action) => 
             .regions.map(region => region.name),
         },
       };
+    default:
+      return state;
+  }
+};
+
+// Project Termination UI
+const _defaultProjectTerminationState = {
+  showModal: false,
+  isFetching: false,
+  submitSuccess: false,
+  error: null,
+};
+
+export const projectTerminationReducer = (state = _defaultProjectTerminationState, action) => {
+  switch (action.type) {
+    case PT_TOGGLE_MODAL:
+      return { ...state, showModal: !state.showModal };
     default:
       return state;
   }

@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
-from core.models import Projects
+from core.models import Projects, ProjectUsers
 from django.contrib.auth.models import User
 from core.serializers import ProjectsSerializer, ProjectSerializer
 from helpers import createUsers, createNewObjInstance
@@ -44,6 +44,9 @@ class ProjectsTest(APITestCase):
 
     def create_test_project(self, project={}, user=None):
         return createNewObjInstance(self, Projects, self.newProject, project, user)
+
+    def create_project_user(self, projectUser={}):
+        return createNewObjInstance(self, ProjectUsers, projectUser)
 
     def test_ensure_auth(self):
         """
@@ -140,16 +143,32 @@ class ProjectsTest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_put_only_for_admin(self):
+    def test_put_only_for_owner_or_admin(self):
         '''
-        Ensure only a superuser can update a project
+        Ensure owner or superuser can update a project
         '''
         project = self.create_test_project()
 
         updated_project = {
             **self.newProject,
-            'status': 1
+            'status': 3
         }
+
+        second_updated_project = {
+            **self.newProject,
+            'status': 4
+        }
+
+        # Create Project Users to test notification emails
+        test_project_user = {
+            'project': project,
+            'user': self.user.id,
+            'daco_email': 'user@asd.com',
+            'firstname': 'Firsty',
+            'lastname': 'Lastington',
+            'institution_email': 'institute@email.com',
+        }
+        self.create_project_user(test_project_user)
 
         user = User.objects.get(username='user')
         client = APIClient()
@@ -158,9 +177,9 @@ class ProjectsTest(APITestCase):
             reverse('projects-detail', args=[project.id]), updated_project)
         client.force_authenticate(user=self.admin_user)
         admin_response = client.put(
-            reverse('projects-detail', args=[project.id]), updated_project)
+            reverse('projects-detail', args=[project.id]), second_updated_project)
         client.force_authenticate(user=self.admin_user)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(admin_response.status_code, status.HTTP_200_OK)
 
     def test_no_delete(self):

@@ -104,6 +104,21 @@ class IsOwnerOrAdmin(permissions.BasePermission):
         return obj.user == request.user
 
 
+class IsOwnerOrAdminAll(permissions.BasePermission):
+    """
+    Custom permissions that allow admin or owner
+    permission to object on ALL HTTP verbs
+    """
+
+    def has_object_permission(self, request, view, obj):
+        # If superuser allow
+        if request.user.is_superuser:
+            return True
+
+        # Instance must have an attribute named `user`.
+        return obj.user == request.user
+
+
 class IsOwnerOrAdminOrDacoWithUpdate(permissions.BasePermission):
     """
     Custom permissions that allow admin, owner, or daco_email holder access
@@ -131,7 +146,7 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
         'list':  ProjectsSerializer,
     }
     authentication_classes = (SessionAuthentication, )
-    permission_classes = (IsAuthenticated, IsOwnerOrAdmin)
+    permission_classes = (IsAuthenticated, IsOwnerOrAdminAll)
 
     def get_queryset(self):
         """
@@ -174,6 +189,41 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
 
         # Otherwise return 404
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def perform_update(self, serializer):
+        # Save the data
+        project = serializer.save()
+
+        # If Termination Reqeust
+        if project.status == 3:
+            project_users = ProjectUsers.objects.filter(project=project.id)
+            project_users.update(status=3)
+            project_user_list = list(project_users.values())
+
+            email = {
+                'to': RESOURCE_ADMIN_EMAIL,
+                'cc': project.user.email,
+                'subject': 'Project Termination Request from {} for project "{}"'.format(
+                    project.user.email, project.project_name),
+                'message': 'A request from DACO email <strong>{}</strong> to terminate project <strong>"{}"</strong> has been initated. {}'.format(
+                    project.user.email, project.project_name, project_user_email_text(project_user_list))
+            }
+            send_update_notification(email)
+            # print(email) # for testing
+
+        elif project.status == 4:
+            project_users = ProjectUsers.objects.filter(project=project.id)
+            project_users.update(status=4)
+            email = {
+                'to': project.user.email,
+                'cc': RESOURCE_ADMIN_EMAIL,
+                'subject': 'Project Termination Request complete for project "{}"'.format(
+                    project.project_name),
+                'message': 'The request from DACO email <strong>{}</strong> to terminate project <strong>"{}"</strong> is now complete.'.format(
+                    project.user.email, project.project_name)
+            }
+            send_update_notification(email)
+            # print(email) # for testing
 
 
 class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
@@ -318,7 +368,7 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
                 'message': '{} {} has completed their registration and is ready to be activated by IT'.format(
                     project_user.firstname, project_user.lastname)
             }
-            self.send_update_notification(email)
+            send_update_notification(email)
         elif project_user.status == 2:
             email = {
                 'to': project_user.daco_email,
@@ -329,13 +379,16 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
                 'message': '{} {} has been activated by IT and is ready to use Collab'.format(
                     project_user.firstname, project_user.lastname)
             }
-            self.send_update_notification(email)
+            send_update_notification(email)
 
     def perform_create(self, serializer):
         # Save the data
         project_users = serializer.save()
 
-        # Send email to invited users
+        # Send email to invited users (can be single or mutliple project users)
+        if not isinstance(project_users, list):
+            project_users = [project_users]
+
         for project_user in project_users:
             project = project_user.project
 
@@ -365,24 +418,6 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
             email_message.attach_alternative(html_msg, "text/html")
 
             send_email(email_message)
-
-    def send_update_notification(self, email):
-        html_msg = Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/notification.html')).read()).render(
-            message=email['message']
-        )
-
-        text_msg = email['message']
-
-        email_message = EmailMultiAlternatives(
-            subject=email['subject'],
-            body=text_msg,
-            to=[email['to'], ],
-            cc=[email['cc'], ],
-        )
-
-        email_message.attach_alternative(html_msg, "text/html")
-
-        send_email(email_message)
 
 
 @api_view(['GET'])
@@ -423,9 +458,57 @@ def SocialViewSet(request):
         raise Http404("No Users matches the given query.")
 
 
+@api_view(['GET'])
+@authentication_classes((SessionAuthentication, ))
+@permission_classes((IsAuthenticated, ))
+def uniqueProjectUserCheck(request, project, email):
+    if request.user.is_authenticated():
+        project_obj = Projects.objects.get(pk=project)
+        existingProjectUsers = ProjectUsers.objects.filter(daco_email=email, project=project)
+        
+        isSameUser = project_obj.user.email == email
+        isAlreadyProjectUser = len(existingProjectUsers) > 0
+
+        if (isSameUser or isAlreadyProjectUser):
+            return Response('Duplicate User Error', status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response('User OK', status=status.HTTP_200_OK)
+
+    else:
+        return HttpResponseForbidden()
+
+
 def send_email(email_message):
     logger.debug(email_message)
     try:
         email_message.send()
     except Exception as e:
         logger.error('Error: Unable to send email: ' + str(e))
+
+
+def send_update_notification(email):
+    html_msg = Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/notification.html')).read()).render(
+        message=email['message']
+    )
+
+    text_msg = email['message']
+
+    email_message = EmailMultiAlternatives(
+        subject=email['subject'],
+        body=text_msg,
+        to=[email['to'], ],
+        cc=[email['cc'], ],
+    )
+
+    email_message.attach_alternative(html_msg, "text/html")
+
+    send_email(email_message)
+
+
+def project_user_email_text(project_users):
+    if len(project_users) == 0:
+        return "There are no project users associated with this project."
+
+    user_list = ['<li>{} {} - {}</li>'.format(
+        user['firstname'], user['lastname'], user['institution_email']) for user in project_users]
+    return 'Below are the associated users for this project:<br/><ul>{}</ul>'.format(''.join(user_list))

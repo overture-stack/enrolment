@@ -1,13 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Tabs, Tab } from 'react-bootstrap';
+import { Tabs, Tab, Button } from 'react-bootstrap';
+import { translate } from 'react-i18next';
 
 import PTProjectDetails from './components/PTProjectDetails';
 import PTUserEnrolment from './components/PTUserEnrolment';
 import PTUserDetails from './components/PTUserDetails';
+import ProjectTerminationModal from './ProjectTerminationModal';
 
-import { fetchOneProject, fetchProjects, uiSelectProject, uiSelectTab } from '../Projects/redux';
-import { fetchProjectUsersByProjectId } from '../ProjectUsers/redux';
+import {
+  fetchOneProject,
+  fetchProjects,
+  uiSelectProject,
+  uiSelectTab,
+  toggleProjectTerminationModal,
+} from '../Projects/redux';
+import { fetchProjectUsersByProjectId, clearProjectUsers } from '../ProjectUsers/redux';
 import { resetEnrolmentForm } from '../ProjectUsers/redux';
 
 import './projects.scss';
@@ -37,6 +45,7 @@ class Projects extends Component {
   resetAndFetchNewData() {
     this.props.uiSelectProject('');
     this.props.uiSelectTab(1);
+    this.props.clearProjectUsers();
     this.props.fetchProjects();
   }
 
@@ -47,6 +56,7 @@ class Projects extends Component {
       fetchOneProject,
       fetchProjectUsersByProjectId,
     } = this.props;
+    
     const projectId = event.target.value;
 
     if (projectId) {
@@ -63,9 +73,33 @@ class Projects extends Component {
   }
 
   render() {
-    const { projects, projectsUI: { selectedProject, activeTab }, uiSelectTab } = this.props;
+    const {
+      t,
+      projects,
+      projectsUI: { selectedProject, activeTab },
+      fetchProjectUsersByProjectId,
+      clearProjectUsers,
+      uiSelectTab,
+      toggleModal,
+    } = this.props;
 
     const projectIsSelected = selectedProject.length > 0;
+
+    const hasApprovedProjects =
+      projects.data.results.filter(project => project.status === 'Approved').length > 0;
+
+    const selectTab = tabIdx => {
+      // Reload Project Users if selected else clear
+      if (tabIdx === 3) {
+        if (projectIsSelected) {
+          fetchProjectUsersByProjectId(selectedProject);
+        } else {
+          clearProjectUsers();
+        }
+      }
+
+      uiSelectTab(tabIdx);
+    }
 
     return (
       <div className="wrapper">
@@ -76,7 +110,7 @@ class Projects extends Component {
               <div className="col-md-2">
                 <h4>Select Project</h4>
               </div>
-              <div className="col-md-3">
+              <div className="col-xs-6 col-md-3">
                 <select
                   className="form-control"
                   value={selectedProject}
@@ -95,12 +129,19 @@ class Projects extends Component {
                         ))}
                 </select>
               </div>
+              {hasApprovedProjects ? (
+                <div className="col-xs-6 col-md-3 col-md-push-4 project-terminate-button-col">
+                  <Button href="#" onClick={toggleModal}>
+                    {t('StaffActions.terminate')}
+                  </Button>
+                </div>
+              ) : null}
             </div>
             <div className="nav">
               <Tabs
                 id="projectsNavigation"
                 activeKey={activeTab}
-                onSelect={uiSelectTab}
+                onSelect={selectTab}
                 className={`tabs ${projectIsSelected ? 'selected' : ''}`}
               >
                 <Tab
@@ -128,6 +169,7 @@ class Projects extends Component {
             </div>
           </div>
         </div>
+        <ProjectTerminationModal />
       </div>
     );
   }
@@ -145,10 +187,12 @@ const mapDispatchToProps = dispatch => {
     fetchOneProject: id => fetchOneProject(dispatch, id),
     fetchProjects: () => fetchProjects(dispatch),
     fetchProjectUsersByProjectId: projectId => fetchProjectUsersByProjectId(dispatch, projectId),
+    clearProjectUsers: () => dispatch(clearProjectUsers()),
     uiSelectProject: project => dispatch(uiSelectProject(project)),
     uiSelectTab: tabIdx => dispatch(uiSelectTab(tabIdx)),
     resetEnrolmentForm: () => dispatch(resetEnrolmentForm()),
+    toggleModal: () => dispatch(toggleProjectTerminationModal()),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Projects);
+export default translate()(connect(mapStateToProps, mapDispatchToProps)(Projects));

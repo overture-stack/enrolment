@@ -7,12 +7,16 @@ STATUS_CHOICES = (
     (0, "Pending"),
     (1, "Approved"),
     (2, "Denied"),
+    (3, "Termination Requested"),
+    (4, "Terminated"),
 )
 
 USER_STATUS_CHOICES = (
     (0, "Invited"),
     (1, "Pending"),
     (2, "Active"),
+    (3, "Project Termination Requested"),
+    (4, "Project Terminated"),
 )
 
 

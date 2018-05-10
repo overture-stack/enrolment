@@ -3,25 +3,23 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { translate } from 'react-i18next';
-import _ from 'lodash';
 
-import { toggleModal } from '../../ProjectUsers/redux';
+import { toggleProjectTerminationModal } from '../../Projects/redux';
 
 const StaffActions = props => {
-  const { t, profile, projects, toggleModal } = props;
+  const { t, projects, toggleModal } = props;
 
-  const hasApprovedProjects = !!_.find(projects.results, project =>
-    _.includes(project.status, 'Approved'),
-  );
+  const hasApprovedProjects =
+    projects.results.filter(project => project.status === 'Approved').length > 0;
 
   return (
     <div className="requests-actions">
       <Link to="register/project" className="btn btn-default">
         {t('StaffActions.register')}
       </Link>
-      {hasApprovedProjects && !profile.is_staff ? (
+      {hasApprovedProjects ? (
         <Button href="#" onClick={toggleModal}>
-          {t('StaffActions.enrol')}
+          {t('StaffActions.terminate')}
         </Button>
       ) : null}
     </div>
@@ -39,7 +37,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    toggleModal: () => dispatch(toggleModal()),
+    toggleModal: () => dispatch(toggleProjectTerminationModal()),
   };
 };
 
