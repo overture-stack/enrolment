@@ -371,8 +371,8 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
             send_update_notification(email)
         elif project_user.status == 2:
             email = {
-                'to': project_user.daco_email,
-                'cc': project.user.email,
+                'to': project.user.email,
+                'cc': RESOURCE_ADMIN_EMAIL,
                 'data': project_user,
                 'subject': 'Project User {} {} has been activated'.format(
                     project_user.firstname, project_user.lastname),
