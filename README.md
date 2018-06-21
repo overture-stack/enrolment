@@ -24,6 +24,8 @@
 ## Introduction
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Slack](http://slack.overture.bio/badge.svg)](http://slack.overture.bio)
+
 
 Designed to be simple and seamlessly connect with an existing workflow, the app was created to replace PDF forms previously used to request projects (tenants) and users creation into our cloud environment. To prevent security challenges and ensure all requests go through a documented approval workflow, the system automatically send requests to our helpdesk system, tickets then processed by our team. 
 This allow for greater customization (such as variations from default quotas) and provide us with the ability to ask more questions if necessary.
