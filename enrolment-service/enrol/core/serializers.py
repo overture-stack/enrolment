@@ -83,6 +83,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             'position',
             'institution_name',
             'institution_email',
+            'institution_website',
             'phone',
             'street_address',
             'city',

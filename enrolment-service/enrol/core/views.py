@@ -258,6 +258,7 @@ class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
             'Position': application.position,
             'Institution': application.institution_name,
             'Institution Email': application.institution_email,
+            'Institution Website': application.institution_website,
             'Phone Number': application.phone,
             'Address': application.street_address,
             'City': application.city,
