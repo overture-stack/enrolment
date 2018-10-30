@@ -8,11 +8,10 @@ UserModel = get_user_model()
 
 
 class UserDetailsSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = UserModel
-        fields = ('pk', 'username', 'email',
-                  'first_name', 'last_name', 'is_staff')
+        fields = ('pk', 'username', 'email', 'first_name', 'last_name',
+                  'is_staff')
         read_only_fields = ('email', 'is_staff', 'username')
 
 
@@ -41,30 +40,22 @@ class ProjectUsersSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectUsers
-        fields = ('id', 'project', 'user', 'firstname', 'lastname', 'agreementDate', 'agreementCheck', 'position',
-                  'institution_name', 'institution_email', 'phone', 'daco_email', 'status', 'createdDate', 'updatedDate')
+        fields = ('id', 'project', 'user', 'firstname', 'lastname',
+                  'agreementDate', 'agreementCheck', 'position',
+                  'institution_name', 'institution_email', 'phone',
+                  'daco_email', 'status', 'createdDate', 'updatedDate')
         validators = [
             UniqueTogetherValidator(
                 queryset=ProjectUsers.objects.all(),
-                fields=('project', 'daco_email')
-            )
+                fields=('project', 'daco_email'))
         ]
 
 
 class BillingContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = BillingContact
-        fields = (
-            'id',
-            'contact_name',
-            'street_address',
-            'city',
-            'region',
-            'country',
-            'postal_code',
-            'createdDate',
-            'updatedDate'
-        )
+        fields = ('id', 'contact_name', 'street_address', 'city', 'region',
+                  'country', 'postal_code', 'createdDate', 'updatedDate')
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
@@ -72,33 +63,17 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Applications
-        fields = (
-            'id',
-            'project',
-            'user',
-            'firstname',
-            'lastname',
-            'agreementDate',
-            'agreementCheck',
-            'position',
-            'institution_name',
-            'institution_email',
-            'institution_website',
-            'phone',
-            'street_address',
-            'city',
-            'region',
-            'country',
-            'postal_code',
-            'daco_email',
-            'billing_contact',
-            'createdDate',
-            'updatedDate'
-        )
+        fields = ('id', 'project', 'user', 'firstname', 'lastname',
+                  'agreementDate', 'agreementCheck', 'position',
+                  'institution_name', 'institution_email',
+                  'institution_website', 'phone', 'street_address', 'city',
+                  'region', 'country', 'postal_code', 'daco_email',
+                  'billing_contact', 'createdDate', 'updatedDate')
 
     def create(self, validated_data):
         billing_contact = validated_data.pop(
-            'billing_contact') if 'billing_contact' in validated_data else False
+            'billing_contact'
+        ) if 'billing_contact' in validated_data else False
 
         save_data = validated_data
 
@@ -120,8 +95,8 @@ class ProjectsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Projects
-        fields = ('id', 'user', 'project_name', 'status',
-                  'createdDate', 'updatedDate')
+        fields = ('id', 'user', 'project_name', 'status', 'createdDate',
+                  'updatedDate')
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -131,8 +106,9 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Projects
-        fields = ('id', 'user', 'project_name', 'project_description', 'pi', 'status', 'createdDate', 'updatedDate',
-                  'applications', 'projectUsers')
+        fields = ('id', 'user', 'project_name', 'project_description', 'pi',
+                  'status', 'createdDate', 'updatedDate', 'applications',
+                  'projectUsers', 'project_ICGC_access')
 
 
 class UserSerializer(serializers.Serializer):
@@ -144,5 +120,5 @@ class UserSerializer(serializers.Serializer):
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'projects',
-                  'applications', 'projectUsers')
+        fields = ('email', 'username', 'projects', 'applications',
+                  'projectUsers')

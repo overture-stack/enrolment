@@ -111,6 +111,7 @@ export function submitProjectApplication(dispatch, data) {
     user: data.user,
     project_name: data.project_name,
     project_description: data.project_description,
+    project_ICGC_access: data.project_ICGC_access,
     pi: `${data.firstname} ${data.lastname}`,
     status: 0,
   };

@@ -26,6 +26,7 @@ class Projects(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     project_name = models.CharField(max_length=100)
     project_description = models.TextField()
+    project_ICGC_access = models.BooleanField(default=False)
     pi = models.CharField(max_length=200)
     status = models.IntegerField(choices=STATUS_CHOICES, default=0)
     createdDate = models.DateField(auto_now_add=True, auto_now=False)

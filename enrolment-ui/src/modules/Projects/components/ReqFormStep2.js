@@ -1,6 +1,6 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { RFInput, RFTextArea, rules } from '../../ReduxForm';
+import { RFInput, RFTextArea, RFConsent, rules } from '../../ReduxForm';
 
 const ReqFormStep2 = props => {
   const { handleSubmit, previousPage, invalid, disabled } = props;
@@ -10,8 +10,8 @@ const ReqFormStep2 = props => {
         <div className="col-md-12">
           <h2 className="fs-title">Collaboratory Project</h2>
           <h3 className="fs-subtitle">
-            Please provide a title and brief description of the cancer research project you are
-            requesting Collaboratory’s compute resources and data access for. Maximum 250 words.
+            Please provide a title and brief description of the research project you are requesting
+            Collaboratory’s compute resources and data access for. Maximum 250 words.
           </h3>
         </div>
       </div>
@@ -27,8 +27,18 @@ const ReqFormStep2 = props => {
       </div>
       <div className="row">
         <Field
+          type="checkbox"
+          name="project_ICGC_access"
+          label="I want access to ICGC data for cancer research"
+          className="text-left"
+          component={RFConsent}
+          disabled={disabled}
+        />
+      </div>
+      <div className="row">
+        <Field
           name="project_description"
-          placeholder="Project Description"
+          placeholder="Project Purpose"
           component={RFTextArea}
           validate={[rules.required, rules.maxLength(250)]}
           disabled={disabled}

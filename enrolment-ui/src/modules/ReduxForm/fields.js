@@ -59,10 +59,11 @@ export const RFConsent = ({
   label,
   input,
   placeholder,
+  className,
   meta: { touched, error, warning },
   disabled,
 }) => (
-  <label className="form-check-label col-md-12">
+  <label className={`form-check-label col-md-12 ${className}`}>
     <input
       name={name}
       className="form-check-input"
@@ -71,7 +72,7 @@ export const RFConsent = ({
       type="checkbox"
       disabled={disabled}
     />
-    <span>{label}</span>
+    <span style={{ marginLeft: '.5em' }}>{label}</span>
     {touched &&
       ((error && <span className="error">{error}</span>) ||
         (warning && <span className="warning">{warning}</span>))}
