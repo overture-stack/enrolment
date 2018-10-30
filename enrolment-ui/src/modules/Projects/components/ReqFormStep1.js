@@ -160,6 +160,17 @@ class ReqFormStep1 extends Component {
         <div className="row">
           <Field
             type="text"
+            name="institution_website"
+            placeholder="Institution Website"
+            component={RFInput}
+            validate={rules.url}
+            disabled={disabled}
+          />
+        </div>
+
+        <div className="row">
+          <Field
+            type="text"
             name="street_address"
             placeholder="Street Address"
             component={RFInput}
@@ -273,7 +284,10 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(
   reduxForm({
     form: 'projectRequestForm', // <------ same form name
     destroyOnUnmount: false, // <------ preserve form data

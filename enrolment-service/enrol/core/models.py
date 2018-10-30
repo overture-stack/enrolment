@@ -48,6 +48,7 @@ class Applications(models.Model):
     position = models.CharField(max_length=50)
     institution_name = models.CharField(max_length=100)
     institution_email = models.EmailField()
+    institution_website = models.URLField(null=True)
     phone = models.CharField(max_length=50)
     street_address = models.CharField(max_length=100)
     city = models.CharField(max_length=100)

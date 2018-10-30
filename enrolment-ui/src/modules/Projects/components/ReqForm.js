@@ -117,7 +117,11 @@ class ReqForm extends Component {
   }
 
   render() {
-    const { projectRequestForm: { step }, formNextStep, formPrevStep } = this.props;
+    const {
+      projectRequestForm: { step },
+      formNextStep,
+      formPrevStep,
+    } = this.props;
 
     const steps = ['Principal Investigator', 'Collaboratory Project', 'Acceptance & Signature'];
 
@@ -159,4 +163,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ReqForm));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(ReqForm),
+);
