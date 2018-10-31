@@ -29,7 +29,7 @@ const ReqFormStep2 = props => {
         <Field
           type="checkbox"
           name="project_ICGC_access"
-          label="I want access to ICGC data for cancer research"
+          label="I have or intend to acquire DACO access"
           className="text-left"
           component={RFConsent}
           disabled={disabled}
