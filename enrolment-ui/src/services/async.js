@@ -18,14 +18,14 @@ export function createAsyncs(isDevelopment = false) {
     auth: {
       googleSuccess: asyncServiceCreator('POST', `${apiBase}/auth/google/`, withDataAndCSRF),
       adminLogin: data =>
-        asyncServiceCreator('POST', `${apiBase}/auth/login/`, withDataAndCSRF)(
-          data,
-        ).catch(error => {
-          if (error.response.data && error.response.data.non_field_errors)
-            return Promise.reject('The Credentials Provided were not correct');
+        asyncServiceCreator('POST', `${apiBase}/auth/login/`, withDataAndCSRF)(data).catch(
+          error => {
+            if (error.response.data && error.response.data.non_field_errors)
+              return Promise.reject('The Credentials Provided were not correct');
 
-          return Promise.reject('Something went wrong. Please Try again.');
-        }),
+            return Promise.reject('Something went wrong. Please Try again.');
+          },
+        ),
       logout: asyncServiceCreator('POST', `${apiBase}/auth/logout/`, withCSRF),
     },
     profile: {
@@ -69,8 +69,11 @@ export function createAsyncs(isDevelopment = false) {
         }),
     },
     uniqueProjectUser: {
-      check: (project, email) => 
-        asyncServiceCreator('GET', `${apiBase}/unique-project-user-check/${project}/${email}/`)().catch(error => {
+      check: (project, email) =>
+        asyncServiceCreator(
+          'GET',
+          `${apiBase}/unique-project-user-check/${project}/${email}/`,
+        )().catch(error => {
           if (error)
             return Promise.reject(
               new Error(
@@ -84,32 +87,32 @@ export function createAsyncs(isDevelopment = false) {
     },
   };
 
-  // If dummy async services are required in development override here
-  if (isDevelopment) {
-    return {
-      ...asyncs,
-      daco: {
-        ...asyncs.daco,
-        check: email =>
-          asyncDummyCreator(
-            {
-              user: {
-                openid: email,
-                csa: true,
-                userinfo: [
-                  {
-                    uid: email,
-                    name: email,
-                    email: email,
-                  },
-                ],
-              },
+  // Disable daco check, it was only disabed in development
+  /*   if (isDevelopment) { */
+  return {
+    ...asyncs,
+    daco: {
+      ...asyncs.daco,
+      check: email =>
+        asyncDummyCreator(
+          {
+            user: {
+              openid: email,
+              csa: true,
+              userinfo: [
+                {
+                  uid: email,
+                  name: email,
+                  email: email,
+                },
+              ],
             },
-            250,
-          )(),
-      },
-    };
-  }
+          },
+          250,
+        )(),
+    },
+  };
+  /*   } */
 
-  return asyncs;
+  /*   return asyncs; */
 }
