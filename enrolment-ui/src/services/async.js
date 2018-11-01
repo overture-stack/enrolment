@@ -108,7 +108,7 @@ export function createAsyncs(isDevelopment = false) {
               ],
             },
           },
-          250,
+          1,
         )(),
     },
   };
