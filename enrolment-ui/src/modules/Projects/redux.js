@@ -111,6 +111,7 @@ export function submitProjectApplication(dispatch, data) {
     user: data.user,
     project_name: data.project_name,
     project_description: data.project_description,
+    project_ICGC_access: data.project_ICGC_access,
     pi: `${data.firstname} ${data.lastname}`,
     status: 0,
   };
@@ -129,6 +130,7 @@ export function submitProjectApplication(dispatch, data) {
         position: data.position,
         institution_name: data.institution_name,
         institution_email: data.institution_email,
+        institution_website: data.institution_website,
         phone: data.phone,
         street_address: data.street_address,
         city: data.city,

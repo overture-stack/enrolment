@@ -258,6 +258,7 @@ class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
             'Position': application.position,
             'Institution': application.institution_name,
             'Institution Email': application.institution_email,
+            'Institution Website': application.institution_website,
             'Phone Number': application.phone,
             'Address': application.street_address,
             'City': application.city,
@@ -267,7 +268,8 @@ class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
             'DACO email': application.daco_email,
             'Application Date': application.createdDate,
             'Project Name': project.project_name,
-            'Project Description': project.project_description
+            'Project Description': project.project_description,
+            'ICGC Access': project.project_ICGC_access
         }
 
         if (application.billing_contact):
