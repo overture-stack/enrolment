@@ -205,7 +205,7 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
                 'cc': project.user.email,
                 'subject': 'Project Termination Request from {} for project "{}"'.format(
                     project.user.email, project.project_name),
-                'message': 'A request from DACO email <strong>{}</strong> to terminate project <strong>"{}"</strong> has been initated. {}'.format(
+                'message': 'A request from email <strong>{}</strong> to terminate project <strong>"{}"</strong> has been initated. {}'.format(
                     project.user.email, project.project_name, project_user_email_text(project_user_list))
             }
             send_update_notification(email)
@@ -219,7 +219,7 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
                 'cc': RESOURCE_ADMIN_EMAIL,
                 'subject': 'Project Termination Request complete for project "{}"'.format(
                     project.project_name),
-                'message': 'The request from DACO email <strong>{}</strong> to terminate project <strong>"{}"</strong> is now complete.'.format(
+                'message': 'The request from email <strong>{}</strong> to terminate project <strong>"{}"</strong> is now complete.'.format(
                     project.user.email, project.project_name)
             }
             send_update_notification(email)
@@ -395,7 +395,7 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
             project = project_user.project
 
             text_msg = 'Your Principal Investigator {pi} has requested to enrol you to the Collaboratory'\
-                ' project {name}. Please complete the online form after signing in with your DACO account:' \
+                ' project {name}. Please complete the online form after signing in with your account:' \
                 ' https://{url}/register-user/{project_id}/{id}/'.format(id=project_user.id,
                                                                          name=project.project_name,
                                                                          url=SITE_URL,

@@ -29,7 +29,7 @@ const PTUserDetails = props => {
             <h2>Manage Users</h2>
             <BootstrapTable data={data} striped={true} hover={true}>
               <TableHeaderColumn isKey={true} dataField="daco_email">
-                DACO Email
+                Email
               </TableHeaderColumn>
               <TableHeaderColumn dataField="firstname">Name</TableHeaderColumn>
               <TableHeaderColumn dataField="institution_name">Institute</TableHeaderColumn>
@@ -53,4 +53,7 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, null)(PTUserDetails);
+export default connect(
+  mapStateToProps,
+  null,
+)(PTUserDetails);

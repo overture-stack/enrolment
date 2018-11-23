@@ -22,19 +22,19 @@ const ErrorMessage = props => {
 };
 
 const TabReqForm = props => {
-  const { handleSubmit, pristine, invalid, userEnrolmentForm: { submitSuccess, error } } = props;
+  const {
+    handleSubmit,
+    pristine,
+    invalid,
+    userEnrolmentForm: { submitSuccess, error },
+  } = props;
 
   return (
     <form onSubmit={handleSubmit}>
       {submitSuccess ? (
         <SuccessMessage />
       ) : (
-        <Field
-          component={EmailList}
-          label="Users' Daco Email"
-          name="email"
-          validate={rules.required}
-        />
+        <Field component={EmailList} label="Users' Email" name="email" validate={rules.required} />
       )}
       {error ? <ErrorMessage error={error} /> : null}
       {!submitSuccess ? (
@@ -54,7 +54,10 @@ const mapStateToProps = state => {
 
 TabReqForm.displayName = 'TabReqForm';
 
-export default connect(mapStateToProps, null)(
+export default connect(
+  mapStateToProps,
+  null,
+)(
   reduxForm({
     form: 'userRequestForm',
     destroyOnUnmount: true,

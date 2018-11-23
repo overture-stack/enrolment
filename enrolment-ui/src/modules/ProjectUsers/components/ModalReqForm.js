@@ -72,7 +72,7 @@ const ModalReqForm = props => {
           {pristine ? null : (
             <Field
               component={EmailList}
-              label="Users' Daco Email"
+              label="Users' Email"
               name="email"
               validate={rules.required}
             />
@@ -109,7 +109,10 @@ const mapDispatchToProps = dispatch => {
 
 ModalReqForm.displayName = 'ModalReqForm';
 
-export default connect(mapStateToProps, mapDispatchToProps)(
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(
   reduxForm({
     form: 'userRequestForm',
     destroyOnUnmount: true,
