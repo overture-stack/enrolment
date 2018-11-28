@@ -2,9 +2,12 @@ import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
 import { RFConsent, rules } from '../../ReduxForm';
+import { getOneConfig } from '../../../config';
 
 const ReqFormStep3 = props => {
   const { handleSubmit, previousPage, submitting, pristine, invalid, disabled } = props;
+  const { peFullTerms } = getOneConfig('peFullTerms');
+
   return (
     <form onSubmit={handleSubmit} className="agreement">
       <div className="row">
@@ -23,6 +26,9 @@ const ReqFormStep3 = props => {
             subscribed to Collaboratory announcement mailing-list and will receive collaboratory
             notification emails.
           </p>
+          <a href={peFullTerms} target="_blank">
+            Full Terms and Conditions
+          </a>
         </div>
       </div>
       {disabled ? null : (

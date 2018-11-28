@@ -32,7 +32,7 @@ const onLoginSuccess = (dispatch, data) => {
 const onGoogleLoginSuccess = (dispatch, data) => {
   asyncServices.auth
     .googleSuccess({ access_token: data.accessToken })
-    .then(() => asyncServices.daco.check(data.profileObj.email))
+    /*     .then(() => asyncServices.daco.check(data.profileObj.email)) */
     .then(response => {
       const next = () => dispatch(loginSuccess());
       fetchProfile(dispatch, false, next);

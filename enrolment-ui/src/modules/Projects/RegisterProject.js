@@ -17,7 +17,11 @@ const createCloseModal = (closeFunc, next) => {
 };
 
 const RegisterProject = props => {
-  const { projectRequestForm: { showModal }, formReset, history: { push } } = props;
+  const {
+    projectRequestForm: { showModal },
+    formReset,
+    history: { push },
+  } = props;
 
   const handleClose = createCloseModal(
     () => {
@@ -29,7 +33,7 @@ const RegisterProject = props => {
   const modalText = {
     title: 'Application',
     body:
-      'Thanks! Your Application has been received. A confirmation email was sent to your DACO email. We will contact you shortly with the results of your application.',
+      'Thanks! Your Application has been received. A confirmation email was sent to your email. We will contact you shortly with the results of your application.',
   };
 
   return (
@@ -58,4 +62,9 @@ const mapDispatchToProps = dispatch => {
 
 RegisterProject.displayName = 'RegisterProject';
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(RegisterProject));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(RegisterProject),
+);

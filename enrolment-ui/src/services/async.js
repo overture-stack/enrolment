@@ -56,18 +56,18 @@ export function createAsyncs(isDevelopment = false) {
           withDataAndCSRF,
         )(data),
     },
-    daco: {
-      check: email =>
-        asyncServiceCreator('GET', `${apiBase}/daco/${email}/`)().catch(error => {
-          if (error)
-            return Promise.reject(
-              new Error(
-                `You need a DACO account to be able to use this Application. <br/>
-                For more information, Please go to <a href="https://icgc.org/daco" target="_blank">https://icgc.org/daco</a>`,
-              ),
-            );
-        }),
-    },
+    /* daco: {
+     *   check: email =>
+     *     asyncServiceCreator('GET', `${apiBase}/daco/${email}/`)().catch(error => {
+     *       if (error)
+     *         return Promise.reject(
+     *           new Error(
+     *             `You need a DACO account to be able to use this Application. <br/>
+     *             For more information, Please go to <a href="https://icgc.org/daco" target="_blank">https://icgc.org/daco</a>`,
+     *           ),
+     *         );
+     *     }),
+     * }, */
     uniqueProjectUser: {
       check: (project, email) =>
         asyncServiceCreator(
@@ -87,32 +87,5 @@ export function createAsyncs(isDevelopment = false) {
     },
   };
 
-  // Disable daco check, it was only disabed in development
-  /*   if (isDevelopment) { */
-  return {
-    ...asyncs,
-    daco: {
-      ...asyncs.daco,
-      check: email =>
-        asyncDummyCreator(
-          {
-            user: {
-              openid: email,
-              csa: true,
-              userinfo: [
-                {
-                  uid: email,
-                  name: email,
-                  email: email,
-                },
-              ],
-            },
-          },
-          1,
-        )(),
-    },
-  };
-  /*   } */
-
-  /*   return asyncs; */
+  return asyncs;
 }

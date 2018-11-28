@@ -77,7 +77,7 @@ const ReqFormStep1 = props => {
         <Field
           type="email"
           name="daco_email"
-          placeholder="Daco Email"
+          placeholder="Email"
           component={RFInput}
           validate={[rules.required, rules.email]}
           disabled={true}

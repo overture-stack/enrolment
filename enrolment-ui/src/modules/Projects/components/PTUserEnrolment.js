@@ -17,7 +17,12 @@ const onSubmit = (createUsers, user, projectId, next) => {
 };
 
 const PTUserEnrolment = props => {
-  const { createProjectUsers, profile: { pk }, project, fetchAllProjectUsers } = props;
+  const {
+    createProjectUsers,
+    profile: { pk },
+    project,
+    fetchAllProjectUsers,
+  } = props;
 
   if (project.loading) return false;
 
@@ -32,10 +37,10 @@ const PTUserEnrolment = props => {
           </div>
           <div className="row">
             <div className="col-md-12">
-              <p>
-                In order to enrol a user to your Collaboratory project, the user should have a DACO
-                account
-              </p>
+              {/* <p>
+                  In order to enrol a user to your Collaboratory project, the user should have a 
+                  account
+                  </p> */}
             </div>
           </div>
           <div className="row tab-req-form">
@@ -68,4 +73,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PTUserEnrolment);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(PTUserEnrolment);
