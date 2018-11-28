@@ -163,17 +163,20 @@ export function activateProjectUser(dispatch, projectId, id, next = () => null) 
 export function emailCheck(dispatch, project, email) {
   dispatch(emailCheckStart());
 
+  // Email check placeholder
+  dispatch(emailCheckSuccess(email));
+
   // We first check to ensure that the email is not already in use,
   // then we check that it's a valid daco email
-  return asyncServices.uniqueProjectUser
-    .check(project, email)
-    .then(() => asyncServices.daco.check(email))
-    .then(response => {
-      dispatch(emailCheckSuccess(email));
-    })
-    .catch(error => {
-      dispatch(emailCheckError(error));
-    });
+  /* return asyncServices.uniqueProjectUser
+   *   .check(project, email)
+   *   .then(() => asyncServices.daco.check(email))
+   *   .then(response => {
+   *     dispatch(emailCheckSuccess(email));
+   *   })
+   *   .catch(error => {
+   *     dispatch(emailCheckError(error));
+   *   }); */
 }
 
 /*
