@@ -1,5 +1,7 @@
 <h1 align="center"> Enrolment </h1> <br>
 
+<p align="center"><img alt="General Availability" title="General Availability" src="http://www.overture.bio/img/progress-horizontal-GA.svg" width="320" /></p>
+
 <p align="center">
     <img alt="GitPoint" title="GitPoint" src="https://github.com/overture-stack/enrolment/blob/develop/docs/screenshot-register-project.png?raw=true" width="480">
 </p>
