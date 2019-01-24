@@ -19,7 +19,7 @@ const ApplicationRequests = props => {
     fetchAllProjectUsers,
     approveProject,
     denyProject,
-    projectTerminated
+    projectTerminated,
   } = props;
 
   const fetchNewData = () => {
@@ -33,65 +33,66 @@ const ApplicationRequests = props => {
       <h4>{t('ApplicationRequests.title')}</h4>
       <table className="table table-striped table-bordered">
         <thead>
-          <Trans
-            i18nKey={
-              profile.is_staff ? 'RequestTable.tableHeaderAdmin' : 'RequestTable.tableHeader'
-            }
-            parent="tr"
-          >
-            <th>Request ID</th>
+          <tr>
             <th>Project Title</th>
+            {profile.is_staff && <th>Institution Name</th>}
+            {profile.is_staff && <th>Institution Email</th>}
+            {profile.is_staff && <th>First Name</th>}
+            {profile.is_staff && <th>Last Name</th>}
             <th>Created Date</th>
             <th>Updated Date</th>
             <th>Status</th>
-            {profile.is_staff ? <th>Action</th> : null}
-          </Trans>
+            {profile.is_staff && <th>Action</th>}
+          </tr>
         </thead>
         <tbody>
-          {projects.loading || applications.loading
-            ? null
-            : projects.data.results.map(project => {
-                const application = _.find(applications.data.results, { project: project.id });
+          {!projects.loading &&
+            !applications.loading &&
+            projects.data.results.map(project => {
+              const application = _.find(applications.data.results, { project: project.id });
 
-                // In case there is an oprhaned project with no application
-                if (!application) return false;
+              // In case there is an oprhaned project with no application
+              if (!application) return false;
 
-                return (
-                  <tr key={application.id}>
+              return (
+                <tr key={application.id}>
+                  <td>
+                    <Link to={`/view/project/${application.id}`}>
+                      {_.truncate(project.project_name, { length: 10, omission: '...' })}
+                    </Link>
+                  </td>
+                  {profile.is_staff && <td>{application.institution_name}</td>}
+                  {profile.is_staff && <td>{application.institution_email}</td>}
+                  {profile.is_staff && <td>{application.firstname}</td>}
+                  {profile.is_staff && <td>{application.lastname}</td>}
+                  <td>{project.createdDate}</td>
+                  <td>{project.updatedDate}</td>
+                  <td>{project.status}</td>
+                  {profile.is_staff && (
                     <td>
-                      <Link to={`/view/project/${application.id}`}>
-                        {_.truncate(application.id, { length: 10, omission: '...' })}
-                      </Link>
-                    </td>
-                    <td>{project.project_name}</td>
-                    <td>{project.createdDate}</td>
-                    <td>{project.updatedDate}</td>
-                    <td>{project.status}</td>
-                    {profile.is_staff ? (
-                      <td>
-                        {project.status === 'Pending' ? (
-                          <div className="admin-actions">
-                            <a onClick={() => approveProject(project.id, fetchNewData)}>
-                              {t('RequestTable.action.approve')}
-                            </a>
-                            <a onClick={() => denyProject(project.id, fetchNewData)}>
-                              {t('RequestTable.action.deny')}
-                            </a>
-                          </div>
-                        ) : null}
-                        {project.status === 'Termination Requested' ? (
-                          <a onClick={() => projectTerminated(project.id, fetchNewData)}>
+                      {project.status === 'Pending' ? (
+                        <div className="admin-actions">
+                          <a onClick={() => approveProject(project.id, fetchNewData)}>
+                            {t('RequestTable.action.approve')}
+                          </a>
+                          <a onClick={() => denyProject(project.id, fetchNewData)}>
+                            {t('RequestTable.action.deny')}
+                          </a>
+                        </div>
+                      ) : null}
+                      {project.status === 'Termination Requested' ? (
+                        <a onClick={() => projectTerminated(project.id, fetchNewData)}>
                           {t('RequestTable.action.confirmTermination')}
                         </a>
-                        ) : null}
-                        {(project.status === 'Approved' || project.status === 'Terminated') ? (
-                          <span>{t('RequestTable.action.none')}</span>
-                        ) : null}
-                      </td>
-                    ) : null}
-                  </tr>
-                );
-              })}
+                      ) : null}
+                      {project.status === 'Approved' || project.status === 'Terminated' ? (
+                        <span>{t('RequestTable.action.none')}</span>
+                      ) : null}
+                    </td>
+                  )}
+                </tr>
+              );
+            })}
         </tbody>
       </table>
     </div>
@@ -115,7 +116,7 @@ const mapDispatchToProps = dispatch => {
     fetchAllProjectUsers: () => fetchAllProjectUsers(dispatch),
     approveProject: (id, next) => approveProject(dispatch, id, next),
     denyProject: (id, next) => denyProject(dispatch, id, next),
-    projectTerminated: (id, next) => projectTerminated(dispatch, id, next)
+    projectTerminated: (id, next) => projectTerminated(dispatch, id, next),
   };
 };
 
