@@ -150,7 +150,7 @@ class ReqFormStep1 extends Component {
               rules.email,
               rules.mustNotMatch(
                 get(formState, 'values.daco_email', ''),
-                'Institution email must be different than daco gmail',
+                'Institution email must be different from daco email',
               ),
             ]}
             disabled={disabled}

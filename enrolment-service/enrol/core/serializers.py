@@ -89,6 +89,11 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
         return application
 
+    def validate(self, data):
+        if data['daco_email'].lower() == data['institution_email'].lower():
+            raise serializers.ValidationError("Institution email must be different from daco email")
+        return data
+
 
 class ProjectsSerializer(serializers.ModelSerializer):
     status = ChoicesField(choices=STATUS_CHOICES)
