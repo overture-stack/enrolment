@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { get } from 'lodash';
 import { Field, reduxForm, change, formValueSelector } from 'redux-form';
 import { RFInput, RFSelectFlat, rules } from '../../ReduxForm';
 
@@ -79,6 +80,7 @@ class ReqFormStep1 extends Component {
       invalid,
       disabled,
       projectRequestForm: { showBillingFields, countryRegion },
+      formState,
       toggleBillingFields,
       changeCountry,
       changeBillingCountry,
@@ -143,7 +145,14 @@ class ReqFormStep1 extends Component {
             placeholder="Institution Email"
             component={RFInput}
             bootstrapClass="col-md-6"
-            validate={[rules.required, rules.email]}
+            validate={[
+              rules.required,
+              rules.email,
+              rules.mustNotMatch(
+                get(formState, 'values.daco_email', ''),
+                'Institution email must be different than daco gmail',
+              ),
+            ]}
             disabled={disabled}
           />
           <Field
@@ -163,7 +172,7 @@ class ReqFormStep1 extends Component {
             name="institution_website"
             placeholder="Institution Website"
             component={RFInput}
-            validate={rules.url}
+            validate={[rules.url]}
             disabled={disabled}
           />
         </div>
@@ -265,6 +274,7 @@ const mapStateToProps = state => {
     projectRequestForm: state.projectRequestForm,
     selectedRegion: selector(state, 'region'),
     selectedBillingRegion: selector(state, 'billing_region'),
+    formState: state.form.projectRequestForm,
   };
 };
 
@@ -284,10 +294,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(
+export default connect(mapStateToProps, mapDispatchToProps)(
   reduxForm({
     form: 'projectRequestForm', // <------ same form name
     destroyOnUnmount: false, // <------ preserve form data
