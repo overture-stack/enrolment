@@ -72,7 +72,8 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         if data['daco_email'].lower() == data['institution_email'].lower():
-            raise serializers.ValidationError("Institution email must be different from daco email")
+            raise serializers.ValidationError(
+                "Institution email must be different from daco email")
         return data
 
     def create(self, validated_data):
