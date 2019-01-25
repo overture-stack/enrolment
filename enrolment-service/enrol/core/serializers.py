@@ -70,6 +70,12 @@ class ApplicationSerializer(serializers.ModelSerializer):
                   'region', 'country', 'postal_code', 'daco_email',
                   'billing_contact', 'createdDate', 'updatedDate')
 
+    def validate(self, data):
+        if data['daco_email'].lower() == data['institution_email'].lower():
+            raise serializers.ValidationError(
+                "Institution email must be different from daco email")
+        return data
+
     def create(self, validated_data):
         billing_contact = validated_data.pop(
             'billing_contact'

@@ -126,6 +126,20 @@
 #         self.assertEqual(Applications.objects.get(
 #         ).daco_email, 'fluffykins@gmail.com')
 
+#     def test_create_application_enforce_unique_emails(self):
+#         """
+#         Ensure we cannot create a new application object which has matching daco/inst. emails.
+#         """
+#         user = User.objects.get(username='user')
+#         client = APIClient()
+#         client.force_authenticate(user=self.user)
+#         application = self.newApplication
+#         application['institution_email'] = 'fluffykins@gmail.com'
+#         application['daco_email'] = 'fluffykins@gmail.com'
+#         response = client.post(self.url, application)
+
+#         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
 #     def test_create_application_with_billing_contact(self):
 #         """
 #         Ensure we can create a new application object.
