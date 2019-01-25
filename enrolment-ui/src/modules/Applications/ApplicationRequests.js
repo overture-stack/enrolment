@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { translate, Trans } from 'react-i18next';
+import { translate } from 'react-i18next';
 import _ from 'lodash';
 
 import { fetchProjects, approveProject, denyProject, projectTerminated } from '../Projects/redux';

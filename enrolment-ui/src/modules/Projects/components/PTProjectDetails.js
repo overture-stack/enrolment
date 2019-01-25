@@ -9,8 +9,8 @@ const PTProjectDetails = props => {
   const {
     project_description = '',
     pi = '',
-    status = '',
-    billing_status = 'Outstanding Invoice or Usage',
+    // status = '',
+    // billing_status = 'Outstanding Invoice or Usage',
   } = data;
 
   return (
