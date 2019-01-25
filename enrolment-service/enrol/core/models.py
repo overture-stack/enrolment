@@ -59,6 +59,7 @@ class Applications(models.Model):
     daco_email = models.EmailField()
     billing_contact = models.ForeignKey(
         'BillingContact', blank=True, null=True, editable=False)
+    invoice_consent = models.BooleanField(default=False, editable=False)
     createdDate = models.DateField(auto_now_add=True, auto_now=False)
     updatedDate = models.DateField(auto_now=True)
 

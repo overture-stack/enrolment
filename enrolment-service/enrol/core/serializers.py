@@ -67,13 +67,17 @@ class ApplicationSerializer(serializers.ModelSerializer):
                   'agreementDate', 'agreementCheck', 'position',
                   'institution_name', 'institution_email',
                   'institution_website', 'phone', 'street_address', 'city',
-                  'region', 'country', 'postal_code', 'daco_email',
+                  'region', 'country', 'postal_code', 'daco_email', 'invoice_consent',
                   'billing_contact', 'createdDate', 'updatedDate')
 
     def validate(self, data):
+        print(data)
         if data['daco_email'].lower() == data['institution_email'].lower():
             raise serializers.ValidationError(
                 "Institution email must be different from daco email")
+        if data['invoice_consent'] != True:
+            raise serializers.ValidationError(
+                "Invoice consent cannot be false")
         return data
 
     def create(self, validated_data):
