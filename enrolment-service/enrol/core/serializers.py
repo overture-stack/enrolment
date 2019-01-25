@@ -59,6 +59,7 @@ class BillingContactSerializer(serializers.ModelSerializer):
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
+    invoice_consent = serializers.BooleanField(required=True)
     billing_contact = BillingContactSerializer(required=False)
 
     class Meta:
@@ -71,7 +72,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
                   'billing_contact', 'createdDate', 'updatedDate')
 
     def validate(self, data):
-        print(data)
         if data['daco_email'].lower() == data['institution_email'].lower():
             raise serializers.ValidationError(
                 "Institution email must be different from daco email")

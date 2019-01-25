@@ -57,9 +57,9 @@ class Applications(models.Model):
     country = models.CharField(max_length=100)
     postal_code = models.CharField(max_length=100)
     daco_email = models.EmailField()
+    invoice_consent = models.BooleanField(default=False, editable=False)
     billing_contact = models.ForeignKey(
         'BillingContact', blank=True, null=True, editable=False)
-    invoice_consent = models.BooleanField(default=False, editable=False)
     createdDate = models.DateField(auto_now_add=True, auto_now=False)
     updatedDate = models.DateField(auto_now=True)
 
