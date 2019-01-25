@@ -138,6 +138,7 @@ export function submitProjectApplication(dispatch, data) {
         country: data.country,
         postal_code: data.postal_code,
         agreementCheck: data.agreementCheck,
+        invoice_consent: data.invoice_consent,
       };
 
       // Get billing data if present

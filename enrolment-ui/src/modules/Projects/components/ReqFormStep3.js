@@ -31,7 +31,7 @@ const ReqFormStep3 = props => {
           </a>
         </div>
       </div>
-      {disabled ? null : (
+      {!disabled && (
         <div className="row">
           <Field
             name="agreementCheck"

@@ -28,8 +28,11 @@ export const rules = {
       ? 'Invalid URL (example: http(s)://www.example.com)'
       : undefined,
 
-  mustNotMatch: (existing, msg) => value =>
-    value && (existing.toLowerCase() === value.toLowerCase())
-      ? (msg ? msg : `${value} must be different from ${existing}`)
-      : undefined,
+  mustNotMatch: (existing, msg) => value => {
+    if(value && existing.toLowerCase() === value.toLowerCase()) {
+      return msg ? msg : `${value} must be different from ${existing}`;
+    } else {
+      return undefined;
+    }
+  }
 };
