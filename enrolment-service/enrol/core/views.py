@@ -266,6 +266,7 @@ class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
             'Zip/Postal Code': application.postal_code,
             'Country': application.country,
             'DACO email': application.daco_email,
+            'Invoice Consent': application.invoice_consent,
             'Application Date': application.createdDate,
             'Project Name': project.project_name,
             'Project Description': project.project_description,

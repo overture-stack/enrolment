@@ -44,7 +44,8 @@
 #             'region': 'Ontario',
 #             'country': 'Canada',
 #             'postal_code': 'M8V 0C1',
-#             'daco_email': 'fluffykins@gmail.com'
+#             'daco_email': 'fluffykins@gmail.com',
+#             'invoice_consent': True,
 #         }
 
 #         self.list_response_set = set([
@@ -65,6 +66,7 @@
 #             'country',
 #             'postal_code',
 #             'daco_email',
+#             'invoice_consent',
 #             'billing_contact',
 #             'createdDate',
 #             'updatedDate'
@@ -88,6 +90,7 @@
 #             'country',
 #             'postal_code',
 #             'daco_email',
+#             'invoice_consent',
 #             'billing_contact',
 #             'createdDate',
 #             'updatedDate'
@@ -116,6 +119,7 @@
 #         """
 #         Ensure we can create a new application object.
 #         """
+
 #         user = User.objects.get(username='user')
 #         client = APIClient()
 #         client.force_authenticate(user=self.user)
@@ -133,9 +137,22 @@
 #         user = User.objects.get(username='user')
 #         client = APIClient()
 #         client.force_authenticate(user=self.user)
-#         application = self.newApplication
+#         application = {**self.newApplication}
 #         application['institution_email'] = 'fluffykins@gmail.com'
 #         application['daco_email'] = 'fluffykins@gmail.com'
+#         response = client.post(self.url, application)
+
+#         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+#     def test_create_application_enforce_invoice_consent(self):
+#         """
+#         Ensure we cannot create a new application object which has matching daco/inst. emails.
+#         """
+#         user = User.objects.get(username='user')
+#         client = APIClient()
+#         client.force_authenticate(user=self.user)
+#         application = {**self.newApplication}
+#         application['invoice_consent'] = False
 #         response = client.post(self.url, application)
 
 #         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

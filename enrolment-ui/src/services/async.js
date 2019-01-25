@@ -1,4 +1,4 @@
-import { asyncServiceCreator, asyncDummyCreator } from './asyncFactory';
+import { asyncServiceCreator } from './asyncFactory';
 
 // Create all required async services here
 export function createAsyncs(isDevelopment = false) {
