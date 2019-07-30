@@ -11,7 +11,7 @@ django-cors-headers==2.1.0
 django-nose==1.4.5
 django-rest-auth==0.9.1
 django-rest-swagger==2.1.0
-djangorestframework==3.6.3
+djangorestframework==3.9.1
 djangorestframework-bulk==0.2.1
 drf-nested-routers==0.90.0
 gunicorn==19.7.1
