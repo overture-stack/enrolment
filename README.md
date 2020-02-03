@@ -61,7 +61,7 @@ The goal of this quick start is to get a working application quickly up and runn
 
 2. All users logging into the application via the Google sign-in require a DACO account, for more information visit [https://icgc.org/daco](https://icgc.org/daco)
 
-3. Both config files (details below) need to be configured before running the initial `docker-compse` build command
+3. Both config files (details below) need to be configured before running the initial `docker-compose` build command
 
 ### Step 1 - Config Files
 

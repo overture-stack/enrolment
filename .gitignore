@@ -110,7 +110,7 @@ db.sqlite3
 notes-*.txt
 
 # Docker presistent store
-presisted_data
+persistent_data
 
 # DB Dumps
 postgres/dumps
