@@ -1,16 +1,17 @@
-FROM alpine
+FROM alpine:3.9
 
 # Initialize
-RUN mkdir -p /data/api
 WORKDIR /data/api
 COPY requirements.txt /data/api/
 
 # Setup
 RUN apk update
 RUN apk upgrade
-RUN apk add --update python3 python3-dev postgresql-client postgresql-dev build-base gettext
-RUN pip3 install --upgrade pip
-RUN pip3 install -r requirements.txt
+RUN apk add --update python3 python3-dev py3-pip\
+    postgresql-client postgresql-dev\
+    build-base gettext
+
+RUN pip3 install --no-cache -r requirements.txt
 
 # Clean
 RUN apk del -r python3-dev postgresql

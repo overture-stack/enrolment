@@ -13,7 +13,7 @@ RUN \
 
 # NODE & NPM
 RUN wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
-RUN source ~/.nvm/nvm.sh && nvm install 8.9.4 && npm install -g npm
+RUN source ~/.nvm/nvm.sh && nvm install 8.9.4 && npm install -g yarn
 
 # PREPARE
 RUN mkdir -p /data/web
@@ -27,6 +27,6 @@ COPY ./docker-assets-config/assets /data/web/src/assets
 
 # BUILD
 WORKDIR /data/web
-RUN source ~/.nvm/nvm.sh && npm install && npm run build
+RUN source ~/.nvm/nvm.sh && yarn && yarn build
 
 CMD FOR_100_YEARS=$((100*365*24*60*60));while true;do sleep $FOR_100_YEARS;done

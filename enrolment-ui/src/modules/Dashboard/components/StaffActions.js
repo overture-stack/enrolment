@@ -10,7 +10,7 @@ const StaffActions = props => {
   const { t, projects, toggleModal } = props;
 
   const hasApprovedProjects =
-    projects.results.filter(project => project.status === 'Approved').length > 0;
+    projects.filter(project => project.status === 'Approved').length > 0;
 
   return (
     <div className="requests-actions">
