@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Tabs, Tab, Button } from 'react-bootstrap';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import PTProjectDetails from './components/PTProjectDetails';
 import PTUserEnrolment from './components/PTUserEnrolment';
@@ -56,7 +56,7 @@ class Projects extends Component {
       fetchOneProject,
       fetchProjectUsersByProjectId,
     } = this.props;
-    
+
     const projectId = event.target.value;
 
     if (projectId) {
@@ -195,4 +195,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default translate()(connect(mapStateToProps, mapDispatchToProps)(Projects));
+export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(Projects));

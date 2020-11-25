@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { changeLoginGateway } from '../redux';
 
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 const ChangeLogin = props => {
   const { t, isGoogleLogin, changeLoginGateway } = props;
@@ -25,4 +25,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default translate()(connect(mapStateToProps, mapDispatchToProps)(ChangeLogin));
+export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(ChangeLogin));

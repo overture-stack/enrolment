@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 import _ from 'lodash';
 
 import { fetchProjects, approveProject, denyProject, projectTerminated } from '../Projects/redux';
@@ -120,4 +120,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default translate()(connect(mapStateToProps, mapDispatchToProps)(ApplicationRequests));
+export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(ApplicationRequests));

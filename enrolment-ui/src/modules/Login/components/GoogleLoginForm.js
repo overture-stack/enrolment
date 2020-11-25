@@ -1,7 +1,7 @@
 import React from 'react';
 import GoogleLogin from 'react-google-login';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import { getOneConfig } from '../../../config';
 import { createGoogleLoginFunctions } from '../../Auth/redux';
@@ -43,4 +43,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default translate()(connect(mapStateToProps, mapDispatchToProps)(GoogleLoginForm));
+export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(GoogleLoginForm));

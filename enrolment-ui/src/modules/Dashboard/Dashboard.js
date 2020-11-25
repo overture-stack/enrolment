@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { translate, Trans } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
 
 import Requests from './components/Requests';
 import { ProjectTerminationModal } from '../Projects';
@@ -13,8 +13,6 @@ import { fetchAllProjectUsers } from '../ProjectUsers/redux';
 import './dashboard.scss';
 
 class Dashboard extends Component {
-  static displayName = 'Dashboard';
-
   constructor(props) {
     super(props);
 
@@ -67,4 +65,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default translate()(connect(mapStateToProps, mapDispatchToProps)(Dashboard));
+export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(Dashboard));
