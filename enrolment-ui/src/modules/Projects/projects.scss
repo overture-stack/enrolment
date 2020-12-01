@@ -1,34 +1,28 @@
 .project-selector {
-  margin: 20px 0 40px;
+  margin: 2rem 0;
 }
 
 .nav {
-  > li {
-    &:first-child {
-      padding-left: 40px;
-    }
-  }
+    padding-left: 40px;
+}
 
-  .tabs {
-    .tab-content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+.tabs.selected + .tab-content {
+    align-items: flex-start;
+    justify-content: flex-start;
 
-    &.selected {
-      .tab-content {
-        align-items: flex-start;
-      }
+    > * {
+        width: 100%;
     }
-  }
 }
 
 .tab-content {
-  border-left: 1px solid #ddd;
-  border-right: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-  min-height: 400px;
+    align-items: center;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: center;
+    min-height: 400px;
 
   .no-project {
     h2 {
@@ -37,7 +31,7 @@
   }
 
   .inner {
-    padding: 20px;
+    padding: 3rem 2rem 2rem;
 
     h2 {
       margin-bottom: 1em;

@@ -52,9 +52,9 @@ const UserRequests = props => {
                         {user.status === 'Pending' ? (
                           <div className="admin-actions">
                             <a
-                              onClick={() =>
-                                activateProjectUser(user.project, user.id, fetchAllProjectUsers)}
-                            >
+                              href="#"
+                              onClick={() => activateProjectUser(user.project, user.id, fetchAllProjectUsers)}
+                              >
                               {t('RequestTable.action.approve')}
                             </a>
                           </div>

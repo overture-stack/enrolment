@@ -3,6 +3,8 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Switch } from 'react-router-dom';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import serviceWorkerRegister from './registerServiceWorker';
 import configureStore from './redux/store';
 

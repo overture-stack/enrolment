@@ -8,10 +8,8 @@ import { withTranslation } from 'react-i18next';
 const ChangeLogin = props => {
   const { t, isGoogleLogin, changeLoginGateway } = props;
   const text = isGoogleLogin ? t('ChangeLogin.internal') : t('ChangeLogin.external');
-  return <a onClick={changeLoginGateway}>{text}</a>;
+  return <a className="login-change-gateway" onClick={changeLoginGateway}>{text}</a>;
 };
-
-ChangeLogin.displayName = 'ChangeLogin';
 
 const mapStateToProps = state => {
   return {

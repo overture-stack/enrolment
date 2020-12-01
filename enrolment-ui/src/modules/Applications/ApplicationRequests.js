@@ -72,16 +72,16 @@ const ApplicationRequests = props => {
                     <td>
                       {project.status === 'Pending' ? (
                         <div className="admin-actions">
-                          <a onClick={() => approveProject(project.id, fetchNewData)}>
+                          <a href="#" onClick={() => approveProject(project.id, fetchNewData)}>
                             {t('RequestTable.action.approve')}
                           </a>
-                          <a onClick={() => denyProject(project.id, fetchNewData)}>
+                          <a href="#" onClick={() => denyProject(project.id, fetchNewData)}>
                             {t('RequestTable.action.deny')}
                           </a>
                         </div>
                       ) : null}
                       {project.status === 'Termination Requested' ? (
-                        <a onClick={() => projectTerminated(project.id, fetchNewData)}>
+                        <a href="#" onClick={() => projectTerminated(project.id, fetchNewData)}>
                           {t('RequestTable.action.confirmTermination')}
                         </a>
                       ) : null}

@@ -4,7 +4,6 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 
 const NoProjectUsers = props => {
   return (
-    <div className="container">
       <div className="inner">
         <div className="row">
           <div className="col-md-12">
@@ -12,37 +11,30 @@ const NoProjectUsers = props => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 
 const PTUserDetails = props => {
-  const { hasProjectUsers, data } = props.projectUsers;
+    const { hasProjectUsers, data } = props.projectUsers;
 
-  if (!hasProjectUsers) return <NoProjectUsers />;
-
-  return (
-    <div className="container">
-      <div className="inner">
-        <div className="row">
-          <div className="col-md-12">
-            <h2>Manage Users</h2>
-            <BootstrapTable data={data} striped={true} hover={true}>
-              <TableHeaderColumn isKey={true} dataField="daco_email">
-                Email
-              </TableHeaderColumn>
-              <TableHeaderColumn dataField="firstname">Name</TableHeaderColumn>
-              <TableHeaderColumn dataField="institution_name">Institute</TableHeaderColumn>
-              <TableHeaderColumn dataField="institution_email">
-                Institutional Email
-              </TableHeaderColumn>
-              <TableHeaderColumn dataField="status">Status</TableHeaderColumn>
-            </BootstrapTable>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+    return hasProjectUsers
+        ? (
+            <div className="inner">
+                <h2>Manage Users</h2>
+                <BootstrapTable data={data} striped={true} hover={true}>
+                    <TableHeaderColumn isKey={true} dataField="daco_email">
+                        Email
+                    </TableHeaderColumn>
+                    <TableHeaderColumn dataField="firstname">Name</TableHeaderColumn>
+                    <TableHeaderColumn dataField="institution_name">Institute</TableHeaderColumn>
+                    <TableHeaderColumn dataField="institution_email">
+                        Institutional Email
+                    </TableHeaderColumn>
+                    <TableHeaderColumn dataField="status">Status</TableHeaderColumn>
+                </BootstrapTable>
+            </div>
+        )
+        : <NoProjectUsers />;
 };
 
 PTUserDetails.displayName = 'PTUserDetails';

@@ -18,7 +18,7 @@ const StaffActions = props => {
         {t('StaffActions.register')}
       </Link>
       {hasApprovedProjects ? (
-        <Button href="#" onClick={toggleModal}>
+        <Button href="#" onClick={toggleModal} variant="default">
           {t('StaffActions.terminate')}
         </Button>
       ) : null}

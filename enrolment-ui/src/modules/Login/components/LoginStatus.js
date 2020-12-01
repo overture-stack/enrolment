@@ -3,6 +3,21 @@ import { connect } from 'react-redux';
 
 import spinner from '../../../assets/img/spinner.svg';
 
+const errorText = error => {
+  const {
+      details,
+      response,
+  } = error;
+
+  return details || (
+    response
+      ? (
+        console.error('Login error:', response.data),
+        `${response.status} - ${response.statusText}`
+      )
+    : error);
+};
+
 const LoginStatus = props => {
   const { loading, error } = props.auth;
   return (
@@ -11,8 +26,9 @@ const LoginStatus = props => {
       {error && (
         <div
           className="alert alert-danger"
-          dangerouslySetInnerHTML={{ __html: error.details || error }}
-        />
+          >
+          {errorText(error)}
+          </div>
       )}
     </div>
   );
