@@ -1,15 +1,21 @@
 {
-  "name": "enrolment",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-shell": "^0.6.3"
-  }
+    "name": "enrolment",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "npx gulp",
+        "test:once": "npx gulp run-tests"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "gulp": "^4.0.2",
+        "gulp-shell": "^0.8.0"
+    },
+    "resolutions": {
+        "kind-of": "^6.0.3",
+        "mixin-deep": "^2.0.1",
+        "set-value": "^3.0.1"
+    }
 }

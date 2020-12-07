@@ -1,10 +1,17 @@
-var gulp = require("gulp");
-var shell = require("gulp-shell");
+const {
+    series,
+    watch,
+} = require("gulp");
+const shell = require("gulp-shell");
 
-gulp.task("run-tests", shell.task(["python manage.py test core/api_tests/"]));
+const runTests = async function() {
+    return shell(["python manage.py test core/api_tests/"]);
+}
 
-gulp.task("watch", function() {
-  gulp.watch(["./**/*.html", "./**/*.py"], ["run-tests"]);
-});
+const watchFiles = function() {
+  watch(["./**/*.html", "./**/*.py"], runTests);
+};
 
-gulp.task("default", ["run-tests", "watch"]);
+exports['run-tests'] = runTests;
+
+exports.default = series(runTests, watchFiles);
