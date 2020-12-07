@@ -120,7 +120,7 @@ class ReqFormStep1 extends Component {
           <Field
             name="position"
             type="text"
-            placeholder="Position"
+            placeholder="Job Title"
             component={RFInput}
             validate={rules.required}
             disabled={disabled}
