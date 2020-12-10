@@ -117,7 +117,9 @@ postgres/dumps
 
 # SSL
 *.cert
+*.crt
 *.key
 
 # Editor
 .vscode
+.*.sh
