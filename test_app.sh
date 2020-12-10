@@ -5,7 +5,9 @@ branchname=$1
 if [ $branchname ]; then
 
   echo "pulling latest code changes from $branchname"
-  git pull origin $branchname
+  git fetch
+  git branch $branchname
+  git reset --hard origin/$branchname
 
   echo "rebuilding the containers"
   docker-compose build
@@ -21,5 +23,3 @@ else
   echo "forgot to pass a branch name to test"
 
 fi
-
-

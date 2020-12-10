@@ -122,3 +122,4 @@ postgres/dumps
 
 # Editor
 .vscode
+.*.sh
