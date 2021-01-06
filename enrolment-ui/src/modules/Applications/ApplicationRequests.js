@@ -48,8 +48,8 @@ const ApplicationRequests = props => {
         <tbody>
           {!projects.loading &&
             !applications.loading &&
-            projects.data.results.map(project => {
-              const application = _.find(applications.data.results, { project: project.id });
+            projects.data.map(project => {
+              const application = _.find(applications.data, { project: project.id });
 
               // In case there is an oprhaned project with no application
               if (!application) return false;

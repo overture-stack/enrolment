@@ -1,5 +1,5 @@
 """
-WSGI config for enrol project.
+WSGI config for enrolment project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

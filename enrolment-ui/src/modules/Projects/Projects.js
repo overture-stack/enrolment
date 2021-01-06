@@ -86,7 +86,7 @@ class Projects extends Component {
     const projectIsSelected = selectedProject.length > 0;
 
     const hasApprovedProjects =
-      projects.data.results.filter(project => project.status === 'Approved').length > 0;
+      projects.data.filter(project => project.status === 'Approved').length > 0;
 
     const selectTab = tabIdx => {
       // Reload Project Users if selected else clear
@@ -120,7 +120,7 @@ class Projects extends Component {
                   <option value="">Select a Project</option>
                   {projects.loading
                     ? null
-                    : projects.data.results
+                    : projects.data
                         .filter(project => project.status === 'Approved')
                         .map(project => (
                           <option value={project.id} key={project.id}>

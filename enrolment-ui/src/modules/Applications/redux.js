@@ -109,7 +109,7 @@ export const reducer = (state = _defaultState, action) => {
       return {
         ...state,
         loading: false,
-        hasApplications: action.payload.count > 0,
+        hasApplications: action.payload.length > 0,
         data: action.payload,
       };
     case FETCH_APPLICATIONS_FAILURE:
