@@ -34,7 +34,7 @@ const ModalReqForm = props => {
     projects,
   } = props;
 
-  const projectOptions = projects.results
+  const projectOptions = projects
     .filter(project => project.status === 'Approved')
     .map(project => {
       return {

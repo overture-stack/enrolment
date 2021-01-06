@@ -22,7 +22,7 @@ from core.client.daco import DacoClient, DacoException
 from django.core.mail import EmailMultiAlternatives
 from smtplib import SMTPException
 
-schema_view = get_swagger_view(title='Enrol API')
+schema_view = get_swagger_view(title='Enrolment API')
 SITE_URL = settings.SITE_URL
 RESOURCE_ADMIN_EMAIL = settings.RESOURCE_ADMIN_EMAIL
 
@@ -468,7 +468,7 @@ def uniqueProjectUserCheck(request, project, email):
     if request.user.is_authenticated():
         project_obj = Projects.objects.get(pk=project)
         existingProjectUsers = ProjectUsers.objects.filter(daco_email=email, project=project)
-        
+
         isSameUser = project_obj.user.email == email
         isAlreadyProjectUser = len(existingProjectUsers) > 0
 

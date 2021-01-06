@@ -14,7 +14,7 @@ const Requests = props => {
   if (projects.loading) return false;
 
   const hasApprovedProjects =
-    projects.data.results.filter(project => project.status === 'Approved').length > 0;
+    projects.data.filter(project => project.status === 'Approved').length > 0;
 
   return (
     <div className="row dashboard">

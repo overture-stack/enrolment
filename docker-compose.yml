@@ -5,7 +5,7 @@ services:
     restart: always
     build: ./enrolment-ui/
     env_file: .env
-    volumes: 
+    volumes:
       - web-data:/data/web
     depends_on:
       - api
@@ -15,11 +15,11 @@ services:
     build: ./enrolment-service/
     expose:
       - "8000"
-    volumes: 
+    volumes:
       - api-data:/data/api
       - ./persistent_data/logs/django:/var/log/gunicorn
     env_file: .env
-    entrypoint: /entrypoint.sh 
+    entrypoint: /entrypoint.sh
     depends_on:
       - postgres
 
@@ -29,7 +29,7 @@ services:
     ports:
       - "8443:8080"
       - "8000:8000"
-    volumes: 
+    volumes:
       - type: volume
         source: web-data
         target: /data/web
@@ -38,9 +38,12 @@ services:
         source: api-data
         target: /data/api
         read_only: true
+      - ./nginx/sites-enabled:/etc/nginx/sites-enabled
+      - ./persistent_data/logs/:/var/log/
+      - ./persistent_data/logs/gunicorn:/var/log/gunicorn
       - ./persistent_data/logs/nginx:/var/log/nginx
       - /etc/ssl/certs/cancercollaboratory.org.crt:/etc/ssl/domain.cert
-      - /etc/ssl/private/cancercollaboratory.org.key:/etc/ssl/domain.key      
+      - /etc/ssl/private/cancercollaboratory.org.key:/etc/ssl/domain.key
     depends_on:
       - web
       - api
