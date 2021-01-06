@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { translate, Trans } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
 import _ from 'lodash';
 
 import { fetchAllProjectUsers, activateProjectUser } from './redux';
@@ -27,7 +27,7 @@ const UserRequests = props => {
             <th>Created Date</th>
             <th>Updated Date</th>
             <th>Status</th>
-            {profile.is_staff ? <th>Action</th> : null}
+            {profile.is_staff ? <th>Action</th> : ''}
           </Trans>
         </thead>
         <tbody>
@@ -52,9 +52,9 @@ const UserRequests = props => {
                         {user.status === 'Pending' ? (
                           <div className="admin-actions">
                             <a
-                              onClick={() =>
-                                activateProjectUser(user.project, user.id, fetchAllProjectUsers)}
-                            >
+                              href="#"
+                              onClick={() => activateProjectUser(user.project, user.id, fetchAllProjectUsers)}
+                              >
                               {t('RequestTable.action.approve')}
                             </a>
                           </div>
@@ -88,4 +88,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default translate()(connect(mapStateToProps, mapDispatchToProps)(UserRequests));
+export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(UserRequests));

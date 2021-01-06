@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Tabs, Tab, Button } from 'react-bootstrap';
-import { translate } from 'react-i18next';
+import { Tabs, Tab, Button, Col } from 'react-bootstrap';
+import { withTranslation } from 'react-i18next';
 
 import PTProjectDetails from './components/PTProjectDetails';
 import PTUserEnrolment from './components/PTUserEnrolment';
@@ -56,7 +56,7 @@ class Projects extends Component {
       fetchOneProject,
       fetchProjectUsersByProjectId,
     } = this.props;
-    
+
     const projectId = event.target.value;
 
     if (projectId) {
@@ -107,10 +107,10 @@ class Projects extends Component {
           <h1>My Projects</h1>
           <div className="container">
             <div className="form-group row project-selector">
-              <div className="col-md-2">
-                <h4>Select Project</h4>
-              </div>
-              <div className="col-xs-6 col-md-3">
+              <Col md={2}>
+                <p style={{ fontSize: '1.24rem' }}>Select Project</p>
+              </Col>
+              <Col md={3} xs={6}>
                 <select
                   className="form-control"
                   value={selectedProject}
@@ -128,21 +128,27 @@ class Projects extends Component {
                           </option>
                         ))}
                 </select>
-              </div>
-              {hasApprovedProjects ? (
-                <div className="col-xs-6 col-md-3 col-md-push-4 project-terminate-button-col">
-                  <Button href="#" onClick={toggleModal}>
-                    {t('StaffActions.terminate')}
-                  </Button>
-                </div>
-              ) : null}
+              </Col>
+              {hasApprovedProjects && (
+                <Col
+                    md={{
+                        span: 3,
+                        offset: 4,
+                    }}
+                    xs={6}
+                    className="project-terminate-button-col"
+                    >
+                    <Button href="#" onClick={toggleModal} variant="default">
+                        {t('StaffActions.terminate')}
+                    </Button>
+                </Col>
+              )}
             </div>
-            <div className="nav">
               <Tabs
                 id="projectsNavigation"
                 activeKey={activeTab}
                 onSelect={selectTab}
-                className={`tabs ${projectIsSelected ? 'selected' : ''}`}
+                className={`tabs${projectIsSelected ? ' selected' : ''}`}
               >
                 <Tab
                   eventKey={1}
@@ -166,7 +172,6 @@ class Projects extends Component {
                   {projectIsSelected ? <PTUserDetails /> : this.renderNoProjectTab()}
                 </Tab>
               </Tabs>
-            </div>
           </div>
         </div>
         <ProjectTerminationModal />
@@ -195,4 +200,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default translate()(connect(mapStateToProps, mapDispatchToProps)(Projects));
+export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(Projects));

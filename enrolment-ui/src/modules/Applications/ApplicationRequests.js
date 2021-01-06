@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 import _ from 'lodash';
 
 import { fetchProjects, approveProject, denyProject, projectTerminated } from '../Projects/redux';
@@ -72,16 +72,16 @@ const ApplicationRequests = props => {
                     <td>
                       {project.status === 'Pending' ? (
                         <div className="admin-actions">
-                          <a onClick={() => approveProject(project.id, fetchNewData)}>
+                          <a href="#" onClick={() => approveProject(project.id, fetchNewData)}>
                             {t('RequestTable.action.approve')}
                           </a>
-                          <a onClick={() => denyProject(project.id, fetchNewData)}>
+                          <a href="#" onClick={() => denyProject(project.id, fetchNewData)}>
                             {t('RequestTable.action.deny')}
                           </a>
                         </div>
                       ) : null}
                       {project.status === 'Termination Requested' ? (
-                        <a onClick={() => projectTerminated(project.id, fetchNewData)}>
+                        <a href="#" onClick={() => projectTerminated(project.id, fetchNewData)}>
                           {t('RequestTable.action.confirmTermination')}
                         </a>
                       ) : null}
@@ -120,4 +120,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default translate()(connect(mapStateToProps, mapDispatchToProps)(ApplicationRequests));
+export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(ApplicationRequests));

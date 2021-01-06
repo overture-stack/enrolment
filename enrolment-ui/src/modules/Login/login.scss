@@ -12,52 +12,18 @@ $logo: url('../../assets/img/g-logo.svg');
 $radius: ratio(1);
 
 @mixin button($background, $color) {
-  display: block;
-  vertical-align: middle;
-  font-size: ratio(14);
-  font-weight: 500;
-  width: $width;
-  border-radius: $radius;
-  padding: 0;
-  color: $color;
-  font-family: 'Roboto', sans-serif;
-  padding-right: ratio(16);
-  white-space: nowrap;
-  overflow: hidden;
-  outline: none;
-  cursor: pointer;
-  background: $background;
-  border: $background solid ratio(1);
-  box-shadow: ratio(1) ratio(1) ratio(5) 0 #b7b7b7;
-  text-align: left;
-  vertical-align: middle;
+    background: $background !important;
+    color: $color !important;
 
-  &:focus,
-  &:active,
-  &:hover {
-    background: darken($background, 10%);
-    box-shadow: ratio(2) ratio(2) ratio(6) 0 #b7b7b7;
-  }
+    &:focus,
+    &:active,
+    &:hover {
+        background: darken($background, 10%) !important;
+    }
 
-  &:disabled {
-    background: #b7b7b7;
-  }
-
-  &::before {
-    display: block;
-    content: '';
-    background-image: $logo;
-    background-color: #fff;
-    background-size: ratio(18);
-    background-repeat: no-repeat;
-    background-position: 50%;
-    display: inline-block;
-    vertical-align: middle;
-    width: ratio(40);
-    height: ratio(40);
-    border-radius: $radius;
-    margin-right: ratio(16);
-  }
+    &:disabled {
+        background: #b7b7b7 !important;
+    }
 }
 
 .login {
@@ -75,7 +41,7 @@ $radius: ratio(1);
   }
 
   .login-title {
-    margin: 0 0 40px;
+    margin: 1rem 0 2rem;
   }
 
   .login-container,
@@ -111,6 +77,11 @@ $radius: ratio(1);
       visibility: visible;
     }
   }
+
+  &-change-gateway {
+    font-size: 0.8rem;
+  }
+
   .lang-toggle {
     margin-top: 10px;
   }

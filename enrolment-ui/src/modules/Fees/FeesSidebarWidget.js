@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { translate, Trans } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
 
 import { getFees } from './redux';
 
@@ -65,4 +65,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default translate()(connect(mapStateToProps, mapDispatchToProps)(FeesSidebarWidget));
+export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(FeesSidebarWidget));

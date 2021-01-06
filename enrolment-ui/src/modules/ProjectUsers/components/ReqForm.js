@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { initialize } from 'redux-form';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import RequestProgressBar from '../../Common/RequestProgressBar';
 import ReqFormStep1 from './ReqFormStep1';
@@ -151,4 +151,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default translate()(withRouter(connect(mapStateToProps, mapDispatchToProps)(ReqForm)));
+export default withTranslation()(withRouter(connect(mapStateToProps, mapDispatchToProps)(ReqForm)));

@@ -16,47 +16,43 @@ const onSubmit = (createUsers, user, projectId, next) => {
   };
 };
 
-const PTUserEnrolment = props => {
-  const {
+const PTUserEnrolment = ({
     createProjectUsers,
     profile: { pk },
     project,
     fetchAllProjectUsers,
-  } = props;
-
-  if (project.loading) return false;
-
-  return (
-    <div className="container">
-      <div className="inner">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-12">
-              <h2>User Enrolment</h2>
+}) => (
+    project.loading
+        ? false
+        : (
+            <div className="inner">
+                <div className="row">
+                    <div className="col-md-12">
+                        <h2>User Enrolment</h2>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-12">
+                        {/* <p>
+                            In order to enrol a user to your Collaboratory project, the user should have an account
+                        </p> */}
+                    </div>
+                </div>
+                <div className="row tab-req-form">
+                    <div className="col-md-8">
+                        <TabReqForm
+                            onSubmit={onSubmit(
+                                createProjectUsers,
+                                pk,
+                                project.data.id,
+                                fetchAllProjectUsers
+                            )}
+                            />
+                    </div>
+                </div>
             </div>
-          </div>
-          <div className="row">
-            <div className="col-md-12">
-              {/* <p>
-                  In order to enrol a user to your Collaboratory project, the user should have a 
-                  account
-                  </p> */}
-            </div>
-          </div>
-          <div className="row tab-req-form">
-            <div className="col-md-8">
-              <TabReqForm
-                onSubmit={onSubmit(createProjectUsers, pk, project.data.id, fetchAllProjectUsers)}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-PTUserEnrolment.displayName = 'PTUserEnrolment';
+        )
+);
 
 const mapStateToProps = state => {
   return {

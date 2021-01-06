@@ -1,8 +1,11 @@
+import React, { Suspense } from 'react';
 import './app.scss';
 
-const App = props => {
-  return props.children;
-};
+const App = props => (
+    <Suspense fallback="Loading...">
+        {props.children}
+    </Suspense>
+);
 
 App.displayName = 'App';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import StaffActions from './StaffActions';
 import FeesSidebarWidget from '../../Fees';
@@ -58,4 +58,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default translate()(connect(mapStateToProps, null)(Requests));
+export default withTranslation()(connect(mapStateToProps, null)(Requests));

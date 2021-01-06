@@ -7,9 +7,9 @@ import { fetchProjects } from '../Projects/redux';
 import { fetchApplications } from '../Applications/redux';
 import { fetchAllProjectUsers } from '../ProjectUsers/redux';
 
-class Main extends Component {
-  static displayName = 'Main';
+import './styles.scss';
 
+class Main extends Component {
   constructor(props) {
     super(props);
 
@@ -26,10 +26,10 @@ class Main extends Component {
 
   render() {
     return (
-      <div>
+      <React.Fragment>
         <Header />
-        <div className="container">{this.props.children}</div>
-      </div>
+        <main className="container">{this.props.children}</main>
+      </React.Fragment>
     );
   }
 }

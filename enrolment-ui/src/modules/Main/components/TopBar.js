@@ -1,5 +1,5 @@
 import React from 'react';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 import { getOneConfig } from '../../../config';
 
 const TopBar = props => {
@@ -58,4 +58,4 @@ const TopBar = props => {
 
 TopBar.displayName = 'TopBar';
 
-export default translate()(TopBar);
+export default withTranslation()(TopBar);

@@ -14,9 +14,7 @@ const PTProjectDetails = props => {
   } = data;
 
   return (
-    <div className="container">
-      <div className="inner">
-        <div className="container">
+        <div className="inner">
           <div className="row">
             <div className="col-md-12">
               <h2>Project Details</h2>
@@ -33,7 +31,7 @@ const PTProjectDetails = props => {
                 <textarea disabled={true} value={project_description} />
               </div>
             </div>
-            {/* 
+            {/*
 
             ... Maybe one day we will allow projects
             of various status's to be displayed here ...
@@ -48,13 +46,11 @@ const PTProjectDetails = props => {
                 <h4>Billing Status</h4>
                 <span>{billing_status}</span>
               </div>
-            </div> 
-            
+            </div>
+
             */}
           </div>
         </div>
-      </div>
-    </div>
   );
 };
 

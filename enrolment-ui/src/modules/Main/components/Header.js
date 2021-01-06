@@ -5,6 +5,7 @@ import _ from 'lodash';
 
 import TopBar from './TopBar';
 import Profile from '../../Profile';
+import logoSVG from '../../../assets/img/logo.svg';
 
 import './header.scss';
 
@@ -19,7 +20,7 @@ const Header = props => {
           <div>
             <img
               className="logo"
-              src={require('../../../assets/img/logo.svg')}
+              src={logoSVG}
               alt="Cancer Genome COLLABORATORY"
             />
           </div>

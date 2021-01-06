@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import { toggleProjectTerminationModal } from '../../Projects/redux';
 
@@ -18,7 +18,7 @@ const StaffActions = props => {
         {t('StaffActions.register')}
       </Link>
       {hasApprovedProjects ? (
-        <Button href="#" onClick={toggleModal}>
+        <Button href="#" onClick={toggleModal} variant="default">
           {t('StaffActions.terminate')}
         </Button>
       ) : null}
@@ -41,4 +41,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default translate()(connect(mapStateToProps, mapDispatchToProps)(StaffActions));
+export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(StaffActions));

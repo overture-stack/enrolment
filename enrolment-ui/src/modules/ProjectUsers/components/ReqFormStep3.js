@@ -26,7 +26,7 @@ const ReqFormStep3 = props => {
             subscribed to Collaboratory announcement mailing-list and will receive collaboratory
             notification emails.
           </p>
-          <a href={peFullTerms} target="_blank">
+          <a href={peFullTerms} target="_blank" rel="noreferrer">
             Full Terms and Conditions
           </a>
         </div>
