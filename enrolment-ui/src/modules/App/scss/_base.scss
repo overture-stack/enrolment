@@ -55,3 +55,19 @@ a {
         border-color: #adadad;
     }
 }
+
+.linkButton {
+    background: none;
+    border: none;
+    color: #007bff;
+    padding: 0;
+
+    &:hover {
+        color: #0056b3;
+        text-decoration: underline;
+    }
+}
+
+.noWrap {
+    white-space: nowrap;
+}

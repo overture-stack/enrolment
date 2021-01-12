@@ -188,9 +188,9 @@ ICGC_TOKEN_SECRET = os.environ.get('ICGC_TOKEN_SECRET', '')
 
 # SMTP
 EMAIL_HOST = os.environ.get('SMTP_URL', '')
+EMAIL_PORT = os.environ.get('SMTP_PORT', '')
 DEFAULT_FROM_EMAIL = os.environ.get('SMTP_FROM', '')
 RESOURCE_ADMIN_EMAIL = os.environ.get('RESOURCE_ADMIN_EMAIL', '')
-
 
 # LOGGING
 LOGGING = {

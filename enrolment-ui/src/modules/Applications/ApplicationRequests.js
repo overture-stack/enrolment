@@ -2,122 +2,127 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import _ from 'lodash';
+import {
+    find,
+    truncate,
+} from 'lodash';
 
 import { fetchProjects, approveProject, denyProject, projectTerminated } from '../Projects/redux';
 import { fetchApplications } from '../Applications/redux';
 import { fetchAllProjectUsers } from '../ProjectUsers/redux';
 
-const ApplicationRequests = props => {
-  const {
-    t,
+const ApplicationRequests = ({
     applications,
-    profile,
-    projects,
-    fetchApplications,
-    fetchProjects,
-    fetchAllProjectUsers,
     approveProject,
     denyProject,
+    fetchNewData,
+    profile,
+    projects,
     projectTerminated,
-  } = props;
-
-  const fetchNewData = () => {
-    fetchApplications();
-    fetchProjects();
-    fetchAllProjectUsers();
-  };
-
-  return (
+    t,
+}) => (
     <div className="col-md-12">
-      <h4>{t('ApplicationRequests.title')}</h4>
-      <table className="table table-striped table-bordered">
-        <thead>
-          <tr>
-            <th>Project Title</th>
-            {profile.is_staff && <th>Institution Name</th>}
-            {profile.is_staff && <th>Institution Email</th>}
-            {profile.is_staff && <th>First Name</th>}
-            {profile.is_staff && <th>Last Name</th>}
-            <th>Created Date</th>
-            <th>Updated Date</th>
-            <th>Status</th>
-            {profile.is_staff && <th>Action</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {!projects.loading &&
-            !applications.loading &&
-            projects.data.map(project => {
-              const application = _.find(applications.data, { project: project.id });
-
-              // In case there is an oprhaned project with no application
-              if (!application) return false;
-
-              return (
-                <tr key={application.id}>
-                  <td>
-                    <Link to={`/view/project/${application.id}`}>
-                      {_.truncate(project.project_name, { length: 10, omission: '...' })}
-                    </Link>
-                  </td>
-                  {profile.is_staff && <td>{application.institution_name}</td>}
-                  {profile.is_staff && <td>{application.institution_email}</td>}
-                  {profile.is_staff && <td>{application.firstname}</td>}
-                  {profile.is_staff && <td>{application.lastname}</td>}
-                  <td>{project.createdDate}</td>
-                  <td>{project.updatedDate}</td>
-                  <td>{project.status}</td>
-                  {profile.is_staff && (
-                    <td>
-                      {project.status === 'Pending' ? (
-                        <div className="admin-actions">
-                          <a href="#" onClick={() => approveProject(project.id, fetchNewData)}>
-                            {t('RequestTable.action.approve')}
-                          </a>
-                          <a href="#" onClick={() => denyProject(project.id, fetchNewData)}>
-                            {t('RequestTable.action.deny')}
-                          </a>
-                        </div>
-                      ) : null}
-                      {project.status === 'Termination Requested' ? (
-                        <a href="#" onClick={() => projectTerminated(project.id, fetchNewData)}>
-                          {t('RequestTable.action.confirmTermination')}
-                        </a>
-                      ) : null}
-                      {project.status === 'Approved' || project.status === 'Terminated' ? (
-                        <span>{t('RequestTable.action.none')}</span>
-                      ) : null}
-                    </td>
-                  )}
+        <h4>{t('ApplicationRequests.title')}</h4>
+        <table className="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Project Title</th>
+                    {profile.is_staff && (
+                        <React.Fragment>
+                            <th>Institution Name</th>
+                            <th>Institution Email</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                        </React.Fragment>
+                    )}
+                    <th>Created Date</th>
+                    <th>Updated Date</th>
+                    <th>Status</th>
+                    {profile.is_staff && <th>Action</th>}
                 </tr>
-              );
-            })}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+                {!(projects.loading || applications.loading) &&
+                    projects.data.map(project => {
+                        const application = find(applications.data, { project: project.id });
+
+                        // ignore oprhaned projects (i.e. with no application)
+                        return application && (
+                            <tr key={application.id}>
+                                <td>
+                                    <Link to={`/view/project/${application.id}`}>
+                                        {truncate(project.project_name, { length: 10, omission: '...' })}
+                                    </Link>
+                                </td>
+                                {profile.is_staff && (
+                                    <React.Fragment>
+                                        <td>{application.institution_name}</td>
+                                        <td>{application.institution_email}</td>
+                                        <td>{application.firstname}</td>
+                                        <td>{application.lastname}</td>
+                                    </React.Fragment>
+                                )}
+                                <td className="noWrap">{project.createdDate}</td>
+                                <td className="noWrap">{project.updatedDate}</td>
+                                <td className="noWrap">{project.status}</td>
+
+                                {profile.is_staff && (
+                                    <td className="noWrap">
+                                        <div className="requests-actionsColumn">
+                                            {project.status === 'Pending'
+                                                ? (
+                                                    <React.Fragment>
+                                                        <button
+                                                            className="linkButton"
+                                                            onClick={() => approveProject(project.id, fetchNewData)}
+                                                            >
+                                                            {t('RequestTable.action.approve')}
+                                                        </button>
+                                                        <button
+                                                            className="linkButton"
+                                                            onClick={() => denyProject(project.id, fetchNewData)}
+                                                            >
+                                                            {t('RequestTable.action.deny')}
+                                                        </button>
+                                                    </React.Fragment>
+                                                )
+                                            : project.status === 'Termination Requested'
+                                                ? (
+                                                    <button
+                                                        className="linkButton"
+                                                        onClick={() => projectTerminated(project.id, fetchNewData)}
+                                                        >
+                                                        {t('RequestTable.action.confirmTermination')}
+                                                    </button>
+                                                )
+                                            : <span>{t('RequestTable.action.none')}</span>}
+                                        </div>
+                                    </td>
+                                )}
+                            </tr>
+                        );
+                    }).filter(item => item) // remove orphan projects
+                }
+            </tbody>
+        </table>
     </div>
-  );
-};
+);
 
-ApplicationRequests.displayName = 'ApplicationRequests';
-
-const mapStateToProps = state => {
-  return {
+const mapStateToProps = state => ({
     applications: state.applications,
     profile: state.profile.data,
     projects: state.projects,
-  };
-};
+});
 
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchApplications: () => fetchApplications(dispatch),
-    fetchProjects: () => fetchProjects(dispatch),
-    fetchAllProjectUsers: () => fetchAllProjectUsers(dispatch),
+const mapDispatchToProps = dispatch => ({
     approveProject: (id, next) => approveProject(dispatch, id, next),
     denyProject: (id, next) => denyProject(dispatch, id, next),
+    fetchNewData: () => {
+        fetchAllProjectUsers(dispatch);
+        fetchApplications(dispatch);
+        fetchProjects(dispatch);
+    },
     projectTerminated: (id, next) => projectTerminated(dispatch, id, next),
-  };
-};
+});
 
 export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(ApplicationRequests));

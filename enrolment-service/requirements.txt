@@ -11,7 +11,7 @@ django-rest-auth==0.9.1
 django-rest-swagger==2.1.0
 djangorestframework==3.9.1
 djangorestframework-bulk==0.2.1
-drf-nested-routers==0.90.0
+drf-nested-routers==0.92.5
 gunicorn==19.7.1
 isort==4.2.15
 itypes==1.1.0

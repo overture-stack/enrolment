@@ -13,7 +13,7 @@
             margin-bottom: 20px;
             padding: 0px 15px;
 
-            .requests-actions {
+            .requests-staffActions {
                 display: flex;
                 flex-direction: column;
 
@@ -22,7 +22,8 @@
                 }
             }
         }
-        .admin-actions {
+
+        .requests-actionsColumn {
             align-items: flex-start;
             display: flex;
             justify-content: space-between;

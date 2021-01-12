@@ -14,6 +14,10 @@ const CREATE_USERS_REQUEST = 'projectUsers/CREATE_USERS_REQUEST';
 const CREATE_USERS_SUCCESS = 'projectUsers/CREATE_USERS_SUCCESS';
 const CREATE_USERS_FAILURE = 'projectUsers/CREATE_USERS_FAILURE';
 
+const RESEND_INVITE_REQUEST = 'projectUsers/RESEND_INVITE_REQUEST';
+const RESEND_INVITE_SUCCESS = 'projectUsers/RESEND_INVITE_SUCCESS';
+const RESEND_INVITE_FAILURE = 'projectUsers/RESEND_INVITE_FAILURE';
+
 const UPDATE_REQUEST_REQUEST = 'projectUsers/UPDATE_REQUEST_REQUEST';
 const UPDATE_REQUEST_SUCCESS = 'projectUsers/UPDATE_REQUEST_SUCCESS';
 const UPDATE_REQUEST_FAILURE = 'projectUsers/UPDATE_REQUEST_FAILURE';
@@ -51,6 +55,10 @@ const emailCheckError = payloadActionGenerator(EMAIL_CHECK_FAILURE);
 const createlUsersStart = emptyActionGenerator(CREATE_USERS_REQUEST);
 const createlUsersSuccess = payloadActionGenerator(CREATE_USERS_SUCCESS);
 const createlUsersError = payloadActionGenerator(CREATE_USERS_FAILURE);
+
+const resendInviteToProjectUserStart = payloadActionGenerator(RESEND_INVITE_REQUEST);
+const resendInviteToProjectUserSuccess = payloadActionGenerator(RESEND_INVITE_SUCCESS);
+const resendInviteToProjectUserError = payloadActionGenerator(RESEND_INVITE_FAILURE);
 
 const updateProjectUserStart = payloadActionGenerator(UPDATE_REQUEST_REQUEST);
 const updateProjectUserSuccess = payloadActionGenerator(UPDATE_REQUEST_SUCCESS);
@@ -124,6 +132,20 @@ export function createProjectUsers(dispatch, projectId, data, next = () => null)
     })
     .catch(error => {
       dispatch(createlUsersError(error));
+    });
+}
+
+export function resendInviteToProjectUser(dispatch, projectId, id, next = () => null) {
+  dispatch(resendInviteToProjectUserStart());
+
+  return asyncServices.projectUsers
+    .resendInvite(projectId, id)
+    .then(response => {
+      dispatch(resendInviteToProjectUserSuccess('Project User Email Resent!'));
+      next();
+    })
+    .catch(error => {
+      dispatch(resendInviteToProjectUserError(error));
     });
 }
 

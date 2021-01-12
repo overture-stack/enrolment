@@ -49,6 +49,8 @@ export function createAsyncs(isDevelopment = false) {
         asyncServiceCreator('POST', `${apiBase}/projects/${projectId}/users/`, withDataAndCSRF)(
           data,
         ),
+      resendInvite: (projectId, id) =>
+        asyncServiceCreator('GET', `${apiBase}/projects/${projectId}/users/${id}/reinvite/`)(),
       update: (projectId, id, data) =>
         asyncServiceCreator(
           'PATCH',
