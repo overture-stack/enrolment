@@ -1,7 +1,7 @@
 import os
 import json
 import logging
-from core.models import Applications, Projects, ProjectUsers
+from core.models import Applications, BillingContact, Projects, ProjectUsers
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.db.models import Q
@@ -224,6 +224,67 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
             }
             send_update_notification(email)
             # print(email) # for testing
+
+    def destroy(self, request, pk=None):
+        user = self.request.user
+
+        if user.is_superuser:
+            logger.debug('Attempting to purge project %s', pk)
+
+            try:
+            # We have to check for billing contacts separately, since it cannot cascade
+                logger.debug('Removing Billing Contact, if available')
+                billingContactPurgeResults = None
+
+                try:
+                    application = Applications.objects.get(project=pk)
+
+                except Exception as e:
+                    logger.debug('This project is not connected to an application (aka Orphaned): %s', e)
+
+                else:
+                    try:
+                        billingContact = application.billing_contact
+
+                        if billingContact != None:
+                            logger.debug('Found a Billing Contact. Purging it...')
+                            billingContactPurgeResults = billingContact.delete()
+
+                        else:
+                            logger.debug('No Billing Contact found. Moving on...')
+
+                    except Exception as e:
+                        logger.debug('Something wrong getting Billing Contact: %s', e)
+
+            # This is where the project itself is removed, along with its dependencies
+                finally:
+                    logger.debug('Purging project now...')
+                    projectPurgeResults = Projects.objects.get(id=pk).delete()
+
+                    logger.debug('Project %s purged succesfully!', pk)
+
+                    if billingContactPurgeResults != None: # Add up the purge totals
+                        logger.debug('Adding purged totals...')
+                        tempCount = projectPurgeResults[0] + billingContactPurgeResults[0]
+                        tempSummary = {
+                            **projectPurgeResults[1],
+                            **billingContactPurgeResults[1]
+                        }
+
+                        for key, value in tempSummary.items():
+                            if key in projectPurgeResults[1] and key in billingContactPurgeResults[1]:
+                                tempSummary[key] = value + projectPurgeResults[1][key]
+
+                        projectPurgeResults = [tempCount, tempSummary]
+
+                    return Response(projectPurgeResults)
+
+            except Exception as e:
+                logger.error('Something went wrong purging project: %s', e)
+                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        else:
+            return Response(status=status.HTTP_403_FORBIDDEN)
 
 
 class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
@@ -525,7 +586,7 @@ def uniqueProjectUserCheck(request, project, email):
 
 
 def send_email(email_message):
-    logger.debug(email_message)
+    # logger.debug(email_message)
     try:
         return email_message.send()
     except Exception as e:

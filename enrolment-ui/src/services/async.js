@@ -35,6 +35,7 @@ export function createAsyncs(isDevelopment = false) {
     project: {
       fetchProjects: asyncServiceCreator('GET', `${apiBase}/projects/`),
       fetchProject: id => asyncServiceCreator('GET', `${apiBase}/projects/${id}/`)(),
+      purge: id => asyncServiceCreator('DELETE', `${apiBase}/projects/${id}/`, withCSRF)(),
       submit: asyncServiceCreator('POST', `${apiBase}/projects/`, withDataAndCSRF),
       update: (id, data) =>
         asyncServiceCreator('PATCH', `${apiBase}/projects/${id}/`, withDataAndCSRF)(data),

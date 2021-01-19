@@ -16,6 +16,10 @@ const FETCH_ONE_PROJECT_REQUEST = 'project/FETCH_ONE_PROJECT_REQUEST';
 const FETCH_ONE_PROJECT_SUCCESS = 'project/FETCH_ONE_PROJECT_SUCCESS';
 const FETCH_ONE_PROJECT_FAILURE = 'project/FETCH_ONE_PROJECT_FAILURE';
 
+const PURGE_PROJECT_REQUEST = 'project/PURGE_PROJECT_REQUEST';
+const PURGE_PROJECT_SUCCESS = 'project/PURGE_PROJECT_SUCCESS';
+const PURGE_PROJECT_FAILURE = 'project/PURGE_PROJECT_FAILURE';
+
 const SUBMIT_PROJECT_REQUEST = 'project/SUBMIT_PROJECT_REQUEST';
 const SUBMIT_PROJECT_SUCCESS = 'project/SUBMIT_PROJECT_SUCCESS';
 const SUBMIT_PROJECT_FAILURE = 'project/SUBMIT_PROJECT_FAILURE';
@@ -47,6 +51,10 @@ const fetchProjectsError = payloadActionGenerator(FETCH_PROJECTS_FAILURE);
 const fetchOneProjectStart = emptyActionGenerator(FETCH_ONE_PROJECT_REQUEST);
 const fetchOneProjectSuccess = payloadActionGenerator(FETCH_ONE_PROJECT_SUCCESS);
 const fetchOneProjectError = payloadActionGenerator(FETCH_ONE_PROJECT_FAILURE);
+
+const purgeProjectStart = emptyActionGenerator(PURGE_PROJECT_REQUEST);
+const purgeProjectSuccess = payloadActionGenerator(PURGE_PROJECT_SUCCESS);
+const purgeProjectError = payloadActionGenerator(PURGE_PROJECT_FAILURE);
 
 const submitProjectStart = emptyActionGenerator(SUBMIT_PROJECT_REQUEST);
 const submitProjectSuccess = payloadActionGenerator(SUBMIT_PROJECT_SUCCESS);
@@ -195,7 +203,7 @@ export function denyProject(dispatch, id, next = () => null) {
     });
 }
 
-export function terminateProjectRequest(dispatch, id, next = () => null) {
+export function terminateProject(dispatch, id, next = () => null) {
   dispatch(updateProjectStart('Terminate Project Request'));
 
   return asyncServices.project
@@ -209,7 +217,7 @@ export function terminateProjectRequest(dispatch, id, next = () => null) {
     });
 }
 
-export function projectTerminated(dispatch, id, next = () => null) {
+export function confirmProjectTermination(dispatch, id, next = () => null) {
   dispatch(updateProjectStart('Project Termination Confirmed'));
 
   return asyncServices.project
@@ -220,6 +228,20 @@ export function projectTerminated(dispatch, id, next = () => null) {
     })
     .catch(error => {
       dispatch(updateProjectError(error));
+    });
+}
+
+export function purgeProject(dispatch, id, next = () => null) {
+  dispatch(purgeProjectStart('Attempting to Purge Project'));
+
+  return asyncServices.project
+    .purge(id)
+    .then(response => {
+      dispatch(purgeProjectSuccess('Project Purged'));
+      next();
+    })
+    .catch(error => {
+      dispatch(purgeProjectError(error));
     });
 }
 
@@ -256,6 +278,12 @@ export const reducer = (state = _defaultState, action) => {
         loading: false,
         hasProjects: false,
         error: action.payload,
+      };
+    case PURGE_PROJECT_REQUEST:
+    case PURGE_PROJECT_SUCCESS:
+    case PURGE_PROJECT_FAILURE:
+      return {
+        ...state,
       };
     default:
       return state;

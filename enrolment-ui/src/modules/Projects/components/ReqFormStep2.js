@@ -44,15 +44,17 @@ const ReqFormStep2 = props => {
           disabled={disabled}
         />
       </div>
-      <div className="row">
-        <Field
-          name="invoice_consent"
-          label="Applicant acknowledges that their usage of the Collaboratory will be invoiced monthly, and
-          that payment is required within 30 days."
-          component={RFConsent}
-          validate={rules.required}
-        />
-      </div>
+      {!disabled && (
+        <div className="row">
+          <Field
+            name="invoice_consent"
+            label="Applicant acknowledges that their usage of the Collaboratory will be invoiced monthly, and
+            that payment is required within 30 days."
+            component={RFConsent}
+            validate={rules.required}
+          />
+        </div>
+      )}
       <div className="row">
         <div className="col-md-12">
           <button onClick={previousPage} className="previous action-button">

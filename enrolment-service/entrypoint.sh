@@ -13,4 +13,10 @@ echo "Postgres is up - starting up now"
 /usr/bin/python3 /data/api/enrol/manage.py migrate
 /usr/bin/python3 /data/api/enrol/manage.py collectstatic --no-input
 echo "from django.contrib.auth.models import User; User.objects.create_superuser('${DJANGO_SUPER_USER}', '${DJANGO_SUPER_MAIL}', '${DJANGO_SUPER_PASS}')" | /usr/bin/python3 /data/api/enrol/manage.py shell
-/usr/bin/gunicorn -w 6 -b 0.0.0.0:8000 --chdir /data/api/enrol enrol.wsgi enrol.wsgi --access-logfile=/var/log/gunicorn/access.log --error-logfile=/var/log/gunicorn/error.log
+/usr/bin/gunicorn -w 6 -b 0.0.0.0:8000\
+    --log-file /var/log/gunicorn/api.log\
+    --chdir /data/api/enrol\
+    --log-level debug\
+    --capture-output\
+    --reload\
+    enrol.wsgi enrol.wsgi

@@ -33,6 +33,7 @@ services:
         volumes:
             - api-data:/data/api
             - ./persistent_data/logs/django:/var/log/gunicorn
+            - ./enrolment-service/enrol/core:/data/api/enrol/core
 
     nginx:
         build: ./nginx/
@@ -56,7 +57,6 @@ services:
               read_only: true
             - ./nginx/sites-enabled:/etc/nginx/sites-enabled
             - ./persistent_data/logs/:/var/log/
-            - ./persistent_data/logs/gunicorn:/var/log/gunicorn
             - ./persistent_data/logs/nginx:/var/log/nginx
             - /etc/ssl/certs/cancercollaboratory.org.crt:/etc/ssl/domain.cert
             - /etc/ssl/private/cancercollaboratory.org.key:/etc/ssl/domain.key
@@ -71,6 +71,7 @@ services:
         restart: always
         volumes:
             - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+            - ./persistent_data/logs/postgres:/var/lib/postgresql/data/log
             - ./persistent_data/postgresql:/var/lib/postgresql/data
 
 volumes:
