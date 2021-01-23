@@ -13,20 +13,18 @@ const StaffActions = props => {
     projects.filter(project => project.status === 'Approved').length > 0;
 
   return (
-    <div className="requests-actions">
+    <div className="requests-staffActions">
       <Link to="register/project" className="btn btn-default">
         {t('StaffActions.register')}
       </Link>
-      {hasApprovedProjects ? (
+      {hasApprovedProjects && (
         <Button href="#" onClick={toggleModal} variant="default">
           {t('StaffActions.terminate')}
         </Button>
-      ) : null}
+      )}
     </div>
   );
 };
-
-StaffActions.displayName = 'StaffActions';
 
 const mapStateToProps = state => {
   return {

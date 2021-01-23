@@ -12,7 +12,7 @@ from rest_framework import viewsets, status, mixins, permissions
 from rest_framework_swagger.views import get_swagger_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.decorators import action, api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -422,6 +422,49 @@ class ProjectUsersViewSet(CreateListRetrieveUpdateViewSet):
 
             send_email(email_message)
 
+    @action(detail=True, url_path='reinvite')
+    def resend_invite(self, serializer, pk=None, project_pk=None):
+        project_user = self.get_object()
+        project = Projects.objects.get(pk=project_user.project.id)
+
+        # Send Notification
+        if project_user.status == 0:
+            text_msg = 'Your Principal Investigator {pi} has requested to enrol you to the Collaboratory'\
+                ' project {name}. Please complete the online form after signing in with your account:' \
+                ' https://{url}/register-user/{project_id}/{id}/'.format(id=project_user.id,
+                                                                         name=project.project_name,
+                                                                         url=SITE_URL,
+                                                                         project_id=project.id,
+                                                                         pi=project.pi)
+
+            html_msg = Environment().from_string(open(os.path.join(settings.BASE_DIR, 'core/email_templates/user_request.html')).read()).render(
+                id=project_user.id,
+                name=project.project_name,
+                project_id=project.id,
+                pi=project.pi,
+                url=SITE_URL
+            )
+
+            email_message = EmailMultiAlternatives(
+                subject='Collaboratory - Enrolment to project {}'.format(
+                    project.project_name),
+                body=text_msg,
+                to=[project_user.daco_email, ],
+            )
+
+            email_message.attach_alternative(html_msg, "text/html")
+
+            try:
+                email_message.send()
+                return Response('Email resent successfully')
+
+            except Exception as e:
+                logger.error(str(e))
+                return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        else:
+            return Response(status=status.HTTP_409_CONFLICT)
+
 
 @api_view(['GET'])
 @authentication_classes((SessionAuthentication, ))
@@ -484,9 +527,10 @@ def uniqueProjectUserCheck(request, project, email):
 def send_email(email_message):
     logger.debug(email_message)
     try:
-        email_message.send()
+        return email_message.send()
     except Exception as e:
         logger.error('Error: Unable to send email: ' + str(e))
+        return e
 
 
 def send_update_notification(email):
