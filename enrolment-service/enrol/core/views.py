@@ -586,7 +586,6 @@ def uniqueProjectUserCheck(request, project, email):
 
 
 def send_email(email_message):
-    # logger.debug(email_message)
     try:
         return email_message.send()
     except Exception as e:
