@@ -226,7 +226,7 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
             # print(email) # for testing
 
     def destroy(self, request, pk=None):
-        user = self.request.user
+        user = request.user
 
         if user.is_superuser:
             logger.debug('Attempting to purge project %s', pk)
