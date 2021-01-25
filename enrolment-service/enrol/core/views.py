@@ -259,25 +259,31 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
             # This is where the project itself is removed, along with its dependencies
                 finally:
                     logger.debug('Purging project now...')
-                    projectPurgeResults = Projects.objects.get(id=pk).delete()
+                    try:
+                        projectPurgeResults = Projects.objects.get(id=pk).delete()
+                        logger.debug('Project %s purged succesfully!', pk)
 
-                    logger.debug('Project %s purged succesfully!', pk)
+                    except Exception as e:
+                        logger.debug('No project was found using ID: %s', pk)
+                        return Response('No project was found using that ID', status=status.HTTP_400_BAD_REQUEST)
 
-                    if billingContactPurgeResults != None: # Add up the purge totals
-                        logger.debug('Adding purged totals...')
-                        tempCount = projectPurgeResults[0] + billingContactPurgeResults[0]
-                        tempSummary = {
-                            **projectPurgeResults[1],
-                            **billingContactPurgeResults[1]
-                        }
+                    else:
+                        if billingContactPurgeResults != None: # Add up the purge totals
+                            logger.debug('Adding purged totals...')
 
-                        for key, value in tempSummary.items():
-                            if key in projectPurgeResults[1] and key in billingContactPurgeResults[1]:
-                                tempSummary[key] = value + projectPurgeResults[1][key]
+                            tempCount = projectPurgeResults[0] + billingContactPurgeResults[0]
+                            tempSummary = {
+                                **projectPurgeResults[1],
+                                **billingContactPurgeResults[1]
+                            }
 
-                        projectPurgeResults = [tempCount, tempSummary]
+                            for key, value in tempSummary.items():
+                                if key in projectPurgeResults[1] and key in billingContactPurgeResults[1]:
+                                    tempSummary[key] = value + projectPurgeResults[1][key]
 
-                    return Response(projectPurgeResults)
+                            projectPurgeResults = [tempCount, tempSummary]
+
+                        return Response(projectPurgeResults)
 
             except Exception as e:
                 logger.error('Something went wrong purging project: %s', e)
