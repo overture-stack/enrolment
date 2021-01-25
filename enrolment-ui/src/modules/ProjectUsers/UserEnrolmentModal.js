@@ -28,7 +28,11 @@ const UserEnrolmentModal = props => {
   } = props;
 
   return (
-    <Modal show={show} onHide={toggleModal}>
+    <Modal
+        centered
+        show={show}
+        onHide={toggleModal}
+        >
       <Modal.Header>
         <Modal.Title>Enrol Users</Modal.Title>
       </Modal.Header>

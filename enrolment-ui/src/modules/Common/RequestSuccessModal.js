@@ -5,7 +5,11 @@ const RequestSuccessModal = props => {
   const { showModal, handleClose, text: { title, body } } = props;
 
   return (
-    <Modal show={showModal} onHide={handleClose}>
+    <Modal
+        centered
+        show={showModal}
+        onHide={handleClose}
+        >
       <Modal.Header>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>

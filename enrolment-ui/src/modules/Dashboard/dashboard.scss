@@ -26,8 +26,11 @@
         .requests-actionsColumn {
             align-items: flex-start;
             display: flex;
-            justify-content: space-between;
             min-width: 110px;
+
+            > :not(:last-child) {
+                margin-right: 1rem;
+            }
         }
 
         .projects-links {

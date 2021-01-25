@@ -48,6 +48,7 @@
             "deny": "Nier",
             "none": "Aucune action nécessaire",
             "pending": "En cours de révision",
+            "purge": "Effacer",
             "resendInvite": "réinviter",
             "terminate": "Résilier le projet"
         }

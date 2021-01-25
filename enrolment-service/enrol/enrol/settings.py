@@ -196,14 +196,23 @@ RESOURCE_ADMIN_EMAIL = os.environ.get('RESOURCE_ADMIN_EMAIL', '')
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'datefmt': '%Y-%m-%d %H:%M:%S %z',
+            'format': '[%(asctime)s] [%(process)d] [%(levelname)s] %(module)s l%(lineno)d: %(message)s',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
         },
     },
     'loggers': {
         'django': {
-            'handlers': ['console'],
+            'handlers': [
+                'console',
+            ],
             'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
         },
     },

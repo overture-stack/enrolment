@@ -48,6 +48,7 @@
             "deny": "Deny",
             "none": "No Action Needed",
             "pending": "Under Review",
+            "purge": "Purge",
             "resendInvite": "Reinvite",
             "terminate": "Terminate Project"
         }

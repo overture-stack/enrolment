@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { toggleProjectTerminationModal } from './redux';
 import ModalTerminationForm from './components/ModalTerminationForm';
 
-import { fetchProjects, terminateProjectRequest, uiResetProjectsTab } from '../Projects/redux';
+import { fetchProjects, terminateProject, uiResetProjectsTab } from '../Projects/redux';
 import { fetchApplications } from '../Applications/redux';
 import { fetchAllProjectUsers } from '../ProjectUsers/redux';
 
@@ -18,7 +18,7 @@ const ProjectTerminationModal = props => {
     fetchProjects,
     fetchAllProjectUsers,
     resetProjectsTabUi,
-    terminateProjectRequest,
+    terminateProject,
     location: { pathname }
   } = props;
 
@@ -39,11 +39,15 @@ const ProjectTerminationModal = props => {
   };
 
   const onSubmit = data => {
-    terminateProjectRequest(data.project, onSuccess);
+    terminateProject(data.project, onSuccess);
   };
 
   return (
-    <Modal show={showModal} onHide={toggleModal}>
+    <Modal
+        centered
+        show={showModal}
+        onHide={toggleModal}
+        >
       <Modal.Header>
         <Modal.Title>Project Termination</Modal.Title>
       </Modal.Header>
@@ -68,7 +72,7 @@ const mapDispatchToProps = dispatch => {
     fetchAllProjectUsers: () => fetchAllProjectUsers(dispatch),
     resetProjectsTabUi: () => dispatch(uiResetProjectsTab()),
     toggleModal: () => dispatch(toggleProjectTerminationModal()),
-    terminateProjectRequest: (id, next) => terminateProjectRequest(dispatch, id, next),
+    terminateProject: (id, next) => terminateProject(dispatch, id, next),
   };
 };
 
