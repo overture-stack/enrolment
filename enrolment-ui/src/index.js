@@ -5,7 +5,7 @@ import { BrowserRouter, Switch } from 'react-router-dom';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import serviceWorkerRegister from './registerServiceWorker';
+import { unregister } from './registerServiceWorker';
 import configureStore from './redux/store';
 
 import { PrivateRoute, OnlyNonLoggedInRoute } from './routeHelpers';
@@ -24,7 +24,7 @@ import {
 } from './modules';
 
 // Service Worker for PWA
-serviceWorkerRegister();
+unregister();
 
 // Create redux store
 const store = configureStore();
