@@ -14,6 +14,7 @@ import {
     denyProject,
     fetchProjects,
     purgeProject,
+    reopenProject,
 } from '../Projects/redux';
 import { fetchApplications } from '../Applications/redux';
 import { fetchAllProjectUsers } from '../ProjectUsers/redux';
@@ -30,6 +31,7 @@ const ApplicationRequests = ({
     t,
 }) => {
     const [confirmPurgeID, setConfirmPurgeID] = useState(null);
+    const [confirmKillID, setConfirmKillID] = useState(null);
 
     return (
         <section className="col-md-12">
@@ -91,56 +93,89 @@ const ApplicationRequests = ({
                                             <div className="requests-actionsColumn">
                                                 {application
                                                     ? (
-                                                        project.status === 'Pending'
-                                                        ? (
-                                                            <>
-                                                                <button
+                                                        project.status === 'Pending' // status 0
+                                                            ? (
+                                                                <>
+                                                                    <button // approve project: 1
+                                                                        className="linkButton"
+                                                                        onClick={approveProject(
+                                                                            project.id,
+                                                                            fetchNewData
+                                                                        )}
+                                                                        >
+                                                                        {t('RequestTable.action.approve')}
+                                                                    </button>
+                                                                    <button // deny project: 2
+                                                                        className="linkButton"
+                                                                        onClick={denyProject(
+                                                                            project.id,
+                                                                            fetchNewData
+                                                                        )}
+                                                                        >
+                                                                        {t('RequestTable.action.deny')}
+                                                                    </button>
+                                                                </>
+                                                            )
+                                                        : project.status === 'Approved' // status 1
+                                                            ? (
+                                                                <button // confirm termination
                                                                     className="linkButton"
-                                                                    onClick={approveProject(
-                                                                        project.id,
-                                                                        fetchNewData
-                                                                    )}
+                                                                    onClick={() => setConfirmKillID(project.id)}
                                                                     >
-                                                                    {t('RequestTable.action.approve')}
+                                                                    {t('RequestTable.action.terminate')}
                                                                 </button>
-                                                                <button
-                                                                    className="linkButton"
-                                                                    onClick={denyProject(
-                                                                        project.id,
-                                                                        fetchNewData
-                                                                    )}
-                                                                    >
-                                                                    {t('RequestTable.action.deny')}
-                                                                </button>
-                                                            </>
+                                                            )
+                                                        : project.status === 'Termination Requested' // status 3
+                                                            ? (
+                                                                <>
+                                                                    <button // confirm termination: 4
+                                                                        className="linkButton"
+                                                                        onClick={confirmProjectTermination(
+                                                                            project.id,
+                                                                            fetchNewData
+                                                                        )}
+                                                                        >
+                                                                        {t('RequestTable.action.confirmTermination')}
+                                                                    </button>
+                                                                    <button // reject termination: 1
+                                                                        className="linkButton"
+                                                                        onClick={approveProject(
+                                                                            project.id,
+                                                                            fetchNewData
+                                                                        )}
+                                                                        >
+                                                                        {t('RequestTable.action.rejectTermination')}
+                                                                    </button>
+                                                                </>
+                                                            )
+                                                        : [
+                                                            'Denied', // status 2
+                                                            'Terminated', // status 4
+                                                        ].includes(project.status)
+                                                            ? (
+                                                                <>
+                                                                    <button // purge project: permanent deletion
+                                                                        className="linkButton"
+                                                                        onClick={() => setConfirmPurgeID(project.id)}
+                                                                        >
+                                                                        {t('RequestTable.action.purge')}
+                                                                    </button>
+                                                                    <button // reopen project: 1
+                                                                        className="linkButton"
+                                                                        onClick={approveProject(
+                                                                            project.id,
+                                                                            fetchNewData
+                                                                            )}
+                                                                        >
+                                                                        {t('RequestTable.action.reopen')}
+                                                                    </button>
+                                                                </>
+                                                            )
+                                                        : ( // unhandled project statuses
+                                                            <span>{t('RequestTable.action.none')}</span>
                                                         )
-                                                    : project.status === 'Termination Requested'
-                                                        ? (
-                                                            <button
-                                                                className="linkButton"
-                                                                onClick={confirmProjectTermination(
-                                                                    project.id,
-                                                                    fetchNewData
-                                                                )}
-                                                                >
-                                                                {t('RequestTable.action.confirmTermination')}
-                                                            </button>
-                                                        )
-                                                    : [
-                                                        'Denied',
-                                                        'Terminated',
-                                                    ].includes(project.status)
-                                                        ? (
-                                                            <button
-                                                                className="linkButton"
-                                                                onClick={() => setConfirmPurgeID(project.id)}
-                                                                >
-                                                                {t('RequestTable.action.purge')}
-                                                            </button>
-                                                        )
-                                                    : <span>{t('RequestTable.action.none')}</span>
                                                     )
-                                                : (
+                                                : ( // the project is an orphan, should only be purged
                                                     <button
                                                         className="linkButton"
                                                         onClick={() => setConfirmPurgeID(project.id)}
@@ -158,18 +193,35 @@ const ApplicationRequests = ({
                 </tbody>
             </table>
 
-            {profile.is_staff && confirmPurgeID && (
-                <ConfirmationModal
-                    accept="Purge it!"
-                    acceptHandler={purgeProject(
-                        confirmPurgeID,
-                        fetchNewData
+            {profile.is_staff && (
+                <>
+                    {confirmPurgeID && (
+                        <ConfirmationModal
+                            accept="Purge it!"
+                            acceptHandler={purgeProject(
+                                confirmPurgeID,
+                                fetchNewData
+                            )}
+                            message="This will remove the project and all its related data permanently."
+                            resetModal={setConfirmPurgeID}
+                            title="Are you sure?"
+                            show={!!confirmPurgeID}
+                            />
                     )}
-                    message="This will remove the project and all its related data permanently."
-                    resetModal={setConfirmPurgeID}
-                    title="Are you sure?"
-                    show={!!confirmPurgeID}
-                    />
+                    {confirmKillID && (
+                        <ConfirmationModal
+                            accept="Kill it!"
+                            acceptHandler={confirmProjectTermination(
+                                confirmKillID,
+                                fetchNewData
+                            )}
+                            message="This will terminate the project without notifying its users"
+                            resetModal={setConfirmKillID}
+                            title="Are you sure?"
+                            show={!!confirmKillID}
+                            />
+                    )}
+                </>
             )}
         </section>
     );

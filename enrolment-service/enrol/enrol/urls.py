@@ -26,7 +26,7 @@ router.register(r'applications', views.ApplicationsViewSet, 'applications')
 projects_router = routers.NestedSimpleRouter(
     router, r'projects', lookup='project')
 projects_router.register(
-    r'users', views.ProjectUsersViewSet, base_name='project-users')
+    r'users', views.ProjectUsersViewSet, basename='project-users')
 
 urlpatterns = [
     url(r'^$', views.schema_view),
