@@ -1,11 +1,11 @@
+# For email dev testing, use 'python -m smtpd -n -c DebuggingServer localhost:1025'
+
 import os
-import json
 import logging
-from core.models import Applications, BillingContact, Projects, ProjectUsers
-from django.contrib.auth.models import User
+from core.models import Applications, Projects, ProjectUsers
 from django.conf import settings
 from django.db.models import Q
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from jinja2 import Environment
 from django.http.response import Http404, HttpResponseForbidden
 from rest_framework import viewsets, status, mixins, permissions
@@ -14,13 +14,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action, api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
-from email.mime.text import MIMEText
-from core.serializers import ProjectsSerializer, ProjectSerializer, ApplicationSerializer, ProjectUsersSerializer, UserDetailsSerializer
+from core.serializers import ProjectsSerializer, ProjectSerializer, ApplicationSerializer, ProjectUsersSerializer
 from core.client.daco import DacoClient, DacoException
 from django.core.mail import EmailMultiAlternatives
-from smtplib import SMTPException
 
 schema_view = get_swagger_view(title='Enrolment API')
 SITE_URL = settings.SITE_URL
@@ -191,39 +187,62 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     def perform_update(self, serializer):
-        # Save the data
-        project = serializer.save()
+        user = self.request.user
+        project = self.get_object()
+        previous_status = project.status
+        new_status = serializer.validated_data['status']
+        # project_before = serializer.instance
 
-        # If Termination Reqeust
-        if project.status == 3:
-            project_users = ProjectUsers.objects.filter(project=project.id)
-            project_users.update(status=3)
+        logger.debug('updating id %s', project.id)
+        logger.debug('updating previous status %s', project.status)
+        logger.debug('updating incoming %s', serializer.validated_data)
+        logger.debug('updating by user %s', user)
+
+        # Save the data
+        updated_project = serializer.save()
+        project_users = ProjectUsers.objects.filter(project=project.id)
+        project_users.update(status=new_status)
+
+        # Termination Request
+        if updated_project.status == 3:
             project_user_list = list(project_users.values())
 
             email = {
                 'to': RESOURCE_ADMIN_EMAIL,
                 'cc': project.user.email,
                 'subject': 'Project Termination Request from {} for project "{}"'.format(
-                    project.user.email, project.project_name),
+                    project.user.email,
+                    project.project_name
+                ),
                 'message': 'A request from email <strong>{}</strong> to terminate project <strong>"{}"</strong> has been initated. {}'.format(
-                    project.user.email, project.project_name, project_user_email_text(project_user_list))
+                    project.user.email,
+                    project.project_name,
+                    project_user_email_text(project_user_list)
+                )
             }
             send_update_notification(email)
-            # print(email) # for testing
 
-        elif project.status == 4:
-            project_users = ProjectUsers.objects.filter(project=project.id)
-            project_users.update(status=4)
-            email = {
-                'to': project.user.email,
-                'cc': RESOURCE_ADMIN_EMAIL,
-                'subject': 'Project Termination Request complete for project "{}"'.format(
-                    project.project_name),
-                'message': 'The request from email <strong>{}</strong> to terminate project <strong>"{}"</strong> is now complete.'.format(
-                    project.user.email, project.project_name)
-            }
-            send_update_notification(email)
-            # print(email) # for testing
+        # Termination Confirmation
+        elif updated_project.status == 4:
+
+            # confirming a request.
+            if previous_status == 3:
+                email = {
+                    'to': project.user.email,
+                    'cc': RESOURCE_ADMIN_EMAIL,
+                    'subject': 'Project Termination Request complete for project "{}"'.format(
+                        project.project_name
+                    ),
+                    'message': 'The request from email <strong>{}</strong> to terminate project <strong>"{}"</strong> is now complete.'.format(
+                        project.user.email,
+                        project.project_name
+                    )
+                }
+                send_update_notification(email)
+
+            # force terminated
+            else:
+                logger.debug('project forcefully terminated by admin')
 
     def destroy(self, request, pk=None):
         user = request.user
