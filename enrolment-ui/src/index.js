@@ -5,7 +5,7 @@ import { BrowserRouter, Switch } from 'react-router-dom';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import serviceWorkerRegister from './registerServiceWorker';
+import { unregister } from './registerServiceWorker';
 import configureStore from './redux/store';
 
 import { PrivateRoute, OnlyNonLoggedInRoute } from './routeHelpers';
@@ -23,8 +23,9 @@ import {
   NotFound,
 } from './modules';
 
-// Service Worker for PWA
-serviceWorkerRegister();
+// Removing a previously existing Service Worker, added by the original `Create React App` to allow PWA,
+// because it is creating caching issues for some users. Will remove this in a few cycles, to allow propagation.
+unregister();
 
 // Create redux store
 const store = configureStore();
