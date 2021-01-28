@@ -14,7 +14,7 @@ import {
   uiSelectProject,
   uiSelectTab,
   toggleProjectTerminationModal,
-} from '../Projects/redux';
+} from './redux';
 import { fetchProjectUsersByProjectId, clearProjectUsers } from '../ProjectUsers/redux';
 import { resetEnrolmentForm } from '../ProjectUsers/redux';
 

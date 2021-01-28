@@ -44,13 +44,16 @@
         "action": {
             "acceptInvite": "Admettre",
             "approve": "Approuver",
-            "confirmTermination": "Confirmer la résiliation",
-            "deny": "Nier",
+            "confirmTermination": "Confirmer",
+            "deny": "Refuser",
             "none": "Aucune action nécessaire",
             "pending": "En cours de révision",
             "purge": "Effacer",
-            "resendInvite": "réinviter",
-            "terminate": "Résilier le projet"
+            "rejectTermination": "Refuser",
+            "reopen": "Reprendre",
+            "resendInvite": "Réinviter",
+            "reassess": "Réexaminer",
+            "terminate": "Résilier"
         }
     },
     "FeesSidebarWidget":

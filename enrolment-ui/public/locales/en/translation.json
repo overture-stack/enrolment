@@ -44,13 +44,16 @@
         "action": {
             "acceptInvite": "Accept",
             "approve": "Approve",
-            "confirmTermination": "Confirm Termination",
+            "confirmTermination": "Confirm",
             "deny": "Deny",
             "none": "No Action Needed",
             "pending": "Under Review",
             "purge": "Purge",
+            "rejectTermination": "Reject",
+            "reopen": "Reopen",
             "resendInvite": "Reinvite",
-            "terminate": "Terminate Project"
+            "reassess": "Reconsider",
+            "terminate": "Terminate"
         }
     },
     "FeesSidebarWidget":
