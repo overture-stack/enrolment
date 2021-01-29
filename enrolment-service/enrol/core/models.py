@@ -69,8 +69,11 @@ class Applications(models.Model):
 
 
 class BillingContact(models.Model):
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     contact_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.CharField(max_length=50)
     street_address = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     region = models.CharField(max_length=100)

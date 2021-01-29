@@ -232,7 +232,7 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
             logger.debug('Attempting to purge project %s', pk)
 
             try:
-            # We have to check for billing contacts separately, since it cannot cascade
+                # We have to check for billing contacts separately, since it cannot cascade
                 logger.debug('Removing Billing Contact, if available')
                 billingContactPurgeResults = None
 
@@ -246,7 +246,7 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
                     try:
                         billingContact = application.billing_contact
 
-                        if billingContact != None:
+                        if billingContact is not None:
                             logger.debug('Found a Billing Contact. Purging it...')
                             billingContactPurgeResults = billingContact.delete()
 
@@ -263,12 +263,12 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
                         projectPurgeResults = Projects.objects.get(id=pk).delete()
                         logger.debug('Project %s purged succesfully!', pk)
 
-                    except Exception as e:
+                    except Exception:
                         logger.debug('No project was found using ID: %s', pk)
                         return Response('No project was found using that ID', status=status.HTTP_400_BAD_REQUEST)
 
                     else:
-                        if billingContactPurgeResults != None: # Add up the purge totals
+                        if billingContactPurgeResults is not None:  # Add up the purge totals
                             logger.debug('Adding purged totals...')
 
                             tempCount = projectPurgeResults[0] + billingContactPurgeResults[0]
@@ -344,6 +344,8 @@ class ApplicationsViewSet(CreateListRetrieveUpdateViewSet):
             data = {
                 **data,
                 'Billing Contact': application.billing_contact.contact_name,
+                'Billing Email': application.billing_contact.email,
+                'Billing Phone Number': application.billing_contact.phone,
                 'Billing Address': application.billing_contact.street_address,
                 'Billing City': application.billing_contact.city,
                 'Billing Province/State': application.billing_contact.region,

@@ -54,7 +54,7 @@ class ProjectUsersSerializer(serializers.ModelSerializer):
 class BillingContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = BillingContact
-        fields = ('id', 'contact_name', 'street_address', 'city', 'region',
+        fields = ('id', 'contact_name', 'email', 'phone', 'street_address', 'city', 'region',
                   'country', 'postal_code', 'createdDate', 'updatedDate')
 
 
@@ -75,7 +75,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
         if data['daco_email'].lower() == data['institution_email'].lower():
             raise serializers.ValidationError(
                 "Institution email must be different from daco email")
-        if data['invoice_consent'] != True:
+        if data['invoice_consent'] is not True:
             raise serializers.ValidationError(
                 "Invoice consent cannot be false")
         return data
