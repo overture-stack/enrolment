@@ -19,7 +19,7 @@ const ReqFormStep2 = props => {
         <Field
           type="text"
           name="project_name"
-          placeholder="Project Name"
+          placeholder="Project Name (Required)"
           component={RFInput}
           validate={rules.required}
           disabled={disabled}
@@ -38,7 +38,7 @@ const ReqFormStep2 = props => {
       <div className="row">
         <Field
           name="project_description"
-          placeholder="Project Purpose"
+          placeholder="Project Purpose (Required)"
           component={RFTextArea}
           validate={[rules.required, rules.maxLength(250)]}
           disabled={disabled}
@@ -48,8 +48,7 @@ const ReqFormStep2 = props => {
         <div className="row">
           <Field
             name="invoice_consent"
-            label="Applicant acknowledges that their usage of the Collaboratory will be invoiced monthly, and
-            that payment is required within 30 days."
+            label="Applicant acknowledges that their usage of the Collaboratory will be invoiced monthly, and that payment is required within 30 days."
             component={RFConsent}
             validate={rules.required}
           />

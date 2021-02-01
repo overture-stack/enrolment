@@ -31,16 +31,15 @@ const ReqFormStep3 = props => {
           </a>
         </div>
       </div>
-      {!disabled && (
         <div className="row">
           <Field
             name="agreementCheck"
             label="I agree"
             component={RFConsent}
+            disabled={disabled}
             validate={rules.required}
           />
         </div>
-      )}
       <div className="row">
         <div className="col-md-12">
           <button onClick={previousPage} className="previous action-button">
