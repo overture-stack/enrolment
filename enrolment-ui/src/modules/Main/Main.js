@@ -28,7 +28,7 @@ class Main extends Component {
     return (
       <React.Fragment>
         <Header />
-        <main className="container">{this.props.children}</main>
+        <main id="main-container" className="container-fluid">{this.props.children}</main>
       </React.Fragment>
     );
   }
