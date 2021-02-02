@@ -105,7 +105,7 @@ class Projects extends Component {
       <div className="wrapper">
         <div className="inner">
           <h1>My Projects</h1>
-          <div className="container">
+          <div className="container-fluid">
             <div className="form-group row project-selector">
               <Col md={2}>
                 <p style={{ fontSize: '1.24rem' }}>Select Project</p>
