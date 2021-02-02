@@ -18,6 +18,7 @@ import {
 const UserRequests = ({
     activateProjectUser,
     fetchAllProjectUsers,
+    getProjectNameById,
     profile,
     projectUsers,
     resendInviteToProjectUser,
@@ -33,6 +34,7 @@ const UserRequests = ({
                     >
                     <th>Request ID</th>
                     <th>Name / Email</th>
+                    <th>Project Name</th>
                     <th>Created Date</th>
                     <th>Updated Date</th>
                     <th>Status</th>
@@ -62,6 +64,8 @@ const UserRequests = ({
                                 : user.daco_email
                             }
                         </td>
+
+                        <td>{getProjectNameById(user.project) || '--'}</td>
 
                         <td className="noWrap">{user.createdDate}</td>
 
@@ -119,6 +123,7 @@ const UserRequests = ({
 
 const mapStateToProps = state => ({
     profile: state.profile.data,
+    projects: state.projects.data,
     projectUsers: state.projectUsers,
 });
 
@@ -130,4 +135,11 @@ const mapDispatchToProps = dispatch => ({
     resendInviteToProjectUser(dispatch, projectId, id, next),
 });
 
-export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(UserRequests));
+const mergeProps = ({ projects, ...stateProps }, dispatchProps, ownProps) => ({
+    ...ownProps,
+    ...dispatchProps,
+    ...stateProps,
+    getProjectNameById: projectID => (projects.find(({ id }) => projectID === id) || {}).project_name
+});
+
+export default withTranslation()(connect(mapStateToProps, mapDispatchToProps, mergeProps)(UserRequests));

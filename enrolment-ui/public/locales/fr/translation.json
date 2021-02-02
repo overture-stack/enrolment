@@ -40,7 +40,7 @@
     },
     "RequestTable": {
         "userTableHeader":
-            "<0>RID de la demande</0><1>Nom/Email</1><2>Date de création</2><3>Date de mise à jour</3><4>État</4><5>Action</5>",
+            "<0>RID de la demande</0><1>Nom/Email</1><2>Projet</2><3>Date de création</3><4>Date de mise à jour</4><5>État</5><6>Action</6>",
         "action": {
             "acceptInvite": "Admettre",
             "approve": "Approuver",
