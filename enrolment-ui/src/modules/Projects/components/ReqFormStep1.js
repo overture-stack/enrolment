@@ -6,90 +6,19 @@ import { RFInput, RFSelectFlat, rules } from '../../ReduxForm';
 
 import { toggleBillingFields, changeCountry, changeBillingCountry } from '../redux';
 
-class ReqFormStep1 extends Component {
-  renderBillingFields(disabled, countryRegion, changeBillingCountry, selectedBillingRegion) {
-    return (
-      <div className="billing-fields">
-        <div className="row">
-          <Field
-            name="billing_contact_name"
-            type="text"
-            placeholder="Billing Contact Name"
-            component={RFInput}
-            disabled={disabled}
-          />
-        </div>
-        <div className="row">
-          <Field
-            type="text"
-            name="billing_street_address"
-            placeholder="Billing Street Address"
-            component={RFInput}
-            validate={rules.required}
-            disabled={disabled}
-          />
-        </div>
-        <div className="row">
-          <Field
-            name="billing_country"
-            defaultOption="Billing Country"
-            component={RFSelectFlat}
-            options={countryRegion.countries}
-            bootstrapClass="col-md-6"
-            onChange={event => changeBillingCountry(event.target.value)}
-            validate={rules.required}
-            disabled={disabled}
-          />
-          <Field
-            name="billing_region"
-            defaultOption={disabled ? selectedBillingRegion : 'Billing Province / State'}
-            component={RFSelectFlat}
-            options={countryRegion.billingRegionOptions}
-            bootstrapClass="col-md-6"
-            validate={rules.required}
-            disabled={disabled}
-          />
-        </div>
-        <div className="row">
-          <Field
-            type="text"
-            name="billing_city"
-            placeholder="Billing City"
-            component={RFInput}
-            bootstrapClass="col-md-6"
-            validate={rules.required}
-            disabled={disabled}
-          />
-          <Field
-            type="text"
-            name="billing_postal_code"
-            placeholder="Billing Postal / Zip Code"
-            component={RFInput}
-            bootstrapClass="col-md-6"
-            validate={rules.required}
-            disabled={disabled}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  render() {
-    const {
-      handleSubmit,
-      invalid,
-      disabled,
-      projectRequestForm: { showBillingFields, countryRegion },
-      formState,
-      toggleBillingFields,
-      changeCountry,
-      changeBillingCountry,
-      selectedRegion,
-      selectedBillingRegion,
-    } = this.props;
-
-    return (
-      <form onSubmit={handleSubmit}>
+const ReqFormStep1 = ({
+    handleSubmit,
+    invalid,
+    disabled,
+    projectRequestForm: { showBillingFields, countryRegion },
+    formState,
+    toggleBillingFields,
+    changeCountry,
+    changeBillingCountry,
+    selectedRegion,
+    selectedBillingRegion,
+}) => (
+    <form onSubmit={handleSubmit}>
         <div className="row">
           <div className="col-md-12">
             <h2 className="fs-title">Principal Investigator</h2>
@@ -142,7 +71,7 @@ class ReqFormStep1 extends Component {
           <Field
             type="email"
             name="institution_email"
-            placeholder="Institution Email"
+            placeholder="Institutional Email"
             component={RFInput}
             bootstrapClass="col-md-6"
             validate={[
@@ -150,7 +79,7 @@ class ReqFormStep1 extends Component {
               rules.email,
               rules.mustNotMatch(
                 get(formState, 'values.daco_email', ''),
-                'Institution email must be different from daco email',
+                'Institutional email must be different from daco email',
               ),
             ]}
             disabled={disabled}
@@ -236,14 +165,110 @@ class ReqFormStep1 extends Component {
           </div>
         </div>
 
-        {showBillingFields
-          ? this.renderBillingFields(
-              disabled,
-              countryRegion,
-              changeBillingCountry,
-              selectedBillingRegion,
-            )
-          : null}
+        {showBillingFields && (
+            <div className="billing-fields">
+                <div className="row">
+                    <Field
+                        name="billing_contact_name"
+                        type="text"
+                        placeholder="Contact Name"
+                        component={RFInput}
+                        disabled={disabled}
+                        validate={[
+                            rules.required,
+                        ]}
+                    />
+                </div>
+                <div className="row">
+                    <Field
+                        type="email"
+                        name="billing_email"
+                        placeholder="Billing Email"
+                        component={RFInput}
+                        bootstrapClass="col-md-6"
+                        validate={[
+                            rules.required,
+                            rules.email,
+                            rules.mustNotMatch(
+                                get(formState, 'values.institution_email', ''),
+                                'Billing Contact email must be different from the Institutional email',
+                            ),
+                            rules.mustNotMatch(
+                                get(formState, 'values.daco_email', ''),
+                                'Institutional email must be different from daco email',
+                            ),
+                        ]}
+                        disabled={disabled}
+                    />
+                    <Field
+                        type="tel"
+                        name="billing_phone"
+                        placeholder="Billing Contact Phone"
+                        component={RFInput}
+                        bootstrapClass="col-md-6"
+                        validate={[
+                            rules.required,
+                            // rules.mustNotMatch(
+                            //     get(formState, 'values.phone', ''),
+                            //     'Billing Contact phone must be different from the PI\'s phone',
+                            // ),
+                        ]}
+                        disabled={disabled}
+                    />
+              </div>
+              <div className="row">
+                    <Field
+                        type="text"
+                        name="billing_street_address"
+                        placeholder="Street Address"
+                        component={RFInput}
+                        validate={rules.required}
+                        disabled={disabled}
+                    />
+              </div>
+              <div className="row">
+                    <Field
+                        name="billing_country"
+                        defaultOption="Country"
+                        component={RFSelectFlat}
+                        options={countryRegion.countries}
+                        bootstrapClass="col-md-6"
+                        onChange={event => changeBillingCountry(event.target.value)}
+                        validate={rules.required}
+                        disabled={disabled}
+                    />
+                    <Field
+                        name="billing_region"
+                        defaultOption={disabled ? selectedBillingRegion : 'Province / State'}
+                        component={RFSelectFlat}
+                        options={countryRegion.billingRegionOptions}
+                        bootstrapClass="col-md-6"
+                        validate={rules.required}
+                        disabled={disabled}
+                    />
+                </div>
+                <div className="row">
+                    <Field
+                        type="text"
+                        name="billing_city"
+                        placeholder="City"
+                        component={RFInput}
+                        bootstrapClass="col-md-6"
+                        validate={rules.required}
+                        disabled={disabled}
+                    />
+                    <Field
+                        type="text"
+                        name="billing_postal_code"
+                        placeholder="Postal / Zip Code"
+                        component={RFInput}
+                        bootstrapClass="col-md-6"
+                        validate={rules.required}
+                        disabled={disabled}
+                    />
+                </div>
+            </div>
+        )}
 
         <div className="row">
           <Field
@@ -263,10 +288,8 @@ class ReqFormStep1 extends Component {
             </button>
           </div>
         </div>
-      </form>
-    );
-  }
-}
+    </form>
+);
 
 const selector = formValueSelector('projectRequestForm');
 const mapStateToProps = state => {
