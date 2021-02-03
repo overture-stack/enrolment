@@ -29,7 +29,7 @@ const ReqFormStep1 = ({
           <Field
             name="firstname"
             type="text"
-            placeholder="First Name"
+            placeholder="First Name (Required)"
             component={RFInput}
             bootstrapClass="col-md-6"
             validate={rules.required}
@@ -38,7 +38,7 @@ const ReqFormStep1 = ({
           <Field
             name="lastname"
             type="text"
-            placeholder="Last Name"
+            placeholder="Last Name (Required)"
             component={RFInput}
             bootstrapClass="col-md-6"
             validate={rules.required}
@@ -49,7 +49,7 @@ const ReqFormStep1 = ({
           <Field
             name="position"
             type="text"
-            placeholder="Job Title"
+            placeholder="Job Title (Required)"
             component={RFInput}
             validate={rules.required}
             disabled={disabled}
@@ -60,7 +60,7 @@ const ReqFormStep1 = ({
           <Field
             type="text"
             name="institution_name"
-            placeholder="Institution Name"
+            placeholder="Institution Name (Required)"
             component={RFInput}
             validate={rules.required}
             disabled={disabled}
@@ -71,7 +71,7 @@ const ReqFormStep1 = ({
           <Field
             type="email"
             name="institution_email"
-            placeholder="Institutional Email"
+            placeholder="Institutional Email (Required)"
             component={RFInput}
             bootstrapClass="col-md-6"
             validate={[
@@ -79,7 +79,7 @@ const ReqFormStep1 = ({
               rules.email,
               rules.mustNotMatch(
                 get(formState, 'values.daco_email', ''),
-                'Institutional email must be different from daco email',
+                'Institutional email must be different from your own email',
               ),
             ]}
             disabled={disabled}
@@ -87,7 +87,7 @@ const ReqFormStep1 = ({
           <Field
             type="tel"
             name="phone"
-            placeholder="Phone"
+            placeholder="Phone (Required)"
             component={RFInput}
             bootstrapClass="col-md-6"
             validate={rules.required}
@@ -110,7 +110,7 @@ const ReqFormStep1 = ({
           <Field
             type="text"
             name="street_address"
-            placeholder="Street Address"
+            placeholder="Street Address (Required)"
             component={RFInput}
             validate={rules.required}
             disabled={disabled}
@@ -119,7 +119,7 @@ const ReqFormStep1 = ({
         <div className="row">
           <Field
             name="country"
-            defaultOption="Country"
+            defaultOption="Country (Required)"
             component={RFSelectFlat}
             options={countryRegion.countries}
             bootstrapClass="col-md-6"
@@ -129,7 +129,7 @@ const ReqFormStep1 = ({
           />
           <Field
             name="region"
-            defaultOption={disabled ? selectedRegion : 'Province / State'}
+            defaultOption={disabled ? selectedRegion : 'Province / State (Required)'}
             component={RFSelectFlat}
             options={countryRegion.regionOptions}
             bootstrapClass="col-md-6"
@@ -141,7 +141,7 @@ const ReqFormStep1 = ({
           <Field
             type="text"
             name="city"
-            placeholder="City"
+            placeholder="City (Required)"
             component={RFInput}
             bootstrapClass="col-md-6"
             validate={rules.required}
@@ -150,7 +150,7 @@ const ReqFormStep1 = ({
           <Field
             type="text"
             name="postal_code"
-            placeholder="Postal / Zip Code"
+            placeholder="Postal / Zip Code (Required)"
             component={RFInput}
             bootstrapClass="col-md-6"
             validate={rules.required}
@@ -171,7 +171,7 @@ const ReqFormStep1 = ({
                     <Field
                         name="billing_contact_name"
                         type="text"
-                        placeholder="Contact Name"
+                        placeholder="Contact Name (Required)"
                         component={RFInput}
                         disabled={disabled}
                         validate={[
@@ -183,7 +183,7 @@ const ReqFormStep1 = ({
                     <Field
                         type="email"
                         name="billing_email"
-                        placeholder="Billing Email"
+                        placeholder="Billing Email (Required)"
                         component={RFInput}
                         bootstrapClass="col-md-6"
                         validate={[
@@ -203,7 +203,7 @@ const ReqFormStep1 = ({
                     <Field
                         type="tel"
                         name="billing_phone"
-                        placeholder="Billing Contact Phone"
+                        placeholder="Billing Contact Phone (Required)"
                         component={RFInput}
                         bootstrapClass="col-md-6"
                         validate={[
@@ -220,7 +220,7 @@ const ReqFormStep1 = ({
                     <Field
                         type="text"
                         name="billing_street_address"
-                        placeholder="Street Address"
+                        placeholder="Street Address (Required)"
                         component={RFInput}
                         validate={rules.required}
                         disabled={disabled}
@@ -229,7 +229,7 @@ const ReqFormStep1 = ({
               <div className="row">
                     <Field
                         name="billing_country"
-                        defaultOption="Country"
+                        defaultOption="Country (Required)"
                         component={RFSelectFlat}
                         options={countryRegion.countries}
                         bootstrapClass="col-md-6"
@@ -239,7 +239,7 @@ const ReqFormStep1 = ({
                     />
                     <Field
                         name="billing_region"
-                        defaultOption={disabled ? selectedBillingRegion : 'Province / State'}
+                        defaultOption={disabled ? selectedBillingRegion : 'Province / State (Required)'}
                         component={RFSelectFlat}
                         options={countryRegion.billingRegionOptions}
                         bootstrapClass="col-md-6"
@@ -251,7 +251,7 @@ const ReqFormStep1 = ({
                     <Field
                         type="text"
                         name="billing_city"
-                        placeholder="City"
+                        placeholder="City (Required)"
                         component={RFInput}
                         bootstrapClass="col-md-6"
                         validate={rules.required}
@@ -260,7 +260,7 @@ const ReqFormStep1 = ({
                     <Field
                         type="text"
                         name="billing_postal_code"
-                        placeholder="Postal / Zip Code"
+                        placeholder="Postal / Zip Code (Required)"
                         component={RFInput}
                         bootstrapClass="col-md-6"
                         validate={rules.required}
@@ -274,7 +274,7 @@ const ReqFormStep1 = ({
           <Field
             type="email"
             name="daco_email"
-            placeholder="Email"
+            placeholder="Email (Required)"
             component={RFInput}
             validate={[rules.required, rules.email]}
             disabled={true}
