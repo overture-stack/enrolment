@@ -193,11 +193,6 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
         new_status = serializer.validated_data['status']
         # project_before = serializer.instance
 
-        logger.debug('updating id %s', project.id)
-        logger.debug('updating previous status %s', project.status)
-        logger.debug('updating incoming %s', serializer.validated_data)
-        logger.debug('updating by user %s', user)
-
         # Save the data
         updated_project = serializer.save()
         project_users = ProjectUsers.objects.filter(project=project.id)
