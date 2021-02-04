@@ -170,4 +170,7 @@ As mentioned before, Google API credentials must be created in order for the log
 
 ### Step 4 - Run
 
-At this point if you visit the front-end `http://localhost` you will see the login page, now ready to login and authorize DACO approved Gmail addresses as well as accepting internal logins using the Django admin login setup in the config
+At this point if you visit the front-end `http://localhost` you will see the login page, now ready to login and authorize DACO approved Gmail addresses as well as accepting internal logins using the Django admin login setup in the config.
+
+While developing, you are able to use 'python -m smtpd -n -c DebuggingServer localhost:1025' to mock an email server.
+This tool logs the email to terminal; useful to test and debug notifications, etc.

@@ -1,5 +1,3 @@
-# For email dev testing, use 'python -m smtpd -n -c DebuggingServer localhost:1025'
-
 import os
 import logging
 from core.models import Applications, Projects, ProjectUsers
