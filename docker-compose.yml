@@ -1,0 +1,79 @@
+version: '3.2'
+
+networks:
+    enrolment:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 172.21.0.0/16
+
+services:
+    web:
+        build: ./enrolment-ui/
+        depends_on:
+            - api
+        env_file: .env
+        networks:
+            - enrolment
+        restart: always
+        volumes:
+            - web-data:/data/web
+
+    api:
+        build: ./enrolment-service/
+        depends_on:
+            - postgres
+        entrypoint: /entrypoint.sh
+        env_file: .env
+        expose:
+            - "8000"
+        networks:
+            - enrolment
+        restart: always
+        volumes:
+            - api-data:/data/api
+            - ./persistent_data/logs/django:/var/log/gunicorn
+            - ./enrolment-service/enrol/core:/data/api/enrol/core
+
+    nginx:
+        build: ./nginx/
+        depends_on:
+            - web
+            - api
+        networks:
+            - enrolment
+        ports:
+            - "8443:8080"
+            - "8000:8000"
+        restart: always
+        volumes:
+            - type: volume
+              source: web-data
+              target: /data/web
+              read_only: true
+            - type: volume
+              source: api-data
+              target: /data/api
+              read_only: true
+            - ./nginx/sites-enabled:/etc/nginx/sites-enabled
+            - ./persistent_data/logs/:/var/log/
+            - ./persistent_data/logs/nginx:/var/log/nginx
+            - /etc/ssl/certs/cancercollaboratory.org.crt:/etc/ssl/domain.cert
+            - /etc/ssl/private/cancercollaboratory.org.key:/etc/ssl/domain.key
+
+    postgres:
+        env_file: .env
+        expose:
+            - "5432"
+        image: postgres:10.1
+        networks:
+            - enrolment
+        restart: always
+        volumes:
+            - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+            - ./persistent_data/logs/postgres:/var/lib/postgresql/data/log
+            - ./persistent_data/postgresql:/var/lib/postgresql/data
+
+volumes:
+    web-data:
+    api-data:

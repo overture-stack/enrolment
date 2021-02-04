@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:500');
+
+$height: 40px;
+$width: 100%;
+$logo: url('../../assets/img/g-logo.svg');
+
+@function ratio($numerator) {
+  @return $height * ($numerator / 40);
+}
+
+// modify this with caution
+$radius: ratio(1);
+
+@mixin button($background, $color) {
+    background: $background !important;
+    color: $color !important;
+
+    &:focus,
+    &:active,
+    &:hover {
+        background: darken($background, 10%) !important;
+    }
+
+    &:disabled {
+        background: #b7b7b7 !important;
+    }
+}
+
+.login {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .login-logo-container {
+    img {
+      width: 300px;
+      margin: -100px 0 20px;
+    }
+  }
+
+  .login-title {
+    margin: 1rem 0 2rem;
+  }
+
+  .login-container,
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  form {
+    input {
+      margin: 5px 0px;
+    }
+
+    &:last-child {
+      margin-bottom: 10px;
+    }
+  }
+
+  .login-google {
+    @include button(#4285f4, #ffffff);
+    margin-bottom: 10px;
+  }
+
+  .login-extra-info {
+    margin-top: 20px;
+
+    &.hide {
+      visibility: hidden;
+    }
+    &.show {
+      visibility: visible;
+    }
+  }
+
+  &-change-gateway {
+    font-size: 0.8rem;
+  }
+
+  .lang-toggle {
+    margin-top: 10px;
+  }
+
+  .loading-graphic {
+    display: block;
+    margin: 0 auto 10px;
+  }
+}

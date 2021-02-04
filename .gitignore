@@ -99,3 +99,27 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# OSX
+\.DS_Store
+
+# sqlite
+db.sqlite3
+
+# Notes
+notes-*.txt
+
+# Docker presistent store
+persistent_data
+
+# DB Dumps
+postgres/dumps
+
+# SSL
+*.cert
+*.crt
+*.key
+
+# Editor
+.vscode
+.*.sh

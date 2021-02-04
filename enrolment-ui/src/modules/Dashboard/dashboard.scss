@@ -1,0 +1,42 @@
+.dashboard {
+    section {
+        &:first-child {
+            border-right: 1px solid #dedede;
+            overflow: auto;
+        }
+
+        .requests-header {
+            align-items: center;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 0px 15px;
+
+            .requests-staffActions {
+                display: flex;
+                flex-direction: column;
+
+                a {
+                    margin: 5px;
+                }
+            }
+        }
+
+        .requests-actionsColumn {
+            align-items: flex-start;
+            display: flex;
+            min-width: 110px;
+
+            > :not(:last-child) {
+                margin-right: 1rem;
+            }
+        }
+
+        .projects-links {
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+        }
+    }
+}

@@ -1,0 +1,61 @@
+{
+    "Login": {
+        "title": "Inscription"
+    },
+    "ChangeLogin": {
+        "internal": "Connexion Interne",
+        "external": "Connexion Externe"
+    },
+    "GoogleLogin": {
+        "buttonText": "Connectez-vous avec Google"
+    },
+    "Dashboard": {
+        "title": "Inscription Collaboratoire",
+        "register": "Please click here to <1>Register a project</1>. FRENCH",
+        "noRequests": "There are currently no Requests for you to view. FRENCH"
+    },
+    "Requests": {
+        "LoadingMessage": "Chargement des données des demandes...",
+        "requestsHeader": {
+            "title": "Mes Demandes"
+        },
+        "projects": {
+            "title": "Mes Projets",
+            "projectDetailLink": "Voir les détails du projet",
+            "addUserLink": "Ajouter des utilisateurs",
+            "viewUserLink": "Afficher / Modifier les utilisateurs"
+        }
+    },
+    "StaffActions": {
+        "register": "Enregistrer le projet",
+        "terminate": "Terminate Project"
+    },
+    "ApplicationRequests": {
+        "title": "Demandes d'application"
+    },
+    "UserRequests": {
+        "title": "Demandes d'utilisateurs",
+        "invalidUserRequest":
+            "Cette demande de l'utilisateur n'est plus valide, veuillez contacter votre IP si vous pensez qu'il s'agit d'une erreur."
+    },
+    "RequestTable": {
+        "userTableHeader":
+            "<0>RID de la demande</0><1>Nom/Email</1><2>Projet</2><3>Date de création</3><4>Date de mise à jour</4><5>État</5><6>Action</6>",
+        "action": {
+            "acceptInvite": "Admettre",
+            "approve": "Approuver",
+            "confirmTermination": "Confirmer",
+            "deny": "Refuser",
+            "none": "Aucune action nécessaire",
+            "pending": "En cours de révision",
+            "purge": "Effacer",
+            "rejectTermination": "Refuser",
+            "reopen": "Reprendre",
+            "resendInvite": "Réinviter",
+            "reassess": "Réexaminer",
+            "terminate": "Résilier"
+        }
+    },
+    "FeesSidebarWidget":
+        "<0>Fees for using the Collaboratory Resources</0><1><0>$<1>{{cpuPrice}}</1> CAD</0> per vCPU hour</1><2><0>$<1>{{volumePrice}}</1> CAD</0> per GB hour of storage (volumes, images and object storage)</2>"
+}

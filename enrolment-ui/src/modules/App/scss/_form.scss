@@ -1,0 +1,25 @@
+%validation-message {
+  position: relative;
+  display: block;
+  width: 100%;
+  top: -6px;
+  font-size: 0.75em;
+  text-align: left;
+  padding: 0 15px;
+}
+
+form {
+  .error {
+    @extend %validation-message;
+    color: $red;
+  }
+
+  .warning {
+    @extend %validation-message;
+    color: $dark;
+  }
+}
+
+select.form-control {
+  margin-bottom: 10px;
+}

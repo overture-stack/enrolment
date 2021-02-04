@@ -1,0 +1,61 @@
+{
+    "Login": {
+        "title": "Projects and Users Registration"
+    },
+    "ChangeLogin": {
+        "internal": "Internal Login",
+        "external": "External Login"
+    },
+    "GoogleLogin": {
+        "buttonText": "Login with Google"
+    },
+    "Dashboard": {
+        "title": "Projects and Users Registration",
+        "register": "Please click here to <1>Register a project</1>.",
+        "noRequests": "There are currently no Requests for you to view."
+    },
+    "Requests": {
+        "LoadingMessage": "Loading requests data...",
+        "requestsHeader": {
+            "title": "My Requests"
+        },
+        "projects": {
+            "title": "My Projects",
+            "projectDetailLink": "View Project Details",
+            "addUserLink": "Add Users",
+            "viewUserLink": "View / Edit Users"
+        }
+    },
+    "StaffActions": {
+        "register": "Register Project",
+        "terminate": "Terminate Project"
+    },
+    "ApplicationRequests": {
+        "title": "Application Requests"
+    },
+    "UserRequests": {
+        "title": "User Requests",
+        "invalidUserRequest":
+            "This user request is no longer valid, please contact your PI if you believe this is an error."
+    },
+    "RequestTable": {
+        "userTableHeader":
+            "<0>Request ID</0><1>Name / Email</1><2>Project Name</2><3>Created Date</3><4>Updated Date</4><5>Status</5><6>Action</6>",
+        "action": {
+            "acceptInvite": "Accept",
+            "approve": "Approve",
+            "confirmTermination": "Confirm",
+            "deny": "Deny",
+            "none": "No Action Needed",
+            "pending": "Under Review",
+            "purge": "Purge",
+            "rejectTermination": "Reject",
+            "reopen": "Reopen",
+            "resendInvite": "Reinvite",
+            "reassess": "Reconsider",
+            "terminate": "Terminate"
+        }
+    },
+    "FeesSidebarWidget":
+        "<0>Fees for using the Collaboratory Resources</0><1><0>$<1>{{cpuPrice}}</1> CAD</0> per vCPU hour</1><2><0>$<1>{{volumePrice}}</1> CAD</0> per GB hour of storage (volumes, images and object storage)</2>"
+}
