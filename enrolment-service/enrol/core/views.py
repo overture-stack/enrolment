@@ -197,7 +197,7 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
         project_users.update(status=new_status)
 
         # Termination Request
-        if updated_project.status == 3:
+        if updated_project.status == 3:  # new status 3. Termination Requested
             project_user_list = list(project_users.values())
 
             email = {
@@ -216,10 +216,10 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
             send_update_notification(email)
 
         # Termination Confirmation
-        elif updated_project.status == 4:
+        elif updated_project.status == 4:  # new status 4. Terminated
 
-            # confirming a request.
-            if previous_status == 3:
+            # when the termination was requested by the PI
+            if previous_status == 3:  # previous status 3. Termination Requested
                 email = {
                     'to': project.user.email,
                     'cc': RESOURCE_ADMIN_EMAIL,
@@ -233,7 +233,7 @@ class ProjectsViewSet(CreateListRetrieveUpdateViewSet):
                 }
                 send_update_notification(email)
 
-            # force terminated
+            # when an admin terminates without a PI's request
             else:
                 logger.debug('project forcefully terminated by admin')
 
