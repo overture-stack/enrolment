@@ -1,28 +1,39 @@
 import React from 'react';
-import GoogleLogin from 'react-google-login';
+import { GoogleLogin } from '@react-oauth/google';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
-import { getOneConfig } from '../../../config';
+// import { getOneConfig } from '../../../config';
 import { createGoogleLoginFunctions } from '../../Auth/redux';
 
 import ChangeLogin from './ChangeLogin';
 
 const GoogleLoginForm = props => {
-  const { clientId } = getOneConfig('clientId');
+  // const { clientId } = getOneConfig('clientId');
 
-  const { t, auth: { loading }, googleLoginFunctions: { onRequest, onSuccess, onFailure } } = props;
+  const {
+    // t,
+    // auth: {
+    //   loading
+    // },
+    googleLoginFunctions: {
+      // onRequest,
+      onSuccess,
+      onFailure
+    }
+  } = props;
 
   return (
     <div className="login-container">
       <GoogleLogin
-        className={`login-google ${loading ? 'disabled' : ''}`}
-        buttonText={t('GoogleLogin.buttonText')}
-        clientId={clientId}
-        onRequest={onRequest}
+        // className={`login-google ${loading ? 'disabled' : ''}`}
+        // buttonText={t('GoogleLogin.buttonText')}
+        // clientId={clientId}
+        // onRequest={onRequest}
         onSuccess={onSuccess}
-        onFailure={onFailure}
-        disabled={loading}
+        onError={onFailure}
+        // onFailure={onFailure}
+        // disabled={loading}
       />
       <ChangeLogin />
     </div>
