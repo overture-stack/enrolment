@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@react-oauth/google": "^0.5.1",
     "axios": "^0.21.1",
     "country-region-data": "^1.7.0",
     "i18next": "^19.9.1",
