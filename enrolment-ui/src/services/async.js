@@ -26,7 +26,6 @@ export function createAsyncs(isDevelopment = false) {
             return Promise.reject('Something went wrong. Please Try again.');
           },
         ),
-        // TODO: implement logout
       logout: asyncServiceCreator('POST', `${apiBase}/auth/logout/`, withCSRF),
     },
     profile: {
