@@ -1,6 +1,6 @@
 # Copyright 2020(c) The Ontario Institute for Cancer Research. All rights reserved.
 
-FROM node AS prebuilder
+FROM node:16 AS prebuilder
 
 WORKDIR /data/web
 COPY . /data/web/

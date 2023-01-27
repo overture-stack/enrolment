@@ -1,29 +1,31 @@
 import React from 'react';
-import GoogleLogin from 'react-google-login';
+import { useGoogleLogin } from '@react-oauth/google';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
-import { getOneConfig } from '../../../config';
 import { createGoogleLoginFunctions } from '../../Auth/redux';
 
+import GoogleLoginButton from './GoogleLoginButton';
 import ChangeLogin from './ChangeLogin';
 
 const GoogleLoginForm = props => {
-  const { clientId } = getOneConfig('clientId');
 
-  const { t, auth: { loading }, googleLoginFunctions: { onRequest, onSuccess, onFailure } } = props;
+  const {
+    googleLoginFunctions: {
+      onSuccess,
+      onFailure
+    }
+  } = props;
+
+  const login = useGoogleLogin({
+    onSuccess: onSuccess,
+    onError: onFailure,
+    flow: 'implicit',
+  });
 
   return (
     <div className="login-container">
-      <GoogleLogin
-        className={`login-google ${loading ? 'disabled' : ''}`}
-        buttonText={t('GoogleLogin.buttonText')}
-        clientId={clientId}
-        onRequest={onRequest}
-        onSuccess={onSuccess}
-        onFailure={onFailure}
-        disabled={loading}
-      />
+      <GoogleLoginButton onClick={login} />
       <ChangeLogin />
     </div>
   );
